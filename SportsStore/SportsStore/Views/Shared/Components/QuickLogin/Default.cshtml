@@ -1,0 +1,18 @@
+﻿@model LoginModel
+
+<form asp-action="Login" asp-controller="Account" method="post">
+    <div class="row">
+        <div clas="col">
+            <label asp-for="Name">Login</label>
+            <input asp-for="Name" />
+        </div>
+        <div class="col-5">
+            <label asp-for="Password">Hasło</label>
+            <input asp-for="Password" />
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-secondary">Zaloguj</button>
+        </div>
+    </div>
+
+</form>

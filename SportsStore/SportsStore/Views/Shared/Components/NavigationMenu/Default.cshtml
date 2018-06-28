@@ -1,0 +1,8 @@
+﻿@model SportsStore.Models.ViewModels.NavigationMenuViewModel
+
+<a class="btn btn-block btn-secondary" asp-action="List" asp-controller="Product" asp-route-category="">Strona główna</a>
+@foreach (var s in Model.Categories)
+{
+    <a class="btn btn-block @(s == Model.SelectedCategory ? "btn-primary" : "btn-secondary")" 
+        asp-action="List" asp-controller="Product" asp-route-category="@s" asp-route-productPage="1">@s</a>
+}

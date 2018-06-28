@@ -1,0 +1,120 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\bootstrap\assets\**" />
+    <Compile Remove="wwwroot\bootstrap\build\**" />
+    <Compile Remove="wwwroot\bootstrap\dist\**" />
+    <Compile Remove="wwwroot\bootstrap\docs\**" />
+    <Compile Remove="wwwroot\bootstrap\js\**" />
+    <Compile Remove="wwwroot\bootstrap\nuget\**" />
+    <Compile Remove="wwwroot\bootstrap\scss\**" />
+    <Compile Remove="wwwroot\bootstrap\_data\**" />
+    <Compile Remove="wwwroot\bootstrap\_includes\**" />
+    <Compile Remove="wwwroot\bootstrap\_layouts\**" />
+    <Compile Remove="wwwroot\fontawesome\advanced-options\**" />
+    <Compile Remove="wwwroot\fontawesome\svg-with-js\**" />
+    <Compile Remove="wwwroot\fontawesome\use-on-desktop\**" />
+    <Compile Remove="wwwroot\fontawesome\web-fonts-with-css\**" />
+    <Content Remove="wwwroot\bootstrap\assets\**" />
+    <Content Remove="wwwroot\bootstrap\build\**" />
+    <Content Remove="wwwroot\bootstrap\dist\**" />
+    <Content Remove="wwwroot\bootstrap\docs\**" />
+    <Content Remove="wwwroot\bootstrap\js\**" />
+    <Content Remove="wwwroot\bootstrap\nuget\**" />
+    <Content Remove="wwwroot\bootstrap\scss\**" />
+    <Content Remove="wwwroot\bootstrap\_data\**" />
+    <Content Remove="wwwroot\bootstrap\_includes\**" />
+    <Content Remove="wwwroot\bootstrap\_layouts\**" />
+    <Content Remove="wwwroot\fontawesome\advanced-options\**" />
+    <Content Remove="wwwroot\fontawesome\svg-with-js\**" />
+    <Content Remove="wwwroot\fontawesome\use-on-desktop\**" />
+    <Content Remove="wwwroot\fontawesome\web-fonts-with-css\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\assets\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\build\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\dist\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\docs\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\js\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\nuget\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\scss\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\_data\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\_includes\**" />
+    <EmbeddedResource Remove="wwwroot\bootstrap\_layouts\**" />
+    <EmbeddedResource Remove="wwwroot\fontawesome\advanced-options\**" />
+    <EmbeddedResource Remove="wwwroot\fontawesome\svg-with-js\**" />
+    <EmbeddedResource Remove="wwwroot\fontawesome\use-on-desktop\**" />
+    <EmbeddedResource Remove="wwwroot\fontawesome\web-fonts-with-css\**" />
+    <None Remove="wwwroot\bootstrap\assets\**" />
+    <None Remove="wwwroot\bootstrap\build\**" />
+    <None Remove="wwwroot\bootstrap\dist\**" />
+    <None Remove="wwwroot\bootstrap\docs\**" />
+    <None Remove="wwwroot\bootstrap\js\**" />
+    <None Remove="wwwroot\bootstrap\nuget\**" />
+    <None Remove="wwwroot\bootstrap\scss\**" />
+    <None Remove="wwwroot\bootstrap\_data\**" />
+    <None Remove="wwwroot\bootstrap\_includes\**" />
+    <None Remove="wwwroot\bootstrap\_layouts\**" />
+    <None Remove="wwwroot\fontawesome\advanced-options\**" />
+    <None Remove="wwwroot\fontawesome\svg-with-js\**" />
+    <None Remove="wwwroot\fontawesome\use-on-desktop\**" />
+    <None Remove="wwwroot\fontawesome\web-fonts-with-css\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\bootstrap\.babelrc.js" />
+    <Content Remove="wwwroot\bootstrap\.bower.json" />
+    <Content Remove="wwwroot\bootstrap\.editorconfig" />
+    <Content Remove="wwwroot\bootstrap\.eslintignore" />
+    <Content Remove="wwwroot\bootstrap\.eslintrc.json" />
+    <Content Remove="wwwroot\bootstrap\.gitattributes" />
+    <Content Remove="wwwroot\bootstrap\.gitignore" />
+    <Content Remove="wwwroot\bootstrap\.stylelintignore" />
+    <Content Remove="wwwroot\bootstrap\.stylelintrc" />
+    <Content Remove="wwwroot\bootstrap\.travis.yml" />
+    <Content Remove="wwwroot\bootstrap\CNAME" />
+    <Content Remove="wwwroot\bootstrap\CODE_OF_CONDUCT.md" />
+    <Content Remove="wwwroot\bootstrap\composer.json" />
+    <Content Remove="wwwroot\bootstrap\favicon.ico" />
+    <Content Remove="wwwroot\bootstrap\Gemfile" />
+    <Content Remove="wwwroot\bootstrap\Gemfile.lock" />
+    <Content Remove="wwwroot\bootstrap\index.html" />
+    <Content Remove="wwwroot\bootstrap\LICENSE" />
+    <Content Remove="wwwroot\bootstrap\package-lock.json" />
+    <Content Remove="wwwroot\bootstrap\package.js" />
+    <Content Remove="wwwroot\bootstrap\package.json" />
+    <Content Remove="wwwroot\bootstrap\README.md" />
+    <Content Remove="wwwroot\bootstrap\robots.txt" />
+    <Content Remove="wwwroot\bootstrap\sache.json" />
+    <Content Remove="wwwroot\bootstrap\sw.js" />
+    <Content Remove="wwwroot\bootstrap\_config.yml" />
+    <Content Remove="wwwroot\fontawesome\CHANGELOG.md" />
+    <Content Remove="wwwroot\fontawesome\CODE_OF_CONDUCT.md" />
+    <Content Remove="wwwroot\fontawesome\CONTRIBUTING.md" />
+    <Content Remove="wwwroot\fontawesome\LICENSE.txt" />
+    <Content Remove="wwwroot\fontawesome\README.md" />
+    <Content Remove="wwwroot\fontawesome\UPGRADING.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\bootstrap\js\bootstrap.bundle.js" />
+    <Content Include="wwwroot\bootstrap\js\bootstrap.bundle.js.map" />
+    <Content Include="wwwroot\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="wwwroot\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <Content Include="wwwroot\bootstrap\js\bootstrap.js" />
+    <Content Include="wwwroot\bootstrap\js\bootstrap.js.map" />
+    <Content Include="wwwroot\bootstrap\js\bootstrap.min.js" />
+    <Content Include="wwwroot\bootstrap\js\bootstrap.min.js.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>

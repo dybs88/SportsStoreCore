@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Order>
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Zamówienia</h2>
+<div class="mb-1">
+    <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="false">Wszystkie</a>
+    <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="true">Nie zrealizowane</a>
+</div>
+<table class="table table-bordered table-striped">
+    <tr>
+        <th>Czy zrealizowane?</th>
+        <th>Klient</th>
+        <th>Kod pocztowy</th>
+        <th colspan="2">Opis</th>
+        <th>Akcja</th>
+    </tr>
+    @foreach (Order order in Model)
+    {
+        <tr>
+            <td><span class="@(order.Shipped ? "fas fa-check" : "fas fa-times")"></span></td>
+            <td>@order.Name</td>
+            <td>@order.Address.ZipCode</td>
+            <th>Produkt</th>
+            <th>Ilość</th>
+            <td>
+                <form asp-action="MarkShipped" method="post">
+                    <input type="hidden" name="orderId" value="@order.OrderId" />
+                    <button type="submit" class="btn btn-primary">Realizuj</button>
+                </form>
+            </td>
+        </tr>
+        foreach (CartItem item in order.Items)
+        {
+            <tr>
+                <td colspan="3"></td>
+                <td>@item.Product.Name</td>
+                <td>@item.Quantity</td>
+                <td></td>
+            </tr>
+        }
+    }
+</table>
+

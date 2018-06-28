@@ -1,0 +1,47 @@
+﻿@model CartViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Twój koszyk</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>Ilość</th>
+        <th>Produkt</th>
+        <th class="text-right">Cena</th>
+        <th class="text-right">Wartość</th>
+        <th class="text-right">Akcja</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in @Model.Cart.Items)
+    {
+        <tr>
+            <td class="text-center">@item.Quantity</td>
+            <td class="text-center">@item.Product.Name</td>
+            <td class="text-center">@item.Product.Price.ToString("C")</td>
+            <td class="text-center">@item.Value.ToString("C")</td>
+            <td>
+                <form id="" asp-action="RemoveFromCart" asp-controller="Cart" method="post">
+                    <input type="hidden" name="productId" asp-for="@item.Product.ProductID"/>
+                    <input type="hidden" name="returnUrl" value="@Model.ReturnUrl"/>
+                    <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="4" class="text-right">Razem:</td>
+        <td class="text-right">@Model.Cart.CartValue().ToString("C")</td>
+    </tr>
+    </tfoot>
+</table>
+<div class="text-center">
+    <a class="btn btn-primary" href="@Model.ReturnUrl">Kontynuuj zakupy</a>
+    <a class="btn btn-success" asp-action="Checkout" asp-controller="Order">Złóż zamówienie</a>
+</div>
+

@@ -1,0 +1,6 @@
+﻿@model AdminNavigationMenuViewModel
+
+@foreach (AdminOption option in Model.AdminOptions)
+{
+    <a class="btn btn-block btn-secondary" asp-action="@option.Action" asp-controller="@option.Controller" style="color:white">@option.Name</a>
+}

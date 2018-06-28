@@ -1,0 +1,27 @@
+﻿@model IEnumerable<IdentityUser>
+@{
+    ViewBag.Title = "Lista użytkowników";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<table class="table table-striped">
+    <tr>
+        <th>Login</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Data rejestracji</th>
+        <th>Akcja</th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.UserName</td>
+            <td>@string.Empty</td>
+            <td>@string.Empty</td>
+            <td>@DateTime.Now</td>
+            <td></td>
+        </tr>
+    }
+</table>
+<a class="btn btn-success" asp-action="CreateUser" asp-controller="User">Dodaj użytkownika</a>
+

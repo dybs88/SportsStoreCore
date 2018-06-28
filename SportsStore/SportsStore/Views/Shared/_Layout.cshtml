@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SportsStore</title>
+    <link rel="stylesheet" asp-href-include="/bootstrap/css/*.min.css"/>
+    <link asp-href-include="/fontawesome/css/*.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="navbar navbar-expand-lg mr-3 ml-0">
+        <a class="navbar-brand col-7" href="#">Sklep sportowy</a>
+        <div class="col-1 nav-item text-right">
+            @if ((string)ViewContext.RouteData.Values["controller"] != "Account")
+            {
+                @await Component.InvokeAsync("CartSummary")
+            }
+        </div>
+    <div class="col-4 nav-item ml-1 mr-1 text-right">
+        @await Component.InvokeAsync("QuickLogin", new { returnUrl = Path })
+    </div>
+</div>
+<div class="row m-1 p-1">
+    <div id="categories" class="col-3">
+        @await Component.InvokeAsync("NavigationMenu")
+    </div>
+    <div class="col-9">
+        @RenderBody()
+    </div>
+</div>
+</body>
+</html>
