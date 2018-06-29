@@ -1,4 +1,4 @@
-﻿@model IEnumerable<IdentityUser>
+﻿@model UserListViewModel
 @{
     ViewBag.Title = "Lista użytkowników";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -7,21 +7,28 @@
 <table class="table table-striped">
     <tr>
         <th>Login</th>
+        <th>E-mail</th>
+        <th>Role</th>
         <th>Imię</th>
         <th>Nazwisko</th>
         <th>Data rejestracji</th>
         <th>Akcja</th>
     </tr>
-    @foreach (var user in Model)
+    @foreach (var userWithRole in Model.UsersWithRoles)
     {
         <tr>
-            <td>@user.UserName</td>
+            <td>@userWithRole.Key.UserName</td>
+            <td>@userWithRole.Key.Email</td>
+            <td>@string.Join(",", userWithRole.Value)</td>
             <td>@string.Empty</td>
             <td>@string.Empty</td>
             <td>@DateTime.Now</td>
-            <td></td>
+            <td>
+                <a class="btn btn-primary" asp-action="EditUser" asp-controller="User" asp-route-userId=@userWithRole.Key.Id>Edytuj</a>
+                <a class="btn btn-danger" asp-action="DeleteUser" asp-controller="User" asp-route-userId="@userWithRole.Key.Id">Usuń</a>
+            </td>
         </tr>
     }
 </table>
-<a class="btn btn-success" asp-action="CreateUser" asp-controller="User">Dodaj użytkownika</a>
+<a class="btn btn-success" asp-action="CreateUser" asp-controller="User" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Dodaj użytkownika</a>
 

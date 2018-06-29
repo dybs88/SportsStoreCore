@@ -19,5 +19,8 @@ namespace SportsStore.Models
         [Display(Name = "Powtórz hasło")]
         [Compare("Password", ErrorMessage = "Hasła nie są takie same")]
         public string RepeatedPassword { get; set; }
+        public IEnumerable<IdentityRole> AvaibleRoles { get; set; }
+        public IEnumerable<string> AddedRolesIds { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

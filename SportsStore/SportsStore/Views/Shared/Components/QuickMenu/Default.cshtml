@@ -1,0 +1,43 @@
+﻿@model QuickMenuViewModel
+
+<div class="row m-0" style="width:inherit">
+    <div class="col-4 p-0">
+        @if (Model.Cart.Items.Count() > 0)
+        {
+            <small class="navbar-text">
+                <b>Twój koszyk:</b>
+                @Model.Cart.Items.Sum(i => i.Quantity) produkt(y)
+                @Model.Cart.CartValue().ToString("c")
+            </small>
+        }
+
+        <a class="btn btn-sm btn-secondary mb-2" asp-controller="Cart" asp-action="Index" asp-route-returnurl="@ViewContext.HttpContext.Request.PathAndQuery()">
+            <i class="fa fa-shopping-cart"></i>
+        </a>
+    </div>
+    <div class="col-8 p-0">
+        @if (Model.IsUserLogged)
+        {
+            <a class="btn btn-success" asp-action="Index" asp-controller="User">@Model.LoggedUser.UserName</a>
+            <a class="btn btn-secondary" asp-action="Logout" asp-controller="Account">Wyloguj</a>
+        }
+        else
+        {
+            <form asp-action="Login" asp-controller="Account" method="post">
+                <div class="row">
+                    <div class="col-4 p-0">
+                        <label asp-for="Name">Login</label>
+                        <input asp-for="Name" />
+                    </div>
+                    <div class="col-4 p-0">
+                        <label asp-for="Password">Hasło</label>
+                        <input asp-for="Password" />
+                    </div>
+                    <div class="col-2 p-0">
+                        <button type="submit" class="btn btn-sm btn-secondary">Zaloguj</button>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</div>

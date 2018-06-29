@@ -1,0 +1,17 @@
+﻿@model IdentityRole
+@{
+    ViewData["Title"] = "Dodanie roli";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Nowa rola</h2>
+<form asp-action="CreateRole" method="post">
+    <div class="form-group">
+        <label asp-for="Name">Nazwa</label>
+        <div><span asp-validation-for="Name" class="text-danger"></span></div>
+        <input class="form-control" type="text" asp-for="Name" />
+    </div>
+    <button class="btn btn-success" type="submit" asp-action="CreateRole">Zapisz</button>
+    <a class="btn btn-secondary" asp-action="List" asp-controller="Role">Anuluj</a>
+</form>
+

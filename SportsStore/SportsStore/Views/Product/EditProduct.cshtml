@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewBag.Title = "Edycja produktu " + Model.ProductID;
 }
-<form asp-action="Edit" method="post" class="m-5">
+<form asp-action="EditProduct" method="post" class="m-5">
     <h4>ID: @Model.ProductID</h4>
     <input type="hidden" asp-for="ProductID"/>
     <div class="form-group">

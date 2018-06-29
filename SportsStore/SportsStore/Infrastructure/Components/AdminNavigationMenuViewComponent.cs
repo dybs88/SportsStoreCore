@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SportsStore.Models.ViewModels;
+using SportsStore.Models.ComponentViewModels;
 
 namespace SportsStore.Infrastructure.Components
 {
@@ -11,8 +11,7 @@ namespace SportsStore.Infrastructure.Components
     {
         public IViewComponentResult Invoke()
         {
-            AdminNavigationMenuViewModel model = new AdminNavigationMenuViewModel();
-            return View(model);
+            return View();
         }
     }
 }

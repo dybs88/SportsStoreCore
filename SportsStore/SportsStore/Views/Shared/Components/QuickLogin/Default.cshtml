@@ -1,18 +1,25 @@
 ﻿@model LoginModel
 
-<form asp-action="Login" asp-controller="Account" method="post">
-    <div class="row">
-        <div clas="col">
-            <label asp-for="Name">Login</label>
-            <input asp-for="Name" />
+@if (Model.IsUserLogged)
+{
+    <a class="btn btn-success" asp-action="Index" asp-controller="User" asp-route-user="@Model.LoggedUser" >@Model.LoggedUser.UserName</a>
+}
+else
+{
+    <form asp-action="Login" asp-controller="Account" method="post">
+        <div class="row">
+            <div class="col-5 p-0">
+                <label asp-for="Name">Login</label>
+                <input asp-for="Name" />
+            </div>
+            <div class="col-4 p-0">
+                <label asp-for="Password">Hasło</label>
+                <input asp-for="Password" />
+            </div>
+            <div class="col-2 p-0">
+                <button type="submit" class="btn btn-secondary">Zaloguj</button>
+            </div>
         </div>
-        <div class="col-5">
-            <label asp-for="Password">Hasło</label>
-            <input asp-for="Password" />
-        </div>
-        <div class="col">
-            <button type="submit" class="btn btn-secondary">Zaloguj</button>
-        </div>
-    </div>
+    </form>
+}
 
-</form>

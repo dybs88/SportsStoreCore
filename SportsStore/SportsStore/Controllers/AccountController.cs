@@ -42,7 +42,7 @@ namespace SportsStore.Controllers
                     await _signInManager.SignOutAsync();
                     if ((await _signInManager.PasswordSignInAsync(user, model.Password, false, false)).Succeeded)
                     {
-                        return Redirect("/Admin/Index");
+                        return Redirect("/User/Index");
                     }
                 }
             }

@@ -23,7 +23,8 @@
             <h4>@ViewBag.Title</h4>
         </div>
         <div class="col-4">
-            <a class="btn btn-secondary" asp-action="Logout" asp-controller="Account">Wyloguj</a>
+            <a class="btn btn-secondary ml-1" asp-action="Logout" asp-controller="Account">Wyloguj</a>
+            <a class="btn btn-secondary ml-1" asp-action="List" asp-controller="Product">Powrót</a>
         </div>
         
     </div>
@@ -33,10 +34,10 @@
     }
 </div>
 <div class="row m-1 p-1">
-    <div id="categories" class="col-3">
+    <div id="categories" class="col-2">
         @await Component.InvokeAsync("AdminNavigationMenu")
     </div>
-    <div class="col-9">
+    <div class="col-10">
         @RenderBody()
     </div>
 </div>

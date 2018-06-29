@@ -1,22 +1,25 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using SportsStore.Models.Cart;
+using SportsStore.Models.ComponentViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using SportsStore.Models.Account;
 
 namespace SportsStore.Infrastructure.Components
 {
-    public class QuickLoginViewComponent : ViewComponent
+    public class QuickMenuViewComponent : ViewComponent
     {
         private UserManager<IdentityUser> _userManager;
         private SignInManager<IdentityUser> _signInManager;
+        private Cart _cart;
 
-        public QuickLoginViewComponent(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public QuickMenuViewComponent(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, Cart cart)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _cart = cart;
         }
 
         public IViewComponentResult Invoke(string returnUrl)
@@ -26,7 +29,14 @@ namespace SportsStore.Infrastructure.Components
             if (user.Result != null)
                 isUserLogged = true;
 
-            LoginModel model = new LoginModel{LoggedUser = user.Result, IsUserLogged = isUserLogged, ReturnUrl = returnUrl};
+            QuickMenuViewModel model = new QuickMenuViewModel
+            {
+                IsUserLogged = isUserLogged,
+                Cart = _cart,
+                LoggedUser = user.Result,
+                ReturnUrl = returnUrl
+            };
+
             return View(model);
         }
     }

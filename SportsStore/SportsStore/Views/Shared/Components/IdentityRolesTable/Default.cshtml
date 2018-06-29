@@ -1,0 +1,15 @@
+﻿@model Dictionary<IdentityRole, bool>
+
+<table class="table table-sm table-striped">
+    <tr>
+        <th>Nazwa</th>
+        <th>Wybierz</th>
+    </tr>
+    @foreach (KeyValuePair<IdentityRole, bool> pair in Model)
+    {
+        <tr>
+            <td>@pair.Key.Name</td>
+            <td><input type="checkbox" name="AddedRolesIds" value="@pair.Key.Name" /></td>
+        </tr>
+    }
+</table>

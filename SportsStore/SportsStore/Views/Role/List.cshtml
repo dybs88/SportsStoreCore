@@ -1,0 +1,26 @@
+﻿@model IEnumerable<IdentityRole>
+
+@{
+    ViewData["Title"] = "Lista ról";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Role</h2>
+<table class="table table-striped">
+    <tr>
+        <th>Nazwa</th>
+        <th>Akcje</th>
+    </tr>
+    @foreach(IdentityRole role in Model)
+    {
+        <tr>
+            <td>@role.Name</td>
+            <td>
+                <a class="btn btn-sm btn-primary" asp-action="EditRole" asp-route-roleName="@role.Name" asp-controller="Role">Edytuj</a>
+                <a class="btn btn-sm btn-danger" asp-action="DeleteRole" asp-route-roleName="@role.Name" asp-controller="Role">Usuń</a>
+            </td>
+        </tr>
+    }
+</table>
+<a class="btn btn btn-success" asp-action="CreateRole" asp-controller="Role">Dodaj rolę</a>
+

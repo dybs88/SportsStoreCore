@@ -1,0 +1,22 @@
+﻿@model IdentityUser
+
+@{
+    ViewData["Title"] = "Index";
+    if(Model.UserName == "admin")
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+
+<h2>Użytkownik <span style="font-weight:bold">@Model.UserName</span></h2>
+<div class="form-group">
+    <label class="form-control">E-mail: @Model.Email</label>
+    <label class="form-control">Imię: </label>
+    <label class="form-control">Nazwisko: </label>
+    <label class="form-control">Data utworzenia: </label>
+</div>
+

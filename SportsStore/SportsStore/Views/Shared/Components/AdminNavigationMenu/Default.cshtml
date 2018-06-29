@@ -1,6 +1,14 @@
-﻿@model AdminNavigationMenuViewModel
-
-@foreach (AdminOption option in Model.AdminOptions)
-{
-    <a class="btn btn-block btn-secondary" asp-action="@option.Action" asp-controller="@option.Controller" style="color:white">@option.Name</a>
-}
+﻿<div class="card card-body m-1">
+    <h6>Podstawowe</h6>
+    <a class="btn btn-secondary m-1" asp-action="Index" asp-controller="User">Profil</a>
+</div>
+<div class="card card-body m-1">
+    <h6>Bezpieczeństwo</h6>
+    <a class="btn btn-secondary m-1" asp-action="List" asp-controller="User">Użytkownicy</a>
+    <a class="btn btn-secondary m-1" asp-action="List" asp-controller="Role">Role</a>
+</div>
+<div class="card card-body m-1">
+    <h6>Sklep</h6>
+    <a class="btn btn-secondary m-1" asp-action="Products" asp-controller="Product">Produkty</a>
+    <a class="btn btn-secondary m-1" asp-action="List" asp-controller="Order">Zamówienia</a>
+</div>

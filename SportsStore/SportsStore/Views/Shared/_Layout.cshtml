@@ -1,4 +1,18 @@
 ﻿<!DOCTYPE html>
+@{
+    string navBrandColSize = "";
+    string quickMenuColSize = "";
+    if(User.Identity.IsAuthenticated)
+    {
+        navBrandColSize = "11";
+        quickMenuColSize = "1";
+    }
+    else
+    {
+        navBrandColSize = quickMenuColSize = "6";
+
+    }
+ }
 
 <html>
 <head>
@@ -8,16 +22,10 @@
     <link asp-href-include="/fontawesome/css/*.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="navbar navbar-expand-lg mr-3 ml-0">
-        <a class="navbar-brand col-7" href="#">Sklep sportowy</a>
-        <div class="col-1 nav-item text-right">
-            @if ((string)ViewContext.RouteData.Values["controller"] != "Account")
-            {
-                @await Component.InvokeAsync("CartSummary")
-            }
-        </div>
-    <div class="col-4 nav-item ml-1 mr-1 text-right">
-        @await Component.InvokeAsync("QuickLogin", new { returnUrl = Path })
+<div class="navbar navbar-expand-lg">
+        <a class="navbar-brand col-@navBrandColSize p-0 m-0" href="#">Sklep sportowy</a>
+    <div class="col-@quickMenuColSize p-0 nav-item">
+        @await Component.InvokeAsync("QuickMenu", new { returnUrl = Path })
     </div>
 </div>
 <div class="row m-1 p-1">

@@ -5,10 +5,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SportsStore.Models.Account
+namespace SportsStore.Models.ComponentViewModels
 {
-    public class LoginModel
+    public class QuickMenuViewModel
     {
+        public Cart.Cart Cart { get; set; }
+
         [Required(ErrorMessage = "Login jest wymagany")]
         public string Name { get; set; }
 
@@ -18,6 +20,6 @@ namespace SportsStore.Models.Account
 
         public string ReturnUrl { get; set; } = "/";
         public bool IsUserLogged { get; set; }
-        public IdentityUser LoggedUser { get; set; } 
+        public IdentityUser LoggedUser { get; set; }
     }
 }
