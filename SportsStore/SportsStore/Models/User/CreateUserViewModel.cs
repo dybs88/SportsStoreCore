@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace SportsStore.Models
+namespace SportsStore.Models.User
 {
     public class CreateUserViewModel
     {
@@ -20,7 +20,7 @@ namespace SportsStore.Models
         [Compare("Password", ErrorMessage = "Hasła nie są takie same")]
         public string RepeatedPassword { get; set; }
         public IEnumerable<IdentityRole> AvaibleRoles { get; set; }
-        public IEnumerable<string> AddedRolesIds { get; set; }
+        public IEnumerable<string> SelectedRoles { get; set; }
         public string ReturnUrl { get; set; }
     }
 }

@@ -8,10 +8,14 @@ namespace SportsStore.Models.User
 {
     public class UserListViewModel
     {
+        public IDictionary<IdentityUser, IEnumerable<string>> UsersWithRoles { get; set; }
+        public IEnumerable<string> Roles { get; set; }
+
         public UserListViewModel()
         {
             UsersWithRoles = new Dictionary<IdentityUser, IEnumerable<string>>();
         }
-        public IDictionary<IdentityUser, IEnumerable<string>> UsersWithRoles { get; set; }
+
+
     }
 }

@@ -4,6 +4,9 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<div>
+    Rola: <select class="custom-select mb-1 w-10" asp-items="@(new SelectList(Model.Roles, "Wszystkie"))"></select>
+</div>
 <table class="table table-striped">
     <tr>
         <th>Login</th>
@@ -19,7 +22,7 @@
         <tr>
             <td>@userWithRole.Key.UserName</td>
             <td>@userWithRole.Key.Email</td>
-            <td>@string.Join(",", userWithRole.Value)</td>
+            <td>@string.Join(", ", userWithRole.Value)</td>
             <td>@string.Empty</td>
             <td>@string.Empty</td>
             <td>@DateTime.Now</td>

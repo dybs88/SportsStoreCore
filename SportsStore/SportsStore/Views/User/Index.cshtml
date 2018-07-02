@@ -1,8 +1,8 @@
-﻿@model IdentityUser
+﻿@model UserIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
-    if(Model.UserName == "admin")
+    if(Model.User.UserName == "admin")
     {
         Layout = "~/Views/Shared/_AdminLayout.cshtml";
     }
@@ -12,9 +12,10 @@
     }
 }
 
-<h2>Użytkownik <span style="font-weight:bold">@Model.UserName</span></h2>
+<h2>Użytkownik <span style="font-weight:bold">@Model.User.UserName</span></h2>
 <div class="form-group">
-    <label class="form-control">E-mail: @Model.Email</label>
+    <label class="form-control">E-mail: @Model.User.Email</label>
+    <label class="form-control">Role: @string.Join(", ", Model.UserRoles)</label>
     <label class="form-control">Imię: </label>
     <label class="form-control">Nazwisko: </label>
     <label class="form-control">Data utworzenia: </label>

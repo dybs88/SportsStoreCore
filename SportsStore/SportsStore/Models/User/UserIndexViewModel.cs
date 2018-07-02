@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace SportsStore.Models.User
 {
-    public class EditUserViewModel
+    public class UserIndexViewModel
     {
         public IdentityUser User { get; set; }
-
-        public IEnumerable<string> SelectedRoles { get; set; }
+        public IEnumerable<string> UserRoles { get; set; }
     }
 }

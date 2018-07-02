@@ -1,4 +1,4 @@
-﻿@model IdentityUser
+﻿@model EditUserViewModel
 
 @{
     ViewData["Title"] = "Edycja użytkownika";
@@ -6,18 +6,19 @@
 }
 
 <h2>Edytuj użytkownika</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
 <form class="" asp-action="EditUser" method="post">
     <div class="form-group">
-        <label asp-for="UserName">Nazwa użytkownika</label>
-        <input class="form-control" type="text" asp-for="UserName" />
+        <label asp-for="User.UserName">Nazwa użytkownika</label>
+        <input class="form-control" type="text" asp-for="User.UserName" />
     </div>
     <div class="form-group">
-        <label asp-for="Email">E-mail</label>
-        <input class="form-control" type="text" asp-for="Email" />
+        <label asp-for="User.Email">E-mail</label>
+        <input class="form-control" type="text" asp-for="User.Email" />
     </div>
     <div>
         Nadawanie ról
-        @await  Component.InvokeAsync("IdentityRolesTable", new { user = Model })
+        @await  Component.InvokeAsync("IdentityRolesTable", new { user = Model.User })
     </div>
     <button class="btn btn-success" type="submit">Zapisz</button>
     <a class="btn btn-secondary" asp-action="List" asp-controller="User">Anuluj</a>
