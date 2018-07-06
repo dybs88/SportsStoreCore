@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SportsStore.Models.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,6 +21,6 @@ namespace SportsStore.Models.ComponentViewModels
 
         public string ReturnUrl { get; set; } = "/";
         public bool IsUserLogged { get; set; }
-        public IdentityUser LoggedUser { get; set; }
+        public SportUser LoggedUser { get; set; }
     }
 }

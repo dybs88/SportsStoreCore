@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SportsStore.DAL.Repos;
 using SportsStore.Infrastructure.Extensions;
 using SportsStore.Models;
 using SportsStore.Models.Cart;
+using SportsStore.Models.ProductModels;
 using SportsStore.Models.ViewModels;
 
 namespace SportsStore.Controllers

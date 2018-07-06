@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
-using SportsStore.Models;
+using SportsStore.DAL.Contexts;
 using System;
 
 namespace SportsStore.Migrations
@@ -37,10 +37,10 @@ namespace SportsStore.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("CartItem");
+                    b.ToTable("Items","Sales");
                 });
 
-            modelBuilder.Entity("SportsStore.Models.Order.Address", b =>
+            modelBuilder.Entity("SportsStore.Models.CustomerModels.Address", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd();
@@ -56,6 +56,8 @@ namespace SportsStore.Migrations
                     b.Property<string>("Country")
                         .IsRequired();
 
+                    b.Property<int>("CustomerId");
+
                     b.Property<string>("Region")
                         .IsRequired();
 
@@ -67,15 +69,37 @@ namespace SportsStore.Migrations
 
                     b.HasKey("AddressId");
 
-                    b.ToTable("Address");
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Addresses","Customer");
                 });
 
-            modelBuilder.Entity("SportsStore.Models.Order.Order", b =>
+            modelBuilder.Entity("SportsStore.Models.CustomerModels.Customer", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired();
+
+                    b.Property<string>("LastName")
+                        .IsRequired();
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Customers","Customer");
+                });
+
+            modelBuilder.Entity("SportsStore.Models.OrderModels.Order", b =>
                 {
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("AddressId");
+                    b.Property<int?>("CustomerId");
 
                     b.Property<bool>("GiftWrap");
 
@@ -86,12 +110,12 @@ namespace SportsStore.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("SalesOrders","Sales");
                 });
 
-            modelBuilder.Entity("SportsStore.Models.Product", b =>
+            modelBuilder.Entity("SportsStore.Models.ProductModels.Product", b =>
                 {
                     b.Property<int>("ProductID")
                         .ValueGeneratedOnAdd();
@@ -108,25 +132,33 @@ namespace SportsStore.Migrations
 
                     b.HasKey("ProductID");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products","Store");
                 });
 
             modelBuilder.Entity("SportsStore.Models.Cart.CartItem", b =>
                 {
-                    b.HasOne("SportsStore.Models.Order.Order")
+                    b.HasOne("SportsStore.Models.OrderModels.Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("SportsStore.Models.Product", "Product")
+                    b.HasOne("SportsStore.Models.ProductModels.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductID");
                 });
 
-            modelBuilder.Entity("SportsStore.Models.Order.Order", b =>
+            modelBuilder.Entity("SportsStore.Models.CustomerModels.Address", b =>
                 {
-                    b.HasOne("SportsStore.Models.Order.Address", "Address")
+                    b.HasOne("SportsStore.Models.CustomerModels.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("AddressId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SportsStore.Models.OrderModels.Order", b =>
+                {
+                    b.HasOne("SportsStore.Models.CustomerModels.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
                 });
 #pragma warning restore 612, 618
         }

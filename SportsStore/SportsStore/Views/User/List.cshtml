@@ -5,7 +5,7 @@
 }
 
 <div>
-    Rola: <select class="custom-select mb-1 w-10" asp-items="@(new SelectList(Model.Roles, "Wszystkie"))"></select>
+    Rola:<select name="roleName" class="custom-select mb-1 w-10" asp-items="@(new SelectList(Model.Roles, "Wszystkie"))"></select>
 </div>
 <table class="table table-striped">
     <tr>
@@ -23,9 +23,9 @@
             <td>@userWithRole.Key.UserName</td>
             <td>@userWithRole.Key.Email</td>
             <td>@string.Join(", ", userWithRole.Value)</td>
-            <td>@string.Empty</td>
-            <td>@string.Empty</td>
-            <td>@DateTime.Now</td>
+            <td>@userWithRole.Key.FirstName</td>
+            <td>@userWithRole.Key.LastName</td>
+            <td>@userWithRole.Key.CreationDate.ToShortDateString()</td>
             <td>
                 <a class="btn btn-primary" asp-action="EditUser" asp-controller="User" asp-route-userId=@userWithRole.Key.Id>Edytuj</a>
                 <a class="btn btn-danger" asp-action="DeleteUser" asp-controller="User" asp-route-userId="@userWithRole.Key.Id">Usuń</a>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.Models.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +11,15 @@ namespace SportsStore.Infrastructure.Components
     public class IdentityRolesTableViewComponent : ViewComponent
     {
         private RoleManager<IdentityRole> _roleManager;
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<SportUser> _userManager;
 
-        public IdentityRolesTableViewComponent(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public IdentityRolesTableViewComponent(RoleManager<IdentityRole> roleManager, UserManager<SportUser> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
         }
 
-        public IViewComponentResult Invoke(IdentityUser user)
+        public IViewComponentResult Invoke(SportUser user)
         {
             Dictionary<IdentityRole, bool> componentModel = new Dictionary<IdentityRole, bool>();
             foreach(var role in _roleManager.Roles)

@@ -1,0 +1,55 @@
+﻿@model CreateAddressViewModel
+
+@{
+    ViewData["Title"] = "Dodaj adres";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<form asp-action="CreateAddress" method="post">
+    <input type="hidden" asp-for="Address.AddressId" value="@Model.Address.AddressId" />
+    <input type="hidden" asp-for="Address.CustomerId" value="@Model.CustomerId" />
+    <input type="hidden" asp-for="CustomerId" value="@Model.CustomerId" />
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label asp-for="Address.Street">Ulica:</label>
+                <div><span asp-validation-for="Address.Street" class="text-danger"></span></div>
+                <input tabindex="1" class="form-control" type="text" asp-for="Address.Street" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Address.BuildingNumber">Nr budynku:</label>
+                <div><span asp-validation-for="Address.BuildingNumber" class="text-danger"></span></div>
+                <input tabindex="3" class="form-control" type="text" asp-for="Address.BuildingNumber" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Address.Region">Województwo:</label>
+                <div><span asp-validation-for="Address.Region" class="text-danger"></span></div>
+                <input tabindex="5" class="form-control" type="text" asp-for="Address.Region" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Address.ZipCode">Kod pocztowy:</label>
+                <div><span asp-validation-for="Address.ZipCode" class="text-danger"></span></div>
+                <input tabindex="7" class="form-control" type="text" asp-for="Address.ZipCode" />
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label asp-for="Address.City">Miasto:</label>
+                <div><span asp-validation-for="Address.City" class="text-danger"></span></div>
+                <input tabindex="2" class="form-control" type="text" asp-for="Address.City" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Address.ApartmentNumber">Nr lokalu:</label>
+                <div><span asp-validation-for="Address.ApartmentNumber" class="text-danger"></span></div>
+                <input tabindex="4" class="form-control" type="text" asp-for="Address.ApartmentNumber" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Address.Country">Państwo:</label>
+                <div><span asp-validation-for="Address.Country" class="text-danger"></span></div>
+                <input tabindex="6" class="form-control" type="text" asp-for="Address.Country" />
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-success" type="submit">Zapisz</button>
+    <a class="btn btn-secondary" asp-action="Addresses" asp-controller="Customer" asp-route-customerId="@Model.CustomerId">Anuluj</a>
+</form>

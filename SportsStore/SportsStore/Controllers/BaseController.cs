@@ -16,5 +16,10 @@ namespace SportsStore.Controllers
                 ModelState.AddModelError(error.Code, error.Description);
             }
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

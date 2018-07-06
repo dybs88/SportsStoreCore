@@ -5,8 +5,10 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Moq;
+using SportsStore.DAL.Repos;
 using SportsStore.Infrastructure.Components;
 using SportsStore.Models;
+using SportsStore.Models.ProductModels;
 using SportsStore.Models.ViewModels;
 using Xunit;
 

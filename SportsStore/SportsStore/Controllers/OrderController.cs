@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportsStore.Models.Cart;
-using SportsStore.Models.Order;
+using SportsStore.Models.DAL.Repos;
+using SportsStore.Models.OrderModels;
 
 namespace SportsStore.Controllers
 {

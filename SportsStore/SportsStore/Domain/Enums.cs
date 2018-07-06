@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SportsStore.Domain
 {
-    public static class IdentityRoles
+    public enum PageMode
     {
-        public const string Admins = "Administracja";
-        public const string Clients = "Klient sklepu";
+        Edit,
+        View
     }
 }

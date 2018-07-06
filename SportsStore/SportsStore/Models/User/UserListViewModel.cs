@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SportsStore.Models.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,14 @@ namespace SportsStore.Models.User
 {
     public class UserListViewModel
     {
-        public IDictionary<IdentityUser, IEnumerable<string>> UsersWithRoles { get; set; }
+        public IDictionary<SportUser, IEnumerable<string>> UsersWithRoles { get; set; }
         public IEnumerable<string> Roles { get; set; }
+
+        public string SelectedRole { get; set; }
 
         public UserListViewModel()
         {
-            UsersWithRoles = new Dictionary<IdentityUser, IEnumerable<string>>();
+            UsersWithRoles = new Dictionary<SportUser, IEnumerable<string>>();
         }
 
 

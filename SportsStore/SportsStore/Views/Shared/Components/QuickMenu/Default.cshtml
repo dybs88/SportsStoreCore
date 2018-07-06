@@ -18,7 +18,12 @@
     <div class="col-8 p-0">
         @if (Model.IsUserLogged)
         {
-            <a class="btn btn-success" asp-action="Index" asp-controller="User">@Model.LoggedUser.UserName</a>
+            <a class="btn btn-success" 
+               asp-action="Index" 
+               asp-controller="@(User.IsInRole(IdentityRoleNames.Admins) ? "User" : "Customer")"
+               asp-route-customerId="@Model.LoggedUser.CustomerId">
+               @Model.LoggedUser.FirstName
+            </a>
             <a class="btn btn-secondary" asp-action="Logout" asp-controller="Account">Wyloguj</a>
         }
         else

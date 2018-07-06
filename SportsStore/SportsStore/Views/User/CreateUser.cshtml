@@ -13,10 +13,21 @@
 
 <form asp-action="CreateUser" method="post">
     <input type="hidden" name="returnUrl" asp-for="ReturnUrl" />
+    <input type="hidden" asp-for="IsAuthenticated" value="@User.Identity.IsAuthenticated" />
     <div class="form-group">
         <label asp-for="User.UserName">Nazwa użytkownika</label>
         <div><span asp-validation-for="User.UserName" class="text-danger"></span></div>
         <input class="form-control" type="text" asp-for="User.UserName" />
+    </div>
+    <div class="form-group">
+        <label asp-for="User.FirstName">Imię</label>
+        <div><span asp-validation-for="User.FirstName" class="text-danger"></span></div>
+        <input class="form-control" type="text" asp-for="User.FirstName" />
+    </div>
+    <div class="form-group">
+        <label asp-for="User.LastName">Nazwisko</label>
+        <div><span asp-validation-for="User.LastName" class="text-danger"></span></div>
+        <input class="form-control" type="text" asp-for="User.LastName" />
     </div>
     <div class="form-group">
         <label asp-for="User.Email">Adres email</label>
@@ -33,7 +44,7 @@
         <div><span id="repeatedPasswordValidation" asp-validation-for="RepeatedPassword" class="text-danger"></span></div>
         <input id="repeatedPasswordText" class="form-control" type="password" asp-for="RepeatedPassword" />
     </div>
-    @if (User.Identity.IsAuthenticated)
+    @if (Model.IsAuthenticated)
     {
         <h4>Dostępne role</h4>
         @await Component.InvokeAsync("IdentityRolesTable", new { user = Model.User })

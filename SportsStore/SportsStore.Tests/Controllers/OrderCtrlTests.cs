@@ -7,7 +7,9 @@ using Moq;
 using SportsStore.Controllers;
 using SportsStore.Models;
 using SportsStore.Models.Cart;
-using SportsStore.Models.Order;
+using SportsStore.Models.DAL.Repos;
+using SportsStore.Models.OrderModels;
+using SportsStore.Models.ProductModels;
 using Xunit;
 
 namespace SportsStore.Tests.Controllers

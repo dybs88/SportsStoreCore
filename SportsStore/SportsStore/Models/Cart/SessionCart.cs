@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SportsStore.Infrastructure.Extensions;
+using SportsStore.Models.ProductModels;
 
 namespace SportsStore.Models.Cart
 {

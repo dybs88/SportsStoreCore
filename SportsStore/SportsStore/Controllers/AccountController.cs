@@ -5,20 +5,25 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.Domain;
 using SportsStore.Models.Account;
+using SportsStore.Models.Cart;
+using SportsStore.Models.Identity;
 
 namespace SportsStore.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
-        private UserManager<IdentityUser> _userManager;
-        private SignInManager<IdentityUser> _signInManager;
+        private UserManager<SportUser> _userManager;
+        private SignInManager<SportUser> _signInManager;
+        private Cart _cart;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<SportUser> userManager, SignInManager<SportUser> signInManager, Cart cart)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _cart = cart;
         }
 
         [AllowAnonymous]
@@ -35,14 +40,17 @@ namespace SportsStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user = await _userManager.FindByNameAsync(model.Name);
+                SportUser user = await _userManager.FindByNameAsync(model.Name);
 
                 if (user != null)
                 {
                     await _signInManager.SignOutAsync();
                     if ((await _signInManager.PasswordSignInAsync(user, model.Password, false, false)).Succeeded)
                     {
-                        return Redirect("/User/Index");
+                        if (await _userManager.IsInRoleAsync(user, IdentityRoleNames.Admins))
+                            return Redirect("/User/Index");
+                        else
+                            return RedirectToAction("Index","Customer", new { customerId = user.CustomerId});
                     }
                 }
             }
@@ -54,6 +62,7 @@ namespace SportsStore.Controllers
         public async Task<RedirectResult> Logout(string returnUrl = "/")
         {
             await _signInManager.SignOutAsync();
+            _cart.ClearCart();
             return Redirect(returnUrl);
         }
     }

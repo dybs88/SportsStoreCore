@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SportsStore.Models.Cart;
 using SportsStore.Models.ComponentViewModels;
+using SportsStore.Models.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,11 @@ namespace SportsStore.Infrastructure.Components
 {
     public class QuickMenuViewComponent : ViewComponent
     {
-        private UserManager<IdentityUser> _userManager;
-        private SignInManager<IdentityUser> _signInManager;
+        private UserManager<SportUser> _userManager;
+        private SignInManager<SportUser> _signInManager;
         private Cart _cart;
 
-        public QuickMenuViewComponent(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, Cart cart)
+        public QuickMenuViewComponent(UserManager<SportUser> userManager, SignInManager<SportUser> signInManager, Cart cart)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -36,6 +37,8 @@ namespace SportsStore.Infrastructure.Components
                 LoggedUser = user.Result,
                 ReturnUrl = returnUrl
             };
+
+            ViewBag.ReturnUrl = returnUrl;
 
             return View(model);
         }

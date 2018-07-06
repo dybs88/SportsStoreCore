@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SportsStore.Models.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace SportsStore.Models.User
 {
     public class EditUserViewModel
     {
-        public IdentityUser User { get; set; }
+        public SportUser User { get; set; }
 
         public IEnumerable<string> SelectedRoles { get; set; }
     }

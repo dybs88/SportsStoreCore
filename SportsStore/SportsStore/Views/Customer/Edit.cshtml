@@ -1,0 +1,30 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Edycja klienta";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="FirstName">Imię: </label>
+        <div><span asp-validation-for="FirstName" class="text-danger"></span></div>
+        <input class="form-control" type="text" asp-for="FirstName" />
+    </div>
+    <div class="form-group">
+        <label asp-for="LastName">Nazwisko</label>
+        <div><span asp-validation-for="LastName" class="text-danger"></span></div>
+        <input class="form-control" type="text" asp-for="LastName" />
+    </div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber">Nr telefonu</label>
+        <div><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
+        <input class="form-control" type="text" asp-for="PhoneNumber" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Email">Adres e-mail</label>
+        <input class="form-control" type="text" asp-for="Email" />
+    </div>
+    <input class="btn btn-success" type="submit" value="Zapisz" />
+    <a class="btn btn-secondary" asp-action="Index" asp-controller="Customer" asp-route-customerId="@Model.CustomerId">Anuluj</a>
+</form>
+

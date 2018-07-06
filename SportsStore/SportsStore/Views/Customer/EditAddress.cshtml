@@ -1,0 +1,54 @@
+﻿@model Address
+@{
+    ViewData["Title"] = "Edytuj adres";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<form asp-action="EditAddress" method="post">
+    <input type="hidden" asp-for="AddressId" value="@Model.AddressId" />
+    <input type="hidden" asp-for="CustomerId" value="@Model.CustomerId" />
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label asp-for="Street">Ulica:</label>
+                <div><span asp-validation-for="Street" class="text-danger"></span></div>
+                <input class="form-control" type="text" asp-for="Street" />
+            </div>
+            <div class="form-group">
+                <label asp-for="BuildingNumber">Nr budynku:</label>
+                <div><span asp-validation-for="BuildingNumber" class="text-danger"></span></div>
+                <input class="form-control" type="text" asp-for="BuildingNumber" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Region">Województwo:</label>
+                <div><span asp-validation-for="Region" class="text-danger"></span></div>
+                <input class="form-control" type="text" asp-for="Region" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ZipCode">Kod pocztowy:</label>
+                <div><span asp-validation-for="ZipCode" class="text-danger"></span></div>
+                <input class="form-control" type="text" asp-for="ZipCode" />
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label asp-for="City">Miasto:</label>
+                <div><span asp-validation-for="City" class="text-danger"></span></div>
+                <input class="form-control" type="text" asp-for="City" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ApartmentNumber">Nr lokalu:</label>
+                <div><span asp-validation-for="ApartmentNumber" class="text-danger"></span></div>
+                <input class="form-control" type="text" asp-for="ApartmentNumber" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Country">Państwo:</label>
+                <div><span asp-validation-for="Country" class="text-danger"></span></div>
+                <input class="form-control" type="text" asp-for="Country" />
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-success" type ="submit">Zapisz</button>
+    <a class="btn btn-secondary" asp-action="Addresses" asp-controller="Customer" asp-route-customerId="@Model.CustomerId">Anuluj</a>
+</form>
+

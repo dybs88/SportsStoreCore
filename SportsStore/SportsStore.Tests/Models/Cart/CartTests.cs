@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SportsStore.Models;
 using SportsStore.Models.Cart;
+using SportsStore.Models.ProductModels;
 using Xunit;
 
 namespace SportsStore.Tests

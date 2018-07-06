@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using Moq;
 using SportsStore.Controllers;
+using SportsStore.DAL.Repos;
 using SportsStore.Models;
+using SportsStore.Models.ProductModels;
 using SportsStore.Models.ViewModels;
 using Xunit;
 

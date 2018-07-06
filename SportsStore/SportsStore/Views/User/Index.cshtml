@@ -1,23 +1,15 @@
 ﻿@model UserIndexViewModel
 
 @{
-    ViewData["Title"] = "Index";
-    if(Model.User.UserName == "admin")
-    {
-        Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    }
-    else
-    {
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }
+    ViewData["Title"] = "Profil";
 }
 
 <h2>Użytkownik <span style="font-weight:bold">@Model.User.UserName</span></h2>
 <div class="form-group">
     <label class="form-control">E-mail: @Model.User.Email</label>
     <label class="form-control">Role: @string.Join(", ", Model.UserRoles)</label>
-    <label class="form-control">Imię: </label>
-    <label class="form-control">Nazwisko: </label>
-    <label class="form-control">Data utworzenia: </label>
+    <label class="form-control">Imię: @Model.User.FirstName</label>
+    <label class="form-control">Nazwisko: @Model.User.LastName</label>
+    <label class="form-control">Data utworzenia: @Model.User.CreationDate.ToShortDateString()</label>
 </div>
 

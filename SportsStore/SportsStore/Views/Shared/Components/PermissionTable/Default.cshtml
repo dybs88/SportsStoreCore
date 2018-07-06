@@ -1,0 +1,27 @@
+﻿@model Dictionary<Permission, bool>
+
+<table class="table table-sm table-striped">
+    <tr>
+        <th>Nazwa</th>
+        <th>Opis</th>
+        <th>Wybierz</th>
+    </tr>
+    @foreach (string permissionCategory in Model.Select(p => p.Key.Category).Distinct())
+    {
+        <tr>
+            <td colspan="3">
+                <h4 class="text-center">@permissionCategory</h4>
+            </td>
+        </tr>
+        @foreach (var pair in Model.Where(p => p.Key.Category == permissionCategory))
+        {
+            <tr>
+                <td>@pair.Key.Value</td>
+                <td>@pair.Key.Description</td>
+                <td><input type="checkbox" name="SelectedPermission" value="@pair.Key.Value" checked="@pair.Value" /></td>
+            </tr>
+
+        }
+
+    }
+</table>

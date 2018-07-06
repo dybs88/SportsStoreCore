@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Customer>
+
+@{
+    ViewData["Title"] = "Lista klientów";
+}
+
+<table class="table table-striped">
+    <tr>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Adres e-mail</th>
+        <th>Nr telefonu</th>
+        <th>Ilość zamówień</th>
+        <th>Data rejestracji</th>
+        <th>Akcja</th>
+    </tr>
+    @foreach(var customer in Model)
+    {
+        <tr>
+            <td>@customer.FirstName</td>
+            <td>@customer.LastName</td>
+            <td>@customer.Email</td>
+            <td>@customer.PhoneNumber</td>
+            <td>0</td>
+            <td></td>
+            <td>
+                <a class="btn btn-primary btn-sm" 
+                   asp-action="Index" 
+                   asp-controller="Customer"
+                   asp-route-customerId ="@customer.CustomerId"
+                   asp-route-returnUrl ="@Context.Request.PathAndQuery()"
+                   asp-route-pageMode ="@PageMode.Edit">
+                   Edytuj
+                </a>
+            </td>
+        </tr>
+    }
+</table>
+

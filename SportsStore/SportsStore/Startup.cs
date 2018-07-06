@@ -9,9 +9,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SportsStore.DAL.Contexts;
+using SportsStore.DAL.Repos;
+using SportsStore.DAL.Repos.CustomerSchema;
+using SportsStore.DAL.Repos.Security;
+using SportsStore.Infrastructure.Policies;
+using SportsStore.Infrastructure.Start;
 using SportsStore.Models;
 using SportsStore.Models.Cart;
-using SportsStore.Models.Order;
+using SportsStore.Models.DAL.Repos;
+using SportsStore.Models.Identity;
+using SportsStore.Models.OrderModels;
 
 namespace SportsStore
 {
@@ -31,17 +39,23 @@ namespace SportsStore
 
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(Configuration["Data:SportsStoreIdentity:connectionString"]));
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<SportUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IPermissionRepository, PermissionRepository>();
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<IAddressRepository, AddressRepository>();
+
             services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc();
             services.AddMemoryCache();
             services.AddSession();
+
+            SecurityPolicy.AddSecurityPolicies(services);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -53,11 +67,14 @@ namespace SportsStore
             app.UseAuthentication();
             app.UseMvc(routes =>
             {
-                //routes.MapRoute
-                //    (name: null,
-                //     template: "Produkt{productId:int}",
-                //     defaults: new {contoller = "Admin", action="Edit"}
-                //    );
+                routes.MapRoute
+                    (name: null,
+                     template: "{controller}/{action}/address{addressId:int}",
+                     defaults: new { controller = "Customer" });
+                routes.MapRoute
+                    (name: null,
+                     template: "{controller}/{action}/customer{customerId:int}",
+                     defaults: new {controller = "Customer"});
                 routes.MapRoute
                    (name: null,
                     template: "{category}/Strona{productPage:int}",
@@ -83,8 +100,10 @@ namespace SportsStore
                     template: "{controller}/{action}/{id?}");
             });
 
-            SeedData.EnsurePopulated(app);
-            SeedData.EnsurePopulatedIdentity(app);
+            Migrate.ExecuteContextsMigrate(app);
+            ProductSeedData.EnsurePopulated(app);
+            PermissionSeedData.PopulatePermissions(app);
+            IdentitySeedData.PopulateIdentity(app);
         }
     }
 }

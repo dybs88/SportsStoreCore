@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.DAL.Repos;
 using SportsStore.Helpers;
 using SportsStore.Models;
+using SportsStore.Models.ProductModels;
 using SportsStore.Models.ViewModels;
 
 namespace SportsStore.Controllers

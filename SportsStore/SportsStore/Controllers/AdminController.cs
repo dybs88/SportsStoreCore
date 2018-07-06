@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.DAL.Repos;
 using SportsStore.Models;
 
 namespace SportsStore.Controllers

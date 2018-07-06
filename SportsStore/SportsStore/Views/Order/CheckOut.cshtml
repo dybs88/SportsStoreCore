@@ -1,15 +1,13 @@
-﻿@model Order
+﻿@model CreateOrderViewModel
 @{
-    ViewData["Title"] = "CheckOut";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Zamawianie";
 }
 <div asp-validation-summary="All" class="text-danger"></div>
 <h2>Wysyłka</h2>
 <p>Podaj swoje dane</p>
 <form asp-action="CheckOut" method="post">   
     <div class="form-group">
-        <label>Imię i nazwisko</label>
-        <input asp-for="Name" class="form-control" />
+        <label class="form-control">Zamawiane dla: @($"{Model.Customer.FirstName} {Model.Customer.LastName}")</label>
     </div>
     <h3>Adres</h3>
     <div class="form-group">

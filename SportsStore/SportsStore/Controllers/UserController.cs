@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCaching.Internal;
+using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Domain;
-using SportsStore.Models;
+using SportsStore.Models.CustomerModels;
+using SportsStore.Models.Identity;
 using SportsStore.Models.User;
 
 namespace SportsStore.Controllers
@@ -16,15 +18,18 @@ namespace SportsStore.Controllers
     [Authorize]
     public class UserController : BaseController
     {
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<SportUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
+        private ICustomerRepository _customerRepository;
 
-        public UserController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UserController(UserManager<SportUser> userManager, RoleManager<IdentityRole> roleManager, ICustomerRepository customerRepository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _customerRepository = customerRepository;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -32,6 +37,7 @@ namespace SportsStore.Controllers
             return View(new UserIndexViewModel{User = user, UserRoles = userRoles });
         }
 
+        [Authorize(Roles = IdentityRoleNames.Admins)]
         public async Task<IActionResult> List(string roleName = "Wszystkie")
         {
             var avaibleRoles = _roleManager.Roles.Select(r => r.Name).ToList();
@@ -49,7 +55,13 @@ namespace SportsStore.Controllers
         [AllowAnonymous]
         public IActionResult CreateUser(string returnUrl)
         {
-            return View(new CreateUserViewModel { User = new IdentityUser(), AvaibleRoles = _roleManager.Roles, ReturnUrl = returnUrl });
+            return View(new CreateUserViewModel
+                        {
+                            User = new SportUser(),
+                            AvaibleRoles = _roleManager.Roles,
+                            ReturnUrl = returnUrl,
+                            IsAuthenticated = User.Identity.IsAuthenticated
+                        });
         }
 
         [HttpPost]
@@ -58,7 +70,16 @@ namespace SportsStore.Controllers
         {
             if (ModelState.IsValid)
             {
+                int customerId = 0;
+                if (!model.IsAuthenticated)
+                {
+                    Customer newCustomer = new Customer(model.User.FirstName, model.User.LastName);
+                    newCustomer.Email = model.User.Email;
+                    customerId = _customerRepository.SaveCustomer(newCustomer);
+                }
+
                 bool finalSuccess = true;
+                model.User.CustomerId = customerId;
                 var createResult = await _userManager.CreateAsync(model.User, model.Password);
                 if (createResult.Errors.Any())
                 {
@@ -66,22 +87,25 @@ namespace SportsStore.Controllers
                     finalSuccess = false;
                 }
 
-                if (!User.Identity.IsAuthenticated)
-                    await _userManager.AddToRoleAsync(model.User, IdentityRoles.Clients);
-
-                if(model.SelectedRoles != null)
+                if(!model.IsAuthenticated)
                 {
-                    foreach (string roleId in model.SelectedRoles)
+                    await _userManager.AddToRoleAsync(model.User, IdentityRoleNames.Clients);
+                }
+                else
+                {
+                    if (model.SelectedRoles != null)
                     {
-                        var addRoleResult = await _userManager.AddToRoleAsync(model.User, roleId);
-                        if (addRoleResult.Errors.Any())
+                        foreach (string roleId in model.SelectedRoles)
                         {
-                            AddErrors(addRoleResult.Errors);
-                            finalSuccess = false;
+                            var addRoleResult = await _userManager.AddToRoleAsync(model.User, roleId);
+                            if (addRoleResult.Errors.Any())
+                            {
+                                AddErrors(addRoleResult.Errors);
+                                finalSuccess = false;
+                            }
                         }
                     }
                 }
-
 
                 if (finalSuccess)
                     return Redirect(model.ReturnUrl);
@@ -89,7 +113,7 @@ namespace SportsStore.Controllers
 
             return View("CreateUser", model);        
         }
-
+        [Authorize(Policy = SecurityPermssionValues.EditUser)]
         public async Task<IActionResult> EditUser(string userId)
         {          
             var user = await _userManager.FindByIdAsync(userId);
@@ -98,6 +122,7 @@ namespace SportsStore.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = SecurityPermssionValues.EditUser)]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
             var user = model.User;
@@ -112,6 +137,8 @@ namespace SportsStore.Controllers
 
                 userToUpdate.UserName = user.UserName;
                 userToUpdate.Email = user.Email;
+                userToUpdate.FirstName = user.FirstName;
+                userToUpdate.LastName = user.LastName;
 
                 var result = await _userManager.UpdateAsync(userToUpdate);
                 if (result.Errors.Any())
@@ -147,6 +174,16 @@ namespace SportsStore.Controllers
                     
                 }
 
+                if(await _userManager.IsInRoleAsync(user, IdentityRoleNames.Clients))
+                {
+                    var customer = _customerRepository.GetCustomer(user.CustomerId);
+                    customer.FirstName = user.FirstName;
+                    customer.LastName = user.LastName;
+                    customer.Email = user.Email;
+
+                    _customerRepository.SaveCustomer(customer);
+                }
+
                 if (finalSuccess)
                     return RedirectToAction("List");
             }
@@ -154,6 +191,7 @@ namespace SportsStore.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = SecurityPermssionValues.DeleteUser)]
         public async Task<IActionResult> DeleteUser(string userId)
         {
             var userToDelete = await _userManager.FindByIdAsync(userId);
