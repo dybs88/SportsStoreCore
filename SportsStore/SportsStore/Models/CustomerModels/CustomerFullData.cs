@@ -10,6 +10,7 @@ namespace SportsStore.Models.CustomerModels
     {
         public Customer Customer { get; set; }
         public SportUser User { get; set; }
-        public List<Address> Addresses { get; set; }
+
+        public IEnumerable<Address> Addresses { get; set; }
     }
 }

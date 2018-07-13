@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SportsStore.Domain;
+using SportsStore.Infrastructure.Extensions;
 using SportsStore.Models.Account;
 using SportsStore.Models.Cart;
 using SportsStore.Models.Identity;
@@ -47,7 +48,7 @@ namespace SportsStore.Controllers
                     await _signInManager.SignOutAsync();
                     if ((await _signInManager.PasswordSignInAsync(user, model.Password, false, false)).Succeeded)
                     {
-                        if (await _userManager.IsInRoleAsync(user, IdentityRoleNames.Admins))
+                        if (await _userManager.IsInRoleAsync(user, IdentityRoleNames.Employees))
                             return Redirect("/User/Index");
                         else
                             return RedirectToAction("Index","Customer", new { customerId = user.CustomerId});

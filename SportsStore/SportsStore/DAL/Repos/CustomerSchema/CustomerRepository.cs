@@ -13,18 +13,43 @@ namespace SportsStore.DAL.Repos.CustomerSchema
     {
         private ApplicationDbContext _context;
         private UserManager<SportUser> _userManager;
+        private IAddressRepository _addressRepository;
 
         public IEnumerable<Customer> Customers => _context.Customers;
 
-        public CustomerRepository(ApplicationDbContext context, UserManager<SportUser> userManager)
+        public CustomerRepository(ApplicationDbContext context, UserManager<SportUser> userManager, IAddressRepository addressRepo)
         {
             _context = context;
             _userManager = userManager;
+            _addressRepository = addressRepo;
+        }
+
+        public void DeleteCustomer(int customerId)
+        {
+            var customer = _context.Customers.FirstOrDefault(c => c.CustomerId == customerId);
+            if (customer != null)
+                _context.Customers.Remove(customer);
+
+            _context.SaveChanges();
         }
 
         public Customer GetCustomer(int customerId)
         {
             return _context.Customers.FirstOrDefault(c => c.CustomerId == customerId);
+        }
+
+        public async Task<CustomerFullData> GetCustomerFullData(int customerId)
+        {
+            var customer = Customers.FirstOrDefault(c => c.CustomerId == customerId);
+            if(customer != null)
+            {
+                var user = await _userManager.FindByEmailAsync(customer.Email);
+                var addresses = _addressRepository.GetCustomerAddresses(customerId);
+
+                return new CustomerFullData { Customer = customer, User = user, Addresses = addresses };
+            }
+
+            return null;
         }
 
         public int SaveCustomer (Customer customer)
@@ -43,7 +68,6 @@ namespace SportsStore.DAL.Repos.CustomerSchema
                 user.Email = customer.Email;
                 _userManager.UpdateAsync(user);
             }
-
 
             _context.SaveChanges();
 

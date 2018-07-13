@@ -5,11 +5,11 @@
     Layout = "~/Views/Shared/_CustomerLayout.cshtml";
 }
 
-@for(int i = 0; i < Model.Count(); i = i + 2)
+@for (int i = 0; i < Model.Count(); i = i + 2)
 {
     <div class="row mb-1">
         <div class="col">
-            <a asp-action="EditAddress" asp-controller="Customer" asp-route-addressId="@Model[i].AddressId" class="btn btn-outline-primary card card-body text-left m-1">
+            <a asp-action="EditAddress" asp-controller="Customer" asp-route-customerId="@ViewContext.RouteData.Values["customerId"]" asp-route-addressId="@Model[i].AddressId" class="btn btn-outline-primary card card-body text-left m-1">
                 <h4>@($"{Model[i].City}, {Model[i].Country}")</h4>
                 <h5>@Model[i].Region</h5>
                 <h6>@($"{Model[i].Street} {Model[i].BuildingNumber}/{Model[i].ApartmentNumber}")</h6>
@@ -19,8 +19,8 @@
         <div class="col">
             @if (i + 1 < Model.Count())
             {
-                <a asp-action="EditAddress" asp-controller="Customer" asp-route-addressId="@Model[i+1].AddressId" class="btn btn-outline-primary card card-body text-left m-1">
-                    <h4>@($"{Model[i+1].City}, {Model[i + 1].Country}")</h4>
+                <a asp-action="EditAddress" asp-controller="Customer" asp-route-customerId="@ViewContext.RouteData.Values["customerId"]" asp-route-addressId="@Model[i+1].AddressId" class="btn btn-outline-primary card card-body text-left m-1">
+                    <h4>@($"{Model[i + 1].City}, {Model[i + 1].Country}")</h4>
                     <h5>@Model[i + 1].Region</h5>
                     <h6>@($"{Model[i + 1].Street} {Model[i + 1].BuildingNumber}/{Model[i + 1].ApartmentNumber}")</h6>
                     <h6>@Model[i + 1].ZipCode</h6>
@@ -28,10 +28,10 @@
             }
         </div>
     </div>
-    <div class="row">
-        <div class="col-6">
-            <a asp-action="CreateAddress" asp-controller="Customer" asp-route-customerId="@ViewContext.RouteData.Values["customerId"]" class="btn btn-outline-success card card-body m-1 "><span class="fas fa-plus-circle fa-7x"></span></a>
-        </div>
-    </div>
 }
+<div class="row">
+    <div class="col-6">
+        <a asp-action="CreateAddress" asp-controller="Customer" asp-route-customerId="@ViewContext.RouteData.Values["customerId"]" class="btn btn-outline-success card card-body m-1 "><span class="fas fa-plus-circle fa-7x"></span></a>
+    </div>
+</div>
 

@@ -12,11 +12,11 @@ namespace SportsStore.Models.User
     {
         public SportUser User { get; set; }
         [Required(ErrorMessage = "Podaj hasło")]
-        [RegularExpression(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", ErrorMessage = "Niepoprawne hasło. Hasło powinno zawierać jedną dużą literę, jedną cyfrę i jeden znak specjalny")]
+        [RegularExpression(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", ErrorMessage = "Niepoprawne hasło. Minimalna długość hasła to 8 znaków. Hasło powinno zawierać jedną dużą literę, jedną cyfrę i jeden znak specjalny")]
         [Display(Name = "Hasło")]
         public string Password { get; set; }
         [Required(ErrorMessage = "Powtórz hasło")]
-        [RegularExpression(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", ErrorMessage = "Niepoprawne hasło. Hasło powinno zawierać jedną dużą literę, jedną cyfrę i jeden znak specjalny")]
+        [RegularExpression(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", ErrorMessage = "Niepoprawne hasło. Minimalna długość hasła to 8 znaków. Hasło powinno zawierać jedną dużą literę, jedną cyfrę i jeden znak specjalny")]
         [Display(Name = "Powtórz hasło")]
         [Compare("Password", ErrorMessage = "Hasła nie są takie same")]
         public string RepeatedPassword { get; set; }

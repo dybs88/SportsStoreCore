@@ -20,7 +20,7 @@
         {
             <a class="btn btn-success" 
                asp-action="Index" 
-               asp-controller="@(User.IsInRole(IdentityRoleNames.Admins) ? "User" : "Customer")"
+               asp-controller="@(User.IsInRole(IdentityRoleNames.Employees) ? "User" : "Customer")"
                asp-route-customerId="@Model.LoggedUser.CustomerId">
                @Model.LoggedUser.FirstName
             </a>

@@ -18,6 +18,13 @@ namespace SportsStore.DAL.Repos.CustomerSchema
 
         public IEnumerable<Address> Addresses => _context.Addresses;
 
+        public void DeleteAddress(int addressId)
+        {
+            var addressToRemove = Addresses.First(a => a.AddressId == addressId);
+            _context.Addresses.Remove(addressToRemove);
+            _context.SaveChanges();
+        }
+
         public Address GetAddress(int addressId)
         {
             return Addresses.First(a => a.AddressId == addressId);

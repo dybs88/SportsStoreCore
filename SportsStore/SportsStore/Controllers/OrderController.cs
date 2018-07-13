@@ -41,13 +41,13 @@ namespace SportsStore.Controllers
             return RedirectToAction("List");
         }
 
-        public ViewResult CheckOut()
+        public ViewResult CreateOrder()
         {
             return View(new Order());
         }
 
         [HttpPost]
-        public IActionResult CheckOut(Order order)
+        public IActionResult CreateOrder(Order order)
         {
             if (_cart.Items.Count == 0)
             {

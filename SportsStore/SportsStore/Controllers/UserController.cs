@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -29,7 +30,7 @@ namespace SportsStore.Controllers
             _customerRepository = customerRepository;
         }
 
-        [Authorize]
+        [Authorize(Policy = SecurityPermissionValues.ViewUser)]
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -38,6 +39,7 @@ namespace SportsStore.Controllers
         }
 
         [Authorize(Roles = IdentityRoleNames.Admins)]
+        [Authorize(Policy = SecurityPermissionValues.ViewUser)]
         public async Task<IActionResult> List(string roleName = "Wszystkie")
         {
             var avaibleRoles = _roleManager.Roles.Select(r => r.Name).ToList();
@@ -87,21 +89,38 @@ namespace SportsStore.Controllers
                     finalSuccess = false;
                 }
 
-                if(!model.IsAuthenticated)
+                Claim idClaim = new Claim(SportsStoreClaimTypes.CustomerId, customerId.ToString(), ClaimValueTypes.Integer32);
+                await _userManager.AddClaimAsync(model.User, idClaim);
+
+                if (!model.IsAuthenticated)
                 {
                     await _userManager.AddToRoleAsync(model.User, IdentityRoleNames.Clients);
+                    var roleClaims = await _roleManager.GetClaimsAsync(await _roleManager.FindByNameAsync(IdentityRoleNames.Clients));
+
+                    foreach(var claim in roleClaims)
+                    {
+                        await _userManager.AddClaimAsync(model.User, claim);
+                    }
+
                 }
                 else
                 {
                     if (model.SelectedRoles != null)
                     {
-                        foreach (string roleId in model.SelectedRoles)
+                        foreach (string roleName in model.SelectedRoles)
                         {
-                            var addRoleResult = await _userManager.AddToRoleAsync(model.User, roleId);
+                            var addRoleResult = await _userManager.AddToRoleAsync(model.User, roleName);
                             if (addRoleResult.Errors.Any())
                             {
                                 AddErrors(addRoleResult.Errors);
                                 finalSuccess = false;
+                            }
+
+                            var roleClaims = await _roleManager.GetClaimsAsync(await _roleManager.FindByNameAsync(roleName));
+
+                            foreach (var claim in roleClaims)
+                            {
+                                await _userManager.AddClaimAsync(model.User, claim);
                             }
                         }
                     }
@@ -113,7 +132,7 @@ namespace SportsStore.Controllers
 
             return View("CreateUser", model);        
         }
-        [Authorize(Policy = SecurityPermssionValues.EditUser)]
+        [Authorize(Policy = SecurityPermissionValues.EditUser)]
         public async Task<IActionResult> EditUser(string userId)
         {          
             var user = await _userManager.FindByIdAsync(userId);
@@ -122,7 +141,7 @@ namespace SportsStore.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = SecurityPermssionValues.EditUser)]
+        [Authorize(Policy = SecurityPermissionValues.EditUser)]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
             var user = model.User;
@@ -191,10 +210,12 @@ namespace SportsStore.Controllers
             return View(model);
         }
 
-        [Authorize(Policy = SecurityPermssionValues.DeleteUser)]
+        [Authorize(Policy = SecurityPermissionValues.DeleteUser)]
         public async Task<IActionResult> DeleteUser(string userId)
         {
             var userToDelete = await _userManager.FindByIdAsync(userId);
+            if(userToDelete.CustomerId != 0)
+                _customerRepository.DeleteCustomer(userToDelete.CustomerId);
 
             if(userToDelete != null)
             {

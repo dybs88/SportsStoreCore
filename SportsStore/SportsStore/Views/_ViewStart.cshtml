@@ -1,7 +1,7 @@
 ﻿@{
-    if(User.IsInRole(IdentityRoleNames.Admins))
+    if(User.IsInRole(IdentityRoleNames.Employees))
     {
-        Layout = "_AdminLayout";
+        Layout = "_EmployeeLayout";
     }
     else
     {

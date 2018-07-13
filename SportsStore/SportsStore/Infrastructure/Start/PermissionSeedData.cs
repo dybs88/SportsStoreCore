@@ -13,20 +13,20 @@ namespace SportsStore.Infrastructure.Start
 {
     public static class PermissionSeedData
     {
-        public static async void PopulatePermissions(IApplicationBuilder app)
+        public static void PopulatePermissions(IApplicationBuilder app)
         {
             AppIdentityDbContext context = app.ApplicationServices.GetRequiredService<AppIdentityDbContext>();
 
             if(!context.Permissions.Any())
             {
                 context.Permissions.AddRange
-                    (new Permission { Value = SecurityPermssionValues.AddUser, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające dodawanie użytkowników do bazy" },
-                     new Permission { Value = SecurityPermssionValues.EditUser, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające edycję użytkowników" },
-                     new Permission { Value = SecurityPermssionValues.DeleteUser, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające usuwanie użytkowników z bazy" },
+                    (new Permission { Value = SecurityPermissionValues.AddUser, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające dodawanie użytkowników do bazy" },
+                     new Permission { Value = SecurityPermissionValues.EditUser, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające edycję użytkowników" },
+                     new Permission { Value = SecurityPermissionValues.DeleteUser, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające usuwanie użytkowników z bazy" },
 
-                     new Permission { Value = SecurityPermssionValues.AddRole, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające dodawanie ról do bazy" },
-                     new Permission { Value = SecurityPermssionValues.EditRole, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające edycję ról" },
-                     new Permission { Value = SecurityPermssionValues.DeleteRole, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające usuwanie ról z bazy" }
+                     new Permission { Value = SecurityPermissionValues.AddRole, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające dodawanie ról do bazy" },
+                     new Permission { Value = SecurityPermissionValues.EditRole, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające edycję ról" },
+                     new Permission { Value = SecurityPermissionValues.DeleteRole, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające usuwanie ról z bazy" }
                     );
                 context.SaveChanges();
             }

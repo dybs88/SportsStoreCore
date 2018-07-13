@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SportsStore.Domain;
+using SportsStore.Infrastructure.Extensions;
 using SportsStore.Models.Identity;
 using SportsStore.Models.Role;
 
@@ -24,30 +25,41 @@ namespace SportsStore.Controllers
             _userManager = userManager;
         }
 
+        [Authorize(Policy = SecurityPermissionValues.ViewRole)]
         public IActionResult List()
         {
             return View(_roleManager.Roles.ToList());
         }
 
+        [Authorize(Policy = SecurityPermissionValues.AddRole)]
         public IActionResult CreateRole()
         {
-            return View(new IdentityRole());
+            return View(new CreateRoleViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRole(IdentityRole role)
+        [Authorize(Policy = SecurityPermissionValues.AddRole)]
+        public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _roleManager.CreateAsync(role);
+                var result = await _roleManager.CreateAsync(model.Role);
                 if (result.Succeeded)
+                {
+                    foreach(var permission in model.SelectedPermission)
+                    {
+                        Claim claim = new Claim(ClaimTypes.AuthenticationMethod, permission);
+                        await _roleManager.AddClaimAsync(model.Role, claim);
+                    }
                     return RedirectToAction("List");
+                }
                 else
                     result.Errors.ToList().ForEach(e => { ModelState.AddModelError("", e.Description); });
             }
             return View();
         }
 
+        [Authorize(Policy = SecurityPermissionValues.EditRole)]
         public async Task<IActionResult> EditRole(string roleName)
         {
             List<SportUser> usersInRole = new List<SportUser>();
@@ -62,6 +74,7 @@ namespace SportsStore.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = SecurityPermissionValues.EditRole)]
         public async Task<IActionResult> EditRole(EditRoleViewModel model)
         {
             if (ModelState.IsValid)
@@ -72,7 +85,7 @@ namespace SportsStore.Controllers
                     bool finalSuccess = true;
 
                     var roleClaims = await _roleManager.GetClaimsAsync(roleToUpdate);
-                    var claimsSortBySelection = await SortClaimsBySelection(model.SelectedPermission, roleClaims);
+                    var claimsSortBySelection = SortClaimsBySelection(model.SelectedPermission, roleClaims);
                     var selectedPermissions = claimsSortBySelection.Item1;
                     var unselectedPermissions = claimsSortBySelection.Item2;
 
@@ -137,20 +150,59 @@ namespace SportsStore.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = SecurityPermissionValues.DeleteRole)]
         public IActionResult DeleteRole(string roleName)
         {
             return View();
         }
 
+        public async Task<IActionResult> AddToRole(EditRoleViewModel model)
+        {
+            SportUser user = null;
+            if (model.SearchedUserData.Contains("@"))
+                user = await _userManager.FindByEmailAsync(model.SearchedUserData);
+            else
+                user = await _userManager.FindByNameAsync(model.SearchedUserData);
+
+            if (user == null)
+                ModelState.AddModelError("", "Nie znaleziono użytkownika");
+
+            var addToRoleResult = await _userManager.AddToRoleAsync(user, model.Role.Name);
+
+            if(addToRoleResult.Errors.Any())
+                AddErrors(addToRoleResult.Errors);
+
+            var roleClaims = await _roleManager.GetClaimsAsync(model.Role);
+            foreach(var roleClaim in roleClaims)
+            {
+                var addClaimResult = await _userManager.AddClaimAsync(user, roleClaim);
+
+                if(addClaimResult.Errors.Any())
+                    AddErrors(addClaimResult.Errors);
+            }
+
+            return RedirectToAction("EditRole","Role", new { roleName = model.Role.Name });
+        }
+
+        [Authorize(Policy = SecurityPermissionValues.EditUser)]
         public async Task<IActionResult> DeleteFromRole(string roleName, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
+            var role = await _roleManager.FindByNameAsync(roleName);
+
+            var claims = await _roleManager.GetClaimsAsync(role);
+            foreach(var claim in claims)
+            {
+                Claim claimToRemove = new Claim(ClaimTypes.AuthenticationMethod, claim.Value);
+                await _userManager.RemoveClaimAsync(user, claimToRemove);
+            }
+
             await _userManager.RemoveFromRoleAsync(user, roleName);
 
             return RedirectToAction("EditRole", "Role", new { roleName = roleName });
         }
 
-        private async Task<Tuple<List<string>, List<string>>> SortClaimsBySelection(List<string> selectedClaims, IList<Claim> claims)
+        private  Tuple<List<string>, List<string>> SortClaimsBySelection(List<string> selectedClaims, IList<Claim> claims)
         {
             List<string> unselectedClaims = new List<string>();
 

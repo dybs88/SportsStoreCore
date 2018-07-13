@@ -39,7 +39,7 @@ namespace SportsStore.Tests.Controllers
             _target = new OrderController(_repo, new Cart());
 
             //act
-            ViewResult result = (ViewResult)_target.CheckOut(new Order());
+            ViewResult result = (ViewResult)_target.CreateOrder(new Order());
 
             //assert
             Assert.NotEmpty(result.ViewData.ModelState);
@@ -57,7 +57,7 @@ namespace SportsStore.Tests.Controllers
             _target = new OrderController(_repo, cart);
 
             //act
-            RedirectToActionResult result = (RedirectToActionResult) _target.CheckOut(new Order());
+            RedirectToActionResult result = (RedirectToActionResult) _target.CreateOrder(new Order());
  
             //assert
             Assert.NotEmpty(_repo.Orders);

@@ -1,7 +1,6 @@
 ﻿@model EditRoleViewModel
 @{
     ViewData["Title"] = "Edycja roli";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 <h2>Edytuj rolę @Model.Role.Name</h2>
 <div asp-validation-summary="All" class="text-danger"></div>
@@ -26,12 +25,21 @@
                 <td>@user.LastName</td>
                 <td>@user.CreationDate</td>
                 <td>
-                    <a class="btn btn-primary btn-sm" asp-action="EditUser" asp-controller="User">Edytuj</a>
+                    <a class="btn btn-primary btn-sm" asp-action="EditUser" asp-controller="User" asp-route-userId="@user.Id">Edytuj</a>
                     <a class="btn btn-danger btn-sm" asp-action="DeleteFromRole" asp-controller="Role" asp-route-roleName="@Model.Role.Name" asp-route-userId="@user.Id">Usuń z roli</a>
                 </td>
             </tr>
         }
     </table>
+    <form asp-action="AddToRole" method="post">
+        <input type="hidden" asp-for="Role.Name" value="@Model.Role" />
+        <div class="form-inline">
+            <label class="mr-1" asp-for="SearchedUserData">Login lub email:</label>
+            <div><span asp-validation-for="SearchedUserData"></span></div>
+            <input class="form-control mr-1" type="text" asp-for="SearchedUserData"/>
+            <button type="submit" class="btn btn-primary mr-1">Dodaj użytkownika do roli</button>
+        </div>
+    </form>
 }
 
 

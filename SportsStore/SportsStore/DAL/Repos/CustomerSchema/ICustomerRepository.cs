@@ -10,7 +10,11 @@ namespace SportsStore.DAL.Repos.CustomerSchema
     {
         IEnumerable<Customer> Customers { get; }
 
+        void DeleteCustomer(int customerId);
+
         Customer GetCustomer(int customerId);
+
+        Task<CustomerFullData> GetCustomerFullData(int customerId);
 
         int SaveCustomer(Customer customer);
     }

@@ -23,7 +23,9 @@ namespace SportsStore.Infrastructure.Components
 
         public IViewComponentResult Invoke(IdentityRole role)
         {
-            var roleClaims = _roleManager.GetClaimsAsync(role).Result;
+            IList<Claim> roleClaims = new List<Claim>();
+            if(role != null)
+                roleClaims = _roleManager.GetClaimsAsync(role).Result;
 
             Dictionary<Permission, bool> model = new Dictionary<Permission, bool>();
 

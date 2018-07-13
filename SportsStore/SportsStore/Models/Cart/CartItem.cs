@@ -1,4 +1,5 @@
-﻿using SportsStore.Models.ProductModels;
+﻿using SportsStore.Models.OrderModels;
+using SportsStore.Models.ProductModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,5 +15,8 @@ namespace SportsStore.Models.Cart
         public Product Product { get; set; }
         public int Quantity { get; set; }
         public decimal Value => Product.Price * Quantity;
+        public int OrderId { get; set; }
+        [ForeignKey("OrderId")]
+        public Order Order { get; set; }
     }
 }

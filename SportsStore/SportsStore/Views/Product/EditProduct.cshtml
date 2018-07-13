@@ -1,7 +1,6 @@
 ﻿@model Product
 @{
     ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewBag.Title = "Edycja produktu " + Model.ProductID;
 }
 <form asp-action="EditProduct" method="post" class="m-5">

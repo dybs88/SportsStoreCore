@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -55,7 +56,8 @@ namespace SportsStore
             services.AddMemoryCache();
             services.AddSession();
 
-            SecurityPolicy.AddSecurityPolicies(services);
+            SecurityPolicies.AddSecurityPolicies(services);
+            CustomerPolicies.AddCustomerPolicies(services);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -67,13 +69,13 @@ namespace SportsStore
             app.UseAuthentication();
             app.UseMvc(routes =>
             {
+                //routes.MapRoute
+                //    (name: null,
+                //     template: "{controller}/{action}/address{addressId:int}",
+                //     defaults: new { controller = "Customer" });
                 routes.MapRoute
                     (name: null,
-                     template: "{controller}/{action}/address{addressId:int}",
-                     defaults: new { controller = "Customer" });
-                routes.MapRoute
-                    (name: null,
-                     template: "{controller}/{action}/customer{customerId:int}",
+                     template: "{action}/customer{customerId:int}",
                      defaults: new {controller = "Customer"});
                 routes.MapRoute
                    (name: null,
@@ -103,7 +105,7 @@ namespace SportsStore
             Migrate.ExecuteContextsMigrate(app);
             ProductSeedData.EnsurePopulated(app);
             PermissionSeedData.PopulatePermissions(app);
-            IdentitySeedData.PopulateIdentity(app);
+            //IdentitySeedData.PopulateIdentity(app);
         }
     }
 }

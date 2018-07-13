@@ -13,18 +13,11 @@ namespace SportsStore.Models.OrderModels
     [Table("SalesOrders", Schema = "Sales")]
     public class Order
     {
-        [BindNever]
         public int OrderId { get; set; }
-        [BindNever]
         public ICollection<CartItem> Items  { get; set; }
-
-        [Required(ErrorMessage = "Podaj imię i nazwisko")]
-        public string Name { get; set; }
-
         public Customer Customer { get; set; }
-
         public bool GiftWrap { get; set; }
-        [BindNever]
         public bool Shipped { get; set; }
+        public decimal Value => Items.Any() ? Items.Sum(i => i.Value) : 0; 
     }
 }

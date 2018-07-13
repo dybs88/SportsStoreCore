@@ -1,14 +1,6 @@
 ﻿@model CreateUserViewModel
 @{
     ViewBag.Title = "Nowy użytkownik";
-    if(User.IsInRole("Administracja"))
-    {
-        Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    }
-    else
-    {
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }
 }
 
 <form asp-action="CreateUser" method="post">

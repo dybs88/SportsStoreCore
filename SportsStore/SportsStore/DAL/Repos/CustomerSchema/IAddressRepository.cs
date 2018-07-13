@@ -9,6 +9,7 @@ namespace SportsStore.DAL.Repos.CustomerSchema
     public interface IAddressRepository
     {
         IEnumerable<Address> Addresses { get;  }
+        void DeleteAddress(int addressId);
         Address GetAddress(int addressId);
         IEnumerable<Address> GetCustomerAddresses(int customerId);
 
