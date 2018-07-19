@@ -1,0 +1,50 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Edytowanie zamówienia";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<h2>Zamówienie nr @Model.OrderNumber</h2>
+@if (User.IsInRole(IdentityRoleNames.Employees))
+{
+    <div class="row mb-1">
+        <div class="col">
+            <form asp-action="MarkShipped" asp-controller="Order" method="post">
+                <input hidden name="orderId" value="@Model.OrderId" />
+                <button type="submit" class="btn btn-primary">Realizuj</button>
+            </form>
+        </div>
+    </div>
+}
+<table class="table table-striped">
+    <tr>
+        <th>Produkt</th>
+        <th>Ilość</th>
+        <th class="text-right">Cena</th>
+        <th class="text-right">Akcja</th>
+    </tr>
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td>@item.Product.Name</td>
+            <td>@item.Quantity</td>
+            <td class="text-right">@item.Value.ToString("c")</td>
+            <td></td>
+        </tr>
+    }
+    <tr>
+        <td colspan="3" class="text-right">@Model.Value.ToString("c")</td>
+        <td></td>
+    </tr>
+</table>
+<div class="form-group">
+    <label class="form-control">Zamawiający: @(Model.Customer.FirstName + " " + Model.Customer.LastName)</label>
+    <label class="form-control">E-mail: @Model.Customer.Email</label>
+</div>
+<div class="card card-body text-left m-1">
+    <h4>@($"{Model.Address.City}, {Model.Address.Country}")</h4>
+    <h5>@Model.Address.Region</h5>
+    <h6>@($"{Model.Address.Street} {Model.Address.BuildingNumber}" + (string.IsNullOrEmpty(Model.Address.ApartmentNumber) ? "" : $"/{Model.Address.ApartmentNumber}"))</h6>
+    <h6>@Model.Address.ZipCode</h6>
+</div>
+

@@ -12,7 +12,6 @@ namespace SportsStore.DAL.Repos.CustomerSchema
         void DeleteAddress(int addressId);
         Address GetAddress(int addressId);
         IEnumerable<Address> GetCustomerAddresses(int customerId);
-
-        int SaveAddress(Address address);
+        Task<int> SaveAddress(Address address);
     }
 }

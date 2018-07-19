@@ -1,36 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Domain;
+using SportsStore.Infrastructure.Extensions;
 using SportsStore.Models.CustomerModels;
+using SportsStore.Models.DAL.Repos.SalesSchema;
 using SportsStore.Models.Identity;
 
 namespace SportsStore.Controllers
 {
     [Authorize]
-    public class CustomerController : Controller
+    public class CustomerController : IdentityController
     {
         private ICustomerRepository _customerRepository;
         private IAddressRepository _addressRepository;
+        private IOrderRepository _orderRepository;
         private static UserManager<SportUser> _userManager;
 
-        public CustomerController(ICustomerRepository custRepo, IAddressRepository addressRepo, UserManager<SportUser> userManager)
+        public CustomerController(ICustomerRepository custRepo, IAddressRepository addressRepo, IOrderRepository orderRepo, UserManager<SportUser> userManager)
         {
             _customerRepository = custRepo;
             _addressRepository = addressRepo;
+            _orderRepository = orderRepo;
             _userManager = userManager;
         }
 
         [Authorize(Policy = CustomerPermissionValues.ViewCustomer)]
         public IActionResult List()
         {
-            return View(_customerRepository.Customers.ToList());
+            CustomerListViewModel model = new CustomerListViewModel();
+            foreach(var customer in _customerRepository.Customers)
+            {
+                CustomerAdditionalData additionalData = new CustomerAdditionalData
+                {
+                    CustomerId = customer.CustomerId,
+                    CustomerOrdersCount = _orderRepository.GetCustomerOrders(customer.CustomerId).Count()
+                };
+
+                model.Customers.Add(customer, additionalData);
+            }
+            return View(model);
         }
 
         [Authorize(Policy = CustomerPermissionValues.ViewCustomer)]
@@ -81,11 +98,11 @@ namespace SportsStore.Controllers
 
         [HttpPost]
         [Authorize(Policy = CustomerPermissionValues.AddAddress)]
-        public IActionResult CreateAddress(CreateAddressViewModel model)
+        public async Task<IActionResult> CreateAddress(CreateAddressViewModel model)
         {
             if(ModelState.IsValid)
             {
-                _addressRepository.SaveAddress(model.Address);
+                await _addressRepository.SaveAddress(model.Address);
                 return RedirectToAction("Addresses", "Customer", new { customerId = model.CustomerId });
             }
 
@@ -101,9 +118,6 @@ namespace SportsStore.Controllers
                 address = new Address();
             else
                 address = _addressRepository.GetAddress(addressId);
-
-            if (address.CustomerId != customerId)
-                return Redirect("/Account/AccessDenied");
 
             return View(address);
         }

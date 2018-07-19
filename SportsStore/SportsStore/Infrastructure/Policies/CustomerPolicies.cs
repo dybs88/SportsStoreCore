@@ -19,7 +19,7 @@ namespace SportsStore.Infrastructure.Policies
                 o.AddPolicy(CustomerPermissionValues.ViewCustomer, policy => 
                 {
                     policy.RequireClaim(ClaimTypes.AuthenticationMethod, CustomerPermissionValues.ViewCustomer);
-                    policy.RequireAssertion(IsOwnerHandler);
+                    policy.RequireAssertion(IsCustomerOwnerHandler);
                 });
                 o.AddPolicy(CustomerPermissionValues.AddCustomer, policy =>
                 {
@@ -28,7 +28,7 @@ namespace SportsStore.Infrastructure.Policies
                 o.AddPolicy(CustomerPermissionValues.EditCustomer, policy =>
                 {
                     policy.RequireClaim(ClaimTypes.AuthenticationMethod, CustomerPermissionValues.EditCustomer);
-                    policy.RequireAssertion(IsOwnerHandler);
+                    policy.RequireAssertion(IsCustomerOwnerHandler);
 
                 });
                 o.AddPolicy(CustomerPermissionValues.DeleteCustomer, policy =>
@@ -39,23 +39,23 @@ namespace SportsStore.Infrastructure.Policies
                 o.AddPolicy(CustomerPermissionValues.ViewAddress, policy => 
                 {
                     policy.RequireClaim(ClaimTypes.AuthenticationMethod, CustomerPermissionValues.ViewAddress);
-                    policy.RequireAssertion(IsOwnerHandler);
+                    policy.RequireAssertion(IsCustomerOwnerHandler);
                 });
 
                 o.AddPolicy(CustomerPermissionValues.AddAddress, policy =>
                 {
                     policy.RequireClaim(ClaimTypes.AuthenticationMethod, CustomerPermissionValues.AddAddress);
-                    policy.RequireAssertion(IsOwnerHandler);
+                    policy.RequireAssertion(IsCustomerOwnerHandler);
                 });
                 o.AddPolicy(CustomerPermissionValues.EditAddress, policy =>
                 {
                     policy.RequireClaim(ClaimTypes.AuthenticationMethod, CustomerPermissionValues.EditAddress);
-                    policy.RequireAssertion(IsOwnerHandler);
+                    policy.RequireAssertion(IsAddressOwnerHandler);
                 });
                 o.AddPolicy(CustomerPermissionValues.DeleteAddress, policy =>
                 {
                     policy.RequireClaim(ClaimTypes.AuthenticationMethod, CustomerPermissionValues.DeleteAddress);
-                    policy.RequireAssertion(IsOwnerHandler);
+                    policy.RequireAssertion(IsAddressOwnerHandler);
                 });
             });
         }

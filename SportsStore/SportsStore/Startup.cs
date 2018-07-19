@@ -18,9 +18,8 @@ using SportsStore.Infrastructure.Policies;
 using SportsStore.Infrastructure.Start;
 using SportsStore.Models;
 using SportsStore.Models.Cart;
-using SportsStore.Models.DAL.Repos;
+using SportsStore.Models.DAL.Repos.SalesSchema;
 using SportsStore.Models.Identity;
-using SportsStore.Models.OrderModels;
 
 namespace SportsStore
 {
@@ -55,9 +54,11 @@ namespace SportsStore
             services.AddMvc();
             services.AddMemoryCache();
             services.AddSession();
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
             SecurityPolicies.AddSecurityPolicies(services);
             CustomerPolicies.AddCustomerPolicies(services);
+            SalesPolicies.AddSalesPolicies(services);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -69,13 +70,21 @@ namespace SportsStore
             app.UseAuthentication();
             app.UseMvc(routes =>
             {
-                //routes.MapRoute
-                //    (name: null,
-                //     template: "{controller}/{action}/address{addressId:int}",
-                //     defaults: new { controller = "Customer" });
                 routes.MapRoute
                     (name: null,
-                     template: "{action}/customer{customerId:int}",
+                     template: "{controller}/{action}/customer{customerId:int}order{orderId:int}",
+                     defaults: new { controller = "Order", action = new string[] { "Edit", "Completed" } });
+                routes.MapRoute
+                    (name: null,
+                     template: "{controller}/{action}/customer{customerId:int}",
+                     defaults: new { controller = "Order", action = "List" });
+                routes.MapRoute
+                    (name: null,
+                     template: "{controller}/{action}/address{addressId:int}",
+                     defaults: new { controller = "Customer" });
+                routes.MapRoute
+                    (name: null,
+                     template: "{controller}/{action}/customer{customerId:int}",
                      defaults: new {controller = "Customer"});
                 routes.MapRoute
                    (name: null,
@@ -102,10 +111,11 @@ namespace SportsStore
                     template: "{controller}/{action}/{id?}");
             });
 
+            
             Migrate.ExecuteContextsMigrate(app);
             ProductSeedData.EnsurePopulated(app);
             PermissionSeedData.PopulatePermissions(app);
-            //IdentitySeedData.PopulateIdentity(app);
+            IdentitySeedData.PopulateIdentity(app);
         }
     }
 }

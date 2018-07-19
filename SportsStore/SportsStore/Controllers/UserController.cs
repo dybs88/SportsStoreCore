@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCaching.Internal;
+using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Domain;
 using SportsStore.Models.CustomerModels;
@@ -40,7 +41,7 @@ namespace SportsStore.Controllers
 
         [Authorize(Roles = IdentityRoleNames.Admins)]
         [Authorize(Policy = SecurityPermissionValues.ViewUser)]
-        public async Task<IActionResult> List(string roleName = "Wszystkie")
+        public async Task<IActionResult> List(string roleName)
         {
             var avaibleRoles = _roleManager.Roles.Select(r => r.Name).ToList();
             avaibleRoles.Add("Wszystkie");

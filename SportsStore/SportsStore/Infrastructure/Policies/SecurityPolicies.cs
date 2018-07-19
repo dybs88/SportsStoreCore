@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SportsStore.Infrastructure.Policies
 {
-    public static class SecurityPolicies
+    public class SecurityPolicies : BasePolicies
     {
         public static void AddSecurityPolicies(IServiceCollection services)
         {
@@ -17,11 +17,13 @@ namespace SportsStore.Infrastructure.Policies
                 o.AddPolicy(SecurityPermissionValues.ViewUser, policy =>
                 {
                     policy.RequireClaim(ClaimTypes.AuthenticationMethod, SecurityPermissionValues.ViewUser);
+                    policy.RequireAssertion(IsCurrentUserHandler);
                 });
                 o.AddPolicy(SecurityPermissionValues.EditUser, policy => 
                 {
                     policy.RequireRole(IdentityRoleNames.Admins);
                     policy.RequireClaim(ClaimTypes.AuthenticationMethod, SecurityPermissionValues.EditUser);
+                    policy.RequireAssertion(IsCurrentUserHandler);
                 });
                 o.AddPolicy(SecurityPermissionValues.DeleteUser, policy =>
                 {

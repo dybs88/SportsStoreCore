@@ -1,12 +1,19 @@
-﻿@model IEnumerable<Order>
+﻿@model ListOrderViewModel
 @{
     ViewData["Title"] = "Wszystkie zamówienia";
+    @if (User.IsInRole(IdentityRoleNames.Clients))
+    {
+        Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    }
 }
 
 <h2>Zamówienia</h2>
 <div class="mb-1">
-    <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="false">Wszystkie</a>
-    <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="true">Nie zrealizowane</a>
+    @if (Model.CustomerId == 0)
+    {
+        <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="false">Wszystkie</a>
+        <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="true">Nie zrealizowane</a>
+    }
 </div>
 <table class="table table-bordered table-striped">
     <tr>
@@ -16,30 +23,21 @@
         <th colspan="2">Opis</th>
         <th>Akcja</th>
     </tr>
-    @foreach (Order order in Model)
+    @foreach (Order order in Model.Orders)
     {
         <tr>
             <td><span class="@(order.Shipped ? "fas fa-check" : "fas fa-times")"></span></td>
-            <td>@order.Name</td>
+            <td>@order.Customer.Email</td>
             <td>@order.Address.ZipCode</td>
-            <th>Produkt</th>
-            <th>Ilość</th>
+            <td colspan="2"></td>
             <td>
-                <form asp-action="MarkShipped" method="post">
-                    <input type="hidden" name="orderId" value="@order.OrderId" />
-                    <button type="submit" class="btn btn-primary">Realizuj</button>
-                </form>
+                <a class="btn btn-primary" 
+                   asp-action="Edit" 
+                   asp-controller="Order" 
+                   asp-route-customerId="@order.CustomerId" 
+                   asp-route-orderId="@order.OrderId">@(User.IsInRole(IdentityRoleNames.Employees) ? "Edytuj" : "Podgląd")</a>
             </td>
         </tr>
-        foreach (CartItem item in order.Items)
-        {
-            <tr>
-                <td colspan="3"></td>
-                <td>@item.Product.Name</td>
-                <td>@item.Quantity</td>
-                <td></td>
-            </tr>
-        }
     }
 </table>
 

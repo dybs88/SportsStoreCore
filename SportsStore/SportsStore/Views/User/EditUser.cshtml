@@ -6,6 +6,11 @@
 
 <h2>Edytuj użytkownika</h2>
 <div asp-validation-summary="All" class="text-danger"></div>
+<div class="row mb-1">
+    <div class="col">
+        <a class="btn btn-primary" asp-action="ResetPassword" asp-controller="User">Resetuj hasło</a>
+    </div>
+</div>
 <form asp-action="EditUser" method="post">
     <div class="form-group">
         <label asp-for="User.UserName">Nazwa użytkownika</label>

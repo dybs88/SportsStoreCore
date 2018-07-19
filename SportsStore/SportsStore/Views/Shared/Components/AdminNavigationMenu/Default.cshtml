@@ -2,14 +2,35 @@
     <h6>Podstawowe</h6>
     <a class="btn btn-secondary m-1" asp-action="Index" asp-controller="User">Profil</a>
 </div>
-<div class="card card-body m-1">
-    <h6>Bezpieczeństwo</h6>
-    <a class="btn btn-secondary m-1" asp-action="List" asp-controller="User">Użytkownicy</a>
-    <a class="btn btn-secondary m-1" asp-action="List" asp-controller="Role">Role</a>
-</div>
+@if (User.IsInRole(IdentityRoleNames.Admins))
+{
+    <div class="card card-body m-1">
+        <h6>Bezpieczeństwo</h6>
+        @if (User.HasClaim(ClaimTypes.AuthenticationMethod, SecurityPermissionValues.ViewUser))
+        {
+            <a class="btn btn-secondary m-1" asp-action="List" asp-controller="User">Użytkownicy</a>
+        }
+        @if (User.HasClaim(ClaimTypes.AuthenticationMethod, SecurityPermissionValues.ViewRole))
+        {
+            <a class="btn btn-secondary m-1" asp-action="List" asp-controller="Role">Role</a>
+        }
+    </div>
+}
+
 <div class="card card-body m-1">
     <h6>Sklep</h6>
-    <a class="btn btn-secondary m-1" asp-action="Products" asp-controller="Product">Produkty</a>
-    <a class="btn btn-secondary m-1" asp-action="List" asp-controller="Order">Zamówienia</a>
-    <a class="btn btn-secondary m-1" asp-action="List" asp-controller="Customer">Klienci</a>
+    @if (User.HasClaim(ClaimTypes.AuthenticationMethod, SalesPermissionValues.ViewOrder))
+    {
+        <a class="btn btn-secondary m-1" asp-action="FullList" asp-controller="Order">Zamówienia</a>
+    }
+    @if (User.HasClaim(ClaimTypes.AuthenticationMethod, CustomerPermissionValues.ViewCustomer))
+    {
+        <a class="btn btn-secondary m-1" asp-action="List" asp-controller="Customer">Klienci</a>
+    }
 </div>
+
+<div class="card card-body m-1">
+    <h6>Magazyn</h6>
+    <a class="btn btn-secondary m-1" asp-action="Products" asp-controller="Product">Produkty</a>
+</div>
+

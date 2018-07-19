@@ -3,8 +3,21 @@
     ViewBag.Title = "Lista użytkowników";
 }
 
+<script>
+    $("document").ready(function () {
+        $("#roleFilter").change(function (e) {
+            var roleName = $(e.currentTarget).val();
+            $.ajax({
+                url: "/User/List",
+                data: roleName,
+            });
+        });
+    })
+    
+</script>
+
 <div>
-    Rola:<select name="roleName" class="custom-select mb-1 w-10" asp-items="@(new SelectList(Model.Roles, "Wszystkie"))"></select>
+        Rola:<select id="roleFilter" name="roleName" class="custom-select mb-1 w-10" asp-items="@(new SelectList(Model.Roles, "Wszystkie"))"></select>
 </div>
 <table class="table table-striped">
     <tr>

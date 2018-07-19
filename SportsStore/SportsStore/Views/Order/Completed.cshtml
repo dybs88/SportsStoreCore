@@ -1,9 +1,10 @@
-﻿
+﻿@model Order
 @{
-    ViewData["Title"] = "Completed";
+    ViewData["Title"] = "Dziękujemy!";
 }
 
 <h2>Dziękujemy!</h2>
+<h4>Zamówienie @(Model.OrderNumber + " ") przyjęte do realizacji</h4>
 <p>Dziękujemy za złożenie zamówienia.</p>
 <p>Wyślemy produkt tak szybko, jak tylko będzie to możliwe.</p>
 

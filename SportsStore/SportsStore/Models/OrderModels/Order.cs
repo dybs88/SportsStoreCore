@@ -14,10 +14,23 @@ namespace SportsStore.Models.OrderModels
     public class Order
     {
         public int OrderId { get; set; }
+        public string OrderNumber { get; set; }
         public ICollection<CartItem> Items  { get; set; }
+        public int CustomerId { get; set; }
+        [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }
+        public int AddressId { get; set; }
+        [ForeignKey("AddressId")]
+        public Address Address { get; set; }
         public bool GiftWrap { get; set; }
         public bool Shipped { get; set; }
         public decimal Value => Items.Any() ? Items.Sum(i => i.Value) : 0; 
+
+        public Order() { }
+
+        public Order(int customerId)
+        {
+            CustomerId = customerId;
+        }
     }
 }

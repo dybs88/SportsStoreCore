@@ -43,7 +43,7 @@ namespace SportsStore.Domain
 
     public static class SalesPermissionValues
     {
-        public const string ViewOrder = "Podgląd zamówień";
+        public const string ViewOrder = "Podgląd zamówienia";
         public const string AddOrder = "Dodawanie zamówienia";
         public const string EditOrder = "Edytowanie zamówienia";
         public const string DeleteOrder = "Usuwanie zamówienia";
@@ -59,5 +59,6 @@ namespace SportsStore.Domain
     public static class SportsStoreClaimTypes
     {
         public const string CustomerId = "http://sportsstore/claims/customerId";
+        public const string AddressId = "http://sportsstore/claims/addressId";
     }
 }

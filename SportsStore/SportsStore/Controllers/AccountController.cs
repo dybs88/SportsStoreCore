@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.Controllers.Base;
 using SportsStore.Domain;
 using SportsStore.Infrastructure.Extensions;
 using SportsStore.Models.Account;
@@ -42,7 +43,6 @@ namespace SportsStore.Controllers
             if (ModelState.IsValid)
             {
                 SportUser user = await _userManager.FindByNameAsync(model.Name);
-
                 if (user != null)
                 {
                     await _signInManager.SignOutAsync();

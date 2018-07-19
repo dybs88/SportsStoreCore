@@ -11,9 +11,10 @@ using System;
 namespace SportsStore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180717091924_OrderNumber")]
+    partial class OrderNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,7 +107,7 @@ namespace SportsStore.Migrations
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AddressId");
+                    b.Property<int?>("AddressId");
 
                     b.Property<int>("CustomerId");
 
@@ -167,8 +168,7 @@ namespace SportsStore.Migrations
                 {
                     b.HasOne("SportsStore.Models.CustomerModels.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AddressId");
                 });
 #pragma warning restore 612, 618
         }

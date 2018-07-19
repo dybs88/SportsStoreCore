@@ -1,42 +1,136 @@
 ﻿@model CreateOrderViewModel
 @{
-
+    ViewData["Title"] = "Nowe zamówienie";
+    ViewBag.Customer = Model.CustomerFullData.Customer;
 }
+
+<script>
+    $("document").ready(function () {
+        $(".btn-address").click(function (e) {
+            $(".btn-address").removeClass("btn-outline-success").addClass("btn-outline-primary");
+            $(e.currentTarget).removeClass("btn-outline-primary").addClass("btn-outline-success");
+
+            var $addressDataChildren = $(e.currentTarget).children("h4,h5,h6");
+            $("#inAddressId").val($(e.currentTarget).attr("data-address-id"));
+            $("#inStreet").val($addressDataChildren.filter("[data-street]").attr("data-street"));
+
+            $("#inBuildingNr").val($addressDataChildren.filter("[data-building-number]").attr("data-building-number"));
+
+            $("#inApartmentNr").val($addressDataChildren.filter("[data-aparatment-number]").attr("data-aparatment-number"));
+
+            $("#inCity").val($addressDataChildren.filter("[data-city]").attr("data-city"));
+
+            $("#inCountry").val($addressDataChildren.filter("[data-country]").attr("data-country"));
+
+            $("#inRegion").val($addressDataChildren.filter("[data-region]").attr("data-region"));
+
+            $("#inZipCode").val($addressDataChildren.filter("[data-zip-code]").attr("data-zip-code"));
+
+            $("#addressData").hide();
+        });
+
+        $("#btnAddAddress").click(function (e) {
+            $(".btn-address").removeClass("btn-outline-success").addClass("btn-outline-primary");
+            $("#inAddressId").val("");
+            $("#inStreet").val("");
+            $("#inBuildingNr").val("");
+            $("#inApartmentNr").val("");
+            $("#inCity").val("");
+            $("#inCountry").val("");
+            $("#inRegion").val("");
+            $("#inZipCode").val("");
+
+            $("#addressData").show();
+        })
+    })
+</script>
+
 <div asp-validation-summary="All" class="text-danger"></div>
 <h2>Wysyłka</h2>
-<p>Podaj swoje dane</p>
-<form asp-action="CreateOrder" method="post">   
+<form asp-action="CreateOrder" method="post">
+    <input type="hidden" asp-for="CustomerFullData.Customer.CustomerId" value="@Model.CustomerFullData.Customer.CustomerId" />
+    <input type="hidden" asp-for="CustomerFullData.Customer.FirstName" value="@Model.CustomerFullData.Customer.FirstName" />
+    <input type="hidden" asp-for="CustomerFullData.Customer.LastName" value="@Model.CustomerFullData.Customer.LastName" />
+    <input type="hidden" asp-for="CustomerFullData.Customer.Email" value="@Model.CustomerFullData.Customer.Email" />
+    <input type="hidden" asp-for="CustomerFullData.Customer.PhoneNumber" value="@Model.CustomerFullData.Customer.PhoneNumber" />
     <div class="form-group">
-        <label class="form-control">Zamawiane dla: @($"{Model.Customer.FirstName} {Model.Customer.LastName}")</label>
+        <label class="form-control">Zamawiane dla: @($"{Model.CustomerFullData.Customer.FirstName} {Model.CustomerFullData.Customer.LastName}")</label>
     </div>
     <h3>Adres</h3>
-    <div class="form-group">
-        <label>Ulica</label>
-        <input asp-for="Address.Street" class="form-control" />
+    @{
+        var addresses = Model.CustomerFullData.Addresses.ToList();
+        for (int i = 0; i < addresses.Count; i = i + 2)
+        {
+            <div class="row mb-1">
+                <div class="col">
+                    <div class="btn btn-address btn-outline-primary card card-body text-left m-1" data-address-id="@addresses[i].AddressId">
+                        <h4 data-city="@addresses[i].City" data-country="@addresses[i].Country">@($"{addresses[i].City}, {addresses[i].Country}")</h4>
+                        <h5 data-region="@addresses[i].Region">@addresses[i].Region</h5>
+                        <h6 data-street="@addresses[i].Street"
+                            data-building-number="@addresses[i].BuildingNumber"
+                            data-aparatment-number="@addresses[i].ApartmentNumber">
+                            @($"{addresses[i].Street} {addresses[i].BuildingNumber}" + (string.IsNullOrEmpty(addresses[i].ApartmentNumber) ? "" : $"/{addresses[i].ApartmentNumber}"))
+                        </h6>
+                        <h6 data-zip-code="@addresses[i].ZipCode">@addresses[i].ZipCode</h6>
+                    </div>
+                </div>
+                <div class="col">
+                    @if (i + 1 < addresses.Count)
+                    {
+                        <div class="btn btn-address btn-outline-primary card card-body text-left m-1" data-address-id="@addresses[i+1].AddressId">
+                            <h4 data-city="@addresses[i+1].City" data-country="@addresses[i+1].Country">@($"{addresses[i + 1].City}, {addresses[i + 1].Country}")</h4>
+                            <h5 data-region="@addresses[i+1].Region">@addresses[i + 1].Region</h5>
+                            <h6 data-street="@addresses[i+1].Street"
+                                data-building-number="@addresses[i+1].BuildingNumber"
+                                data-aparatment-number="@addresses[i+1].ApartmentNumber">
+                                @($"{addresses[i + 1].Street} {addresses[i + 1].BuildingNumber}" + (string.IsNullOrEmpty(addresses[i + 1].ApartmentNumber) ? "" : $"/{addresses[i + 1].ApartmentNumber}"))
+                            </h6>
+                            <h6 data-zip-code="@addresses[i+1].ZipCode">@addresses[i + 1].ZipCode</h6>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    <div class="row">
+        <div class="col-6">
+            <div id="btnAddAddress" class="btn btn-outline-success card card-body m-1 "><span class="fas fa-plus-circle fa-7x"></span></div>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Nr budynku</label>
-        <input asp-for="Address.BuildingNumber" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Nr mieszkania</label>
-        <input asp-for="Address.ApartmentNumber" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Kod pocztowy</label>
-        <input asp-for="Address.ZipCode" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Miasto</label>
-        <input asp-for="Address.City" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Województwo</label>
-        <input asp-for="Address.Region" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Kraj</label>
-        <input asp-for="Address.Country" class="form-control" />
+    <div id="addressData" class="row" style="display:none">
+        <input id="inAddressId" type="hidden" asp-for="SelectedAddress.AddressId" />
+        <div class="col">
+            <div class="form-group">
+                <label>Ulica:</label>
+                <input id="inStreet" asp-for="SelectedAddress.Street" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Nr budynku:</label>
+                <input id="inBuildingNr" asp-for="SelectedAddress.BuildingNumber" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Województwo:</label>
+                <input id="inRegion" asp-for="SelectedAddress.Region" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Kod pocztowy:</label>
+                <input id="inZipCode" asp-for="SelectedAddress.ZipCode" class="form-control" />
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Miasto:</label>
+                <input id="inCity" asp-for="SelectedAddress.City" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Nr lokalu:</label>
+                <input id="inApartmentNr" asp-for="SelectedAddress.ApartmentNumber" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Państwo:</label>
+                <input id="inCountry" asp-for="SelectedAddress.Country" class="form-control" />
+            </div>
+        </div>
     </div>
     <h3>Opcje</h3>
     <div class="custom-checkbox">

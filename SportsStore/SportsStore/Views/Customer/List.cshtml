@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Customer>
+﻿@model CustomerListViewModel
 
 @{
     ViewData["Title"] = "Lista klientów";
@@ -14,20 +14,20 @@
         <th>Data rejestracji</th>
         <th>Akcja</th>
     </tr>
-    @foreach(var customer in Model)
+    @foreach(var pair in Model.Customers)
     {
         <tr>
-            <td>@customer.FirstName</td>
-            <td>@customer.LastName</td>
-            <td>@customer.Email</td>
-            <td>@customer.PhoneNumber</td>
-            <td>0</td>
+            <td>@pair.Key.FirstName</td>
+            <td>@pair.Key.LastName</td>
+            <td>@pair.Key.Email</td>
+            <td>@pair.Key.PhoneNumber</td>
+            <td>@pair.Value.CustomerOrdersCount</td>
             <td></td>
             <td>
                 <a class="btn btn-primary btn-sm" 
                    asp-action="Index" 
                    asp-controller="Customer"
-                   asp-route-customerId ="@customer.CustomerId"
+                   asp-route-customerId ="@pair.Key.CustomerId"
                    asp-route-returnUrl ="@Context.Request.PathAndQuery()"
                    asp-route-pageMode ="@PageMode.Edit">
                    Edytuj
