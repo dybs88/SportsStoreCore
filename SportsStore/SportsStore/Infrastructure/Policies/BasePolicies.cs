@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Domain;
 using SportsStore.Models.DAL.Repos.SalesSchema;
 using System;
@@ -80,17 +81,14 @@ namespace SportsStore.Infrastructure.Policies
             }
             else
             {
-                claim = context.User.Claims.FirstOrDefault(c => c.Type == SportsStoreClaimTypes.AddressId);
-                if (claim == null)
-                    return false;
-
                 AuthorizationFilterContext filterContext = (AuthorizationFilterContext)context.Resource;
-                var customerId = filterContext.RouteData.Values["addressId"].ToString();
-                if (claim.Value == customerId)
-                    return true;
-            }
+                IAddressRepository addressRepository = filterContext.HttpContext.RequestServices.GetRequiredService<IAddressRepository>();
 
-            return false;
+                var customerId = filterContext.RouteData.Values["customerId"].ToString();
+                var addressId = filterContext.RouteData.Values["addressId"].ToString();
+
+                return addressRepository.CheckIfCustomerIsAddressOwner(int.Parse(customerId), int.Parse(addressId));
+            }
         }
 
         static bool IsCurrentUserMethod(AuthorizationHandlerContext context)

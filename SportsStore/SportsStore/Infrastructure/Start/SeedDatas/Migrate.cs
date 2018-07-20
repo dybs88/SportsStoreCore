@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SportsStore.Infrastructure.Start
+namespace SportsStore.Infrastructure.Start.SeedDatas
 {
     public static class Migrate
     {
@@ -18,6 +18,9 @@ namespace SportsStore.Infrastructure.Start
 
             AppIdentityDbContext identityContext = app.ApplicationServices.GetRequiredService<AppIdentityDbContext>();
             identityContext.Database.Migrate();
+
+            DictionaryDbContext dictionartContext = app.ApplicationServices.GetRequiredService<DictionaryDbContext>();
+            dictionartContext.Database.Migrate();
         }
     }
 }

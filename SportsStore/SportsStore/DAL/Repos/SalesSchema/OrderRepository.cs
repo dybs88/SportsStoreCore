@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SportsStore.DAL.Contexts;
+using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Models.CustomerModels;
 using SportsStore.Models.OrderModels;
 
@@ -12,13 +13,15 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
     public class OrderRepository : IOrderRepository
     {
         private ApplicationDbContext _context;
+        private IAddressRepository _addressRepository;
 
-        public OrderRepository(ApplicationDbContext context)
+        public OrderRepository(ApplicationDbContext context, IAddressRepository addressRepo)
         {
             _context = context;
+            _addressRepository = addressRepo;
         }
 
-        public IQueryable<Order> Orders => _context.Orders
+        public IEnumerable<Order> Orders => _context.Orders
             .Include(o => o.Customer)
             .Include(o => o.Address)
             .Include(o => o.Items)
@@ -27,7 +30,7 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
         public Order CreateNewOrder(int customerId)
         {
             int newOrderNumber = 1;
-            var lastOrder = Orders.OrderByDescending(o => o.OrderNumber).FirstOrDefault();
+            var lastOrder = Orders.OrderByDescending(o => int.Parse(o.OrderNumber)).FirstOrDefault();
             
             if(lastOrder != null)
             {
@@ -57,11 +60,10 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
 
         public void SaveOrder(Order order)
         {
-            _context.AttachRange(order.Items.Select(i => i.Product));
+            order.AddressId = _addressRepository.SaveAddress(order.Address);
+
             if (order.OrderId == 0)
-            {
                 _context.Add(order);
-            }
 
             _context.SaveChanges();
         }

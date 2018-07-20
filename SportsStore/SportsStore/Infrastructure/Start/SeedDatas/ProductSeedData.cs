@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SportsStore.DAL.Contexts;
 using SportsStore.Models.ProductModels;
 
-namespace SportsStore.Models
+namespace SportsStore.Infrastructure.Start.SeedDatas
 {
     public static class ProductSeedData
     {

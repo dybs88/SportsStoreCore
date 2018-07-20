@@ -11,6 +11,7 @@ namespace SportsStore.Models.CustomerModels
     [Table("Addresses", Schema = "Customer")]
     public class Address
     {
+        [BindNever]
         public int AddressId { get; set; }
         [Required(ErrorMessage = "Podaj ulicę")]
         [MaxLength(75, ErrorMessage = "Maksymalna długość - 75 znaków")]

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -226,6 +228,38 @@ namespace SportsStore.Controllers
             }
 
             return RedirectToAction("List");
+        }
+
+        [Authorize(Policy = SecurityPermissionValues.EditUser)]
+        public IActionResult ResetPassword(string userId)
+        {
+            return View(new ResetPasswordViewModel { UserId = userId });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = SecurityPermissionValues.EditUser)]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(model.UserId);
+                if(user != null)
+                {
+                    var hashedPassword = _userManager.PasswordHasher.HashPassword(user, model.Password);
+                    var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var updateResult = await _userManager.ResetPasswordAsync(user, resetPasswordToken, model.Password);
+
+                    if (updateResult.Errors.Any())
+                    {
+                        AddErrors(updateResult.Errors);
+                        return View(model.UserId);
+                    }
+                }
+
+                return RedirectToAction("List");
+            }
+
+            return View(model.UserId);
         }
 
         private Tuple<IEnumerable<string>, IEnumerable<string>> SortRolesBySelection(IEnumerable<string> selectedRoles)

@@ -25,6 +25,11 @@ namespace SportsStore.DAL.Repos.CustomerSchema
 
         public IEnumerable<Address> Addresses => _context.Addresses;
 
+        public bool CheckIfCustomerIsAddressOwner(int customerId, int addressId)
+        {
+            return GetCustomerAddresses(customerId).Any(a => a.AddressId == addressId);
+        }
+
         public void DeleteAddress(int addressId)
         {
             var addressToRemove = Addresses.First(a => a.AddressId == addressId);
@@ -42,14 +47,10 @@ namespace SportsStore.DAL.Repos.CustomerSchema
             return Addresses.Where(a => a.CustomerId == customerId);
         }
 
-        public async Task<int> SaveAddress(Address address)
+        public int SaveAddress(Address address)
         {
-            bool isNew = false;
             if (address.AddressId == 0)
-            {
                 _context.Addresses.Add(address);
-                isNew = true;
-            }
             else
             {
                 var addressToUpdate = GetAddress(address.AddressId);
@@ -66,14 +67,6 @@ namespace SportsStore.DAL.Repos.CustomerSchema
             }
 
             _context.SaveChanges();
-
-            if(isNew)
-            {
-                Claim newClaim = new Claim(SportsStoreClaimTypes.AddressId, address.AddressId.ToString(), ClaimValueTypes.Integer32);
-                var user = await _userManager.FindByCustomerIdAsync(address.CustomerId);
-                await _userManager.AddClaimAsync(user, newClaim);
-            }
-
             return address.AddressId;
         }
     }

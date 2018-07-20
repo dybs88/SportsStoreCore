@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,8 @@ namespace SportsStore.Controllers
         private ICustomerRepository _customerRepository;
         private IAddressRepository _addressRepository;
 
+        int _pageSize = 10;
+
         public OrderController(IOrderRepository repo, 
                                Cart cart, 
                                UserManager<SportUser> userManager, 
@@ -39,25 +42,25 @@ namespace SportsStore.Controllers
         }
 
         [Authorize(Policy = SalesPermissionValues.ViewOrder)]
-        public IActionResult FullList()
+        public IActionResult FullList(int currentPage = 1)
         {
-            ListOrderViewModel model = new ListOrderViewModel
-            {
-                Orders = _orderRepository.Orders
-            };
+            var orders = _orderRepository.Orders
+                .Skip((currentPage - 1) * _pageSize)
+                .Take(_pageSize);
+            ListOrderViewModel model = new ListOrderViewModel(0, orders, currentPage, _pageSize, _orderRepository.Orders.Count());
 
             return View("List", model);
         }
 
         [Authorize(Policy = SalesPermissionValues.ViewOrder)]
-        public IActionResult ListByCustomer(int customerId)
+        public IActionResult ListByCustomer(int customerId, int currentPage = 1)
         {
             ViewBag.CustomerId = customerId;
-            ListOrderViewModel model = new ListOrderViewModel
-            {
-                CustomerId = customerId,
-                Orders = _orderRepository.Orders.Where(o => o.CustomerId == customerId)
-            };
+
+            var orders = _orderRepository.GetCustomerOrders(customerId)
+                .Skip((currentPage - 1) * _pageSize)
+                .Take(_pageSize);
+            ListOrderViewModel model = new ListOrderViewModel(customerId, orders, currentPage, _pageSize, _orderRepository.GetCustomerOrders(customerId).Count());
 
             return View("List", model);
         }
@@ -111,8 +114,8 @@ namespace SportsStore.Controllers
             if (ModelState.IsValid)
             {
                 Order newOrder = _orderRepository.CreateNewOrder(model.CustomerFullData.Customer.CustomerId);
-                newOrder.AddressId = model.SelectedAddress.AddressId;
-                newOrder.Items = _cart.Items.ToArray();
+                newOrder.Address = model.SelectedAddress;
+                newOrder.Items.AddRange(_cart.Items);
                 _orderRepository.SaveOrder(newOrder);
                 return RedirectToAction("Completed", new { order = newOrder });
             }

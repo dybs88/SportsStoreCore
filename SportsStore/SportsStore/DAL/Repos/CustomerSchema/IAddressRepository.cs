@@ -9,9 +9,10 @@ namespace SportsStore.DAL.Repos.CustomerSchema
     public interface IAddressRepository
     {
         IEnumerable<Address> Addresses { get;  }
+        bool CheckIfCustomerIsAddressOwner(int customerId, int addressId);
         void DeleteAddress(int addressId);
         Address GetAddress(int addressId);
         IEnumerable<Address> GetCustomerAddresses(int customerId);
-        Task<int> SaveAddress(Address address);
+        int SaveAddress(Address address);
     }
 }

@@ -98,11 +98,11 @@ namespace SportsStore.Controllers
 
         [HttpPost]
         [Authorize(Policy = CustomerPermissionValues.AddAddress)]
-        public async Task<IActionResult> CreateAddress(CreateAddressViewModel model)
+        public IActionResult CreateAddress(CreateAddressViewModel model)
         {
             if(ModelState.IsValid)
             {
-                await _addressRepository.SaveAddress(model.Address);
+                _addressRepository.SaveAddress(model.Address);
                 return RedirectToAction("Addresses", "Customer", new { customerId = model.CustomerId });
             }
 

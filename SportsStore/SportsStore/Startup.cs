@@ -15,8 +15,8 @@ using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.DAL.Repos.Security;
 using SportsStore.Infrastructure.Policies;
-using SportsStore.Infrastructure.Start;
-using SportsStore.Models;
+using SportsStore.Infrastructure.Start.AppConfiguration;
+using SportsStore.Infrastructure.Start.SeedDatas;
 using SportsStore.Models.Cart;
 using SportsStore.Models.DAL.Repos.SalesSchema;
 using SportsStore.Models.Identity;
@@ -39,9 +39,12 @@ namespace SportsStore
 
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(Configuration["Data:SportsStoreIdentity:connectionString"]));
-            services.AddIdentity<SportUser, IdentityRole>()
+            services.AddIdentity<SportUser, IdentityRole>(options => { options.User.RequireUniqueEmail = true; })
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
+            services.AddDbContext<DictionaryDbContext>(options =>
+                options.UseSqlServer(Configuration["Data:SportsStoreDictionaries:connectionString"]));
+
 
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
@@ -70,45 +73,7 @@ namespace SportsStore
             app.UseAuthentication();
             app.UseMvc(routes =>
             {
-                routes.MapRoute
-                    (name: null,
-                     template: "{controller}/{action}/customer{customerId:int}order{orderId:int}",
-                     defaults: new { controller = "Order", action = new string[] { "Edit", "Completed" } });
-                routes.MapRoute
-                    (name: null,
-                     template: "{controller}/{action}/customer{customerId:int}",
-                     defaults: new { controller = "Order", action = "List" });
-                routes.MapRoute
-                    (name: null,
-                     template: "{controller}/{action}/address{addressId:int}",
-                     defaults: new { controller = "Customer" });
-                routes.MapRoute
-                    (name: null,
-                     template: "{controller}/{action}/customer{customerId:int}",
-                     defaults: new {controller = "Customer"});
-                routes.MapRoute
-                   (name: null,
-                    template: "{category}/Strona{productPage:int}",
-                    defaults: new {controller = "Product", action = "List"});
-
-                routes.MapRoute
-                   (name: null,
-                    template: "Strona{productPage:int}",
-                    defaults: new {controller = "Product", action = "List", productPage = 1});
-
-                routes.MapRoute
-                   (name: null,
-                    template: "{category}",
-                    defaults: new {controller = "Product", action = "List", productPage = 1});
-
-                routes.MapRoute
-                   (name: null,
-                    template: "",
-                    defaults: new {controller = "Product", action = "List", productPage = 1});
-
-                routes.MapRoute
-                   (name: null,
-                    template: "{controller}/{action}/{id?}");
+                RouteMapping.MapRoutes(routes);
             });
 
             

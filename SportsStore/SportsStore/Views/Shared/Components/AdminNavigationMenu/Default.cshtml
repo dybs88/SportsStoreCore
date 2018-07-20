@@ -18,6 +18,11 @@
 }
 
 <div class="card card-body m-1">
+    <h6>System</h6>
+    <a class="btn btn-secondary m-1" asp-action="" asp-controller="">Dokumenty</a>
+</div>
+
+<div class="card card-body m-1">
     <h6>Sklep</h6>
     @if (User.HasClaim(ClaimTypes.AuthenticationMethod, SalesPermissionValues.ViewOrder))
     {

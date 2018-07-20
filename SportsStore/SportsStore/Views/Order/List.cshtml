@@ -17,18 +17,20 @@
 </div>
 <table class="table table-bordered table-striped">
     <tr>
-        <th>Czy zrealizowane?</th>
+        <th>Numer</th>
         <th>Klient</th>
-        <th>Kod pocztowy</th>
+        <th>Wartość</th>
+        <th>Status</th>
         <th colspan="2">Opis</th>
         <th>Akcja</th>
     </tr>
     @foreach (Order order in Model.Orders)
     {
         <tr>
-            <td><span class="@(order.Shipped ? "fas fa-check" : "fas fa-times")"></span></td>
+            <td>@order.OrderNumber</td>
             <td>@order.Customer.Email</td>
-            <td>@order.Address.ZipCode</td>
+            <td>@order.Value.ToString("c")</td>
+            <td>-</td>
             <td colspan="2"></td>
             <td>
                 <a class="btn btn-primary" 
@@ -40,4 +42,6 @@
         </tr>
     }
 </table>
-
+<div page-model="@Model.PageModel" page-action="@(Model.CustomerId != 0 ? "ListByCustomer" : "FullList" )" page-class="btn ml-1" page-url-customerId="@Model.CustomerId"
+     page-class-normal="btn-secondary" page-class-selected="btn-primary" class="btn-group float-right m-1">
+</div>

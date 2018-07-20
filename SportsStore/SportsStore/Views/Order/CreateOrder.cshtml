@@ -99,6 +99,7 @@
     </div>
     <div id="addressData" class="row" style="display:none">
         <input id="inAddressId" type="hidden" asp-for="SelectedAddress.AddressId" />
+        <input type="hidden" asp-for="SelectedAddress.CustomerId" value="@Model.CustomerFullData.Customer.CustomerId"/>
         <div class="col">
             <div class="form-group">
                 <label>Ulica:</label>

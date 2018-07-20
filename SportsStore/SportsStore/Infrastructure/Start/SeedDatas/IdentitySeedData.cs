@@ -13,7 +13,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SportsStore.Infrastructure.Start
+namespace SportsStore.Infrastructure.Start.SeedDatas
 {
     public class IdentitySeedData
     {

@@ -9,7 +9,7 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
 {
     public interface IOrderRepository
     {
-        IQueryable<Order> Orders { get; }
+        IEnumerable<Order> Orders { get; }
         Order CreateNewOrder(int customerId);
         bool CheckIfCustomerIsOrderOwner(int customerId, int orderId);
         IEnumerable<Order> GetCustomerOrders(int customerId);
