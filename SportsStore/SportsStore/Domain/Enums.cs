@@ -10,4 +10,11 @@ namespace SportsStore.Domain
         Edit,
         View
     }
+
+    public enum DocumentTypes
+    {
+        SalesOrder,
+        Receipt,
+        SalesInvoice
+    }
 }

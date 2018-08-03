@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SportsStore.DAL.Contexts;
 using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
+using SportsStore.DAL.Repos.DictionarySchema;
 using SportsStore.DAL.Repos.Security;
 using SportsStore.Infrastructure.Policies;
 using SportsStore.Infrastructure.Start.AppConfiguration;
@@ -51,6 +52,7 @@ namespace SportsStore
             services.AddTransient<IPermissionRepository, PermissionRepository>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<IAddressRepository, AddressRepository>();
+            services.AddTransient<IDocumentTypeRepository, DocumentTypeRepository>();
 
             services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -81,6 +83,7 @@ namespace SportsStore
             ProductSeedData.EnsurePopulated(app);
             PermissionSeedData.PopulatePermissions(app);
             IdentitySeedData.PopulateIdentity(app);
+            DictionarySeddData.PopulateDictionaries(app);
         }
     }
 }

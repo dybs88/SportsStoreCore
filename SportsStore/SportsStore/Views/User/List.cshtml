@@ -16,9 +16,11 @@
     
 </script>
 
-<div>
-        Rola:<select id="roleFilter" name="roleName" class="custom-select mb-1 w-10" asp-items="@(new SelectList(Model.Roles, "Wszystkie"))"></select>
+<div class="row">
+    <div class="col" search="" label-text="Login lub email:"></div>
+    <div class="col">Rola:<select id="roleFilter" name="roleName" class="custom-select mb-1 w-10" asp-items="@(new SelectList(Model.Roles, "Wszystkie"))"></select></div>
 </div>
+
 <table class="table table-striped">
     <tr>
         <th>Login</th>
@@ -45,5 +47,8 @@
         </tr>
     }
 </table>
+<div page-model="@Model.PageModel" page-action="List" page-class="btn ml-1"
+     page-class-normal="btn-secondary" page-class-selected="btn-primary" class="btn-group float-right m-1">
+</div>
 <a class="btn btn-success" asp-action="CreateUser" asp-controller="User" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Dodaj użytkownika</a>
 

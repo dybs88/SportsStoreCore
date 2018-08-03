@@ -10,7 +10,9 @@ using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Domain;
+using SportsStore.Infrastructure.Abstract;
 using SportsStore.Infrastructure.Extensions;
+using SportsStore.Models.Base;
 using SportsStore.Models.CustomerModels;
 using SportsStore.Models.DAL.Repos.SalesSchema;
 using SportsStore.Models.Identity;
@@ -18,7 +20,7 @@ using SportsStore.Models.Identity;
 namespace SportsStore.Controllers
 {
     [Authorize]
-    public class CustomerController : IdentityController
+    public class CustomerController : BaseController, ISearchable
     {
         private ICustomerRepository _customerRepository;
         private IAddressRepository _addressRepository;
@@ -34,20 +36,46 @@ namespace SportsStore.Controllers
         }
 
         [Authorize(Policy = CustomerPermissionValues.ViewCustomer)]
-        public IActionResult List()
+        public async Task<IActionResult> List(int currentPage = 1)
         {
-            CustomerListViewModel model = new CustomerListViewModel();
-            foreach(var customer in _customerRepository.Customers)
-            {
-                CustomerAdditionalData additionalData = new CustomerAdditionalData
-                {
-                    CustomerId = customer.CustomerId,
-                    CustomerOrdersCount = _orderRepository.GetCustomerOrders(customer.CustomerId).Count()
-                };
+            CustomerListViewModel model = new CustomerListViewModel(currentPage, _pageSize, _customerRepository.Customers.Count());
 
+            var customers = PaginateList(_customerRepository.Customers, currentPage);
+
+            foreach(var customer in customers)
+            {
+                CustomerAdditionalData additionalData = _customerRepository.GetCustomerAdditionalData(customer.CustomerId);
                 model.Customers.Add(customer, additionalData);
             }
             return View(model);
+        }
+
+        [Authorize(Policy = CustomerPermissionValues.ViewCustomer)]
+        [HttpPost]
+        public async Task<IActionResult> List(BaseListViewModel model)
+        {
+            if(model == null || string.IsNullOrEmpty(model.SearchData))
+            {
+                return await List();
+            }
+            else
+            {
+                CustomerListViewModel customerModel = new CustomerListViewModel(1, _pageSize, 1);
+                List<Customer> customers = new List<Customer>();
+
+                if (customerModel.SearchData.Contains("@"))
+                    customers.Add(_customerRepository.GetCustomer(model.SearchData));
+                else
+                    customers.Add(_customerRepository.GetCustomer(int.Parse(model.SearchData)));
+
+                foreach(var customer in customers)
+                {
+                    CustomerAdditionalData additionalData = _customerRepository.GetCustomerAdditionalData(customer.CustomerId);
+                    customerModel.Customers.Add(customer, additionalData);
+                }
+
+                return View(customerModel);
+            }
         }
 
         [Authorize(Policy = CustomerPermissionValues.ViewCustomer)]

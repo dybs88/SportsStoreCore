@@ -1,4 +1,4 @@
-﻿@model ListOrderViewModel
+﻿@model OrderListViewModel
 @{
     ViewData["Title"] = "Wszystkie zamówienia";
     @if (User.IsInRole(IdentityRoleNames.Clients))
@@ -8,12 +8,19 @@
 }
 
 <h2>Zamówienia</h2>
-<div class="mb-1">
-    @if (Model.CustomerId == 0)
-    {
-        <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="false">Wszystkie</a>
-        <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="true">Nie zrealizowane</a>
-    }
+<div class="row mb-1">
+    <div class="col">
+        <div search="" label-text="Id lub numer:"></div>
+    </div>
+    <div class="col">
+        <div class="mb-1">
+            @if (Model.CustomerId == 0)
+            {
+                <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="false">Wszystkie</a>
+                <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="true">Nie zrealizowane</a>
+            }
+        </div>
+    </div>
 </div>
 <table class="table table-bordered table-striped">
     <tr>
@@ -42,6 +49,6 @@
         </tr>
     }
 </table>
-<div page-model="@Model.PageModel" page-action="@(Model.CustomerId != 0 ? "ListByCustomer" : "FullList" )" page-class="btn ml-1" page-url-customerId="@Model.CustomerId"
+<div page-model="@Model.PageModel" page-action="List" page-class="btn ml-1" page-url-customerId="@Model.CustomerId"
      page-class-normal="btn-secondary" page-class-selected="btn-primary" class="btn-group float-right m-1">
 </div>

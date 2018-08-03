@@ -3,7 +3,11 @@
 @{
     ViewData["Title"] = "Lista klientów";
 }
-
+<div class="row mb-1">
+    <div class="col">
+        <div search="" label-text="Id lub email:"></div>
+    </div>
+</div>
 <table class="table table-striped">
     <tr>
         <th>Imię</th>
@@ -36,4 +40,8 @@
         </tr>
     }
 </table>
+
+<div page-model="@Model.PageModel" page-action="List" page-class="btn ml-1"
+     page-class-normal="btn-secondary" page-class-selected="btn-primary" class="btn-group float-right m-1">
+</div>
 

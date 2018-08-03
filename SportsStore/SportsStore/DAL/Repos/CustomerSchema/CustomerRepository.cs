@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SportsStore.DAL.Contexts;
 using SportsStore.Models.CustomerModels;
+using SportsStore.Models.DAL.Repos.SalesSchema;
 using SportsStore.Models.Identity;
 using System;
 using System.Collections.Generic;
@@ -14,14 +15,16 @@ namespace SportsStore.DAL.Repos.CustomerSchema
         private ApplicationDbContext _context;
         private UserManager<SportUser> _userManager;
         private IAddressRepository _addressRepository;
+        private IOrderRepository _orderRepository;
 
         public IEnumerable<Customer> Customers => _context.Customers;
 
-        public CustomerRepository(ApplicationDbContext context, UserManager<SportUser> userManager, IAddressRepository addressRepo)
+        public CustomerRepository(ApplicationDbContext context, UserManager<SportUser> userManager, IAddressRepository addressRepo, IOrderRepository orderRepo)
         {
             _context = context;
             _userManager = userManager;
             _addressRepository = addressRepo;
+            _orderRepository = orderRepo;
         }
 
         public void DeleteCustomer(int customerId)
@@ -33,9 +36,22 @@ namespace SportsStore.DAL.Repos.CustomerSchema
             _context.SaveChanges();
         }
 
+        public Customer GetCustomer(string email)
+        {
+            return _context.Customers.FirstOrDefault(c => c.Email == email);
+        }
+
         public Customer GetCustomer(int customerId)
         {
             return _context.Customers.FirstOrDefault(c => c.CustomerId == customerId);
+        }
+
+        public CustomerAdditionalData GetCustomerAdditionalData(int customerId)
+        {
+            CustomerAdditionalData result = new CustomerAdditionalData(customerId);
+            result.CustomerOrdersCount = _orderRepository.GetCustomerOrders(customerId).Count();
+
+            return result;
         }
 
         public async Task<CustomerFullData> GetCustomerFullData(int customerId)

@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.ResponseCaching.Internal;
 using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Domain;
+using SportsStore.Infrastructure.Abstract;
+using SportsStore.Models.Base;
 using SportsStore.Models.CustomerModels;
 using SportsStore.Models.Identity;
 using SportsStore.Models.User;
@@ -20,7 +22,7 @@ using SportsStore.Models.User;
 namespace SportsStore.Controllers
 {
     [Authorize]
-    public class UserController : BaseController
+    public class UserController : BaseController, ISearchable
     {
         private UserManager<SportUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
@@ -41,20 +43,50 @@ namespace SportsStore.Controllers
             return View(new UserIndexViewModel{User = user, UserRoles = userRoles });
         }
 
-        [Authorize(Roles = IdentityRoleNames.Admins)]
-        [Authorize(Policy = SecurityPermissionValues.ViewUser)]
-        public async Task<IActionResult> List(string roleName)
+        public async Task<IActionResult> List(int currentPage = 1)
         {
             var avaibleRoles = _roleManager.Roles.Select(r => r.Name).ToList();
             avaibleRoles.Add("Wszystkie");
-            UserListViewModel model = new UserListViewModel{ Roles =  avaibleRoles };
 
-            foreach(var user in _userManager.Users)
+            UserListViewModel model = new UserListViewModel(avaibleRoles, currentPage, _pageSize, _userManager.Users.Count());
+
+            var users = PaginateList(_userManager.Users, currentPage);
+
+            foreach(var user in users)
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
                 model.UsersWithRoles.Add(user, userRoles);
             }
+
             return View(model);
+        }
+
+        [Authorize(Roles = IdentityRoleNames.Admins)]
+        [Authorize(Policy = SecurityPermissionValues.ViewUser)]
+        [HttpPost]
+        public async Task<IActionResult> List(BaseListViewModel model)
+        {
+            if(model == null || string.IsNullOrEmpty(model.SearchData))
+            {
+                return await List();
+            }
+            else
+            {
+                var avaibleRoles = _roleManager.Roles.Select(r => r.Name).ToList();
+                avaibleRoles.Add("Wszystkie");
+
+                UserListViewModel userModel = new UserListViewModel(avaibleRoles, 1, _pageSize, 1);
+
+                SportUser user = null;
+                if (userModel.SearchData.Contains("@"))
+                    user = await _userManager.FindByEmailAsync(model.SearchData);
+                else
+                    user = await _userManager.FindByNameAsync(model.SearchData);
+
+                userModel.UsersWithRoles.Add(user, await _userManager.GetRolesAsync(user));
+
+                return View(userModel);
+            }
         }
 
         [AllowAnonymous]

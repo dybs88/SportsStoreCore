@@ -13,5 +13,15 @@ namespace SportsStore.DAL.Contexts
         { }
 
         public DbSet<DocumentType> DocumentTypes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder
+                .Entity<DocumentType>()
+                .Property(e => e.Type)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (Domain.DocumentTypes)Enum.Parse(typeof(Domain.DocumentTypes), v));
+        }
     }
 }

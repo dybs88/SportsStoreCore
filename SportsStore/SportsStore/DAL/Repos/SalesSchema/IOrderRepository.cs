@@ -14,6 +14,7 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
         bool CheckIfCustomerIsOrderOwner(int customerId, int orderId);
         IEnumerable<Order> GetCustomerOrders(int customerId);
         Order GetOrder(int orderId);
+        Order GetOrderByNumber(string orderNumber);
         void SaveOrder(Order Order);
     }
 }

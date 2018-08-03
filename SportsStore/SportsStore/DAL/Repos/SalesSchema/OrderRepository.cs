@@ -53,8 +53,16 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
             return Orders.FirstOrDefault(o => o.OrderId == orderId);
         }
 
+        public Order GetOrderByNumber(string orderNumber)
+        {
+            return Orders.FirstOrDefault(o => o.OrderNumber == orderNumber);
+        }
+
         public IEnumerable<Order> GetCustomerOrders(int customerId)
         {
+            if (customerId == 0)
+                return Orders;
+
             return Orders.Where(o => o.CustomerId == customerId);
         }
 

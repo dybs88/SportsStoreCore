@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Domain;
+using SportsStore.Infrastructure.Abstract;
 using SportsStore.Infrastructure.Extensions;
+using SportsStore.Models.Base;
 using SportsStore.Models.Cart;
 using SportsStore.Models.CustomerModels;
 using SportsStore.Models.DAL.Repos.SalesSchema;
@@ -18,15 +21,13 @@ using SportsStore.Models.OrderModels;
 namespace SportsStore.Controllers
 {
     [Authorize]
-    public class OrderController : Controller
+    public class OrderController : BaseController, ISearchable
     {
         private IOrderRepository _orderRepository;
         private Cart _cart;
         private UserManager<SportUser> _userManager;
         private ICustomerRepository _customerRepository;
         private IAddressRepository _addressRepository;
-
-        int _pageSize = 10;
 
         public OrderController(IOrderRepository repo, 
                                Cart cart, 
@@ -42,33 +43,47 @@ namespace SportsStore.Controllers
         }
 
         [Authorize(Policy = SalesPermissionValues.ViewOrder)]
-        public IActionResult FullList(int currentPage = 1)
+        public async Task<IActionResult> List(int currentPage = 1)
         {
-            var orders = _orderRepository.Orders
-                .Skip((currentPage - 1) * _pageSize)
-                .Take(_pageSize);
-            ListOrderViewModel model = new ListOrderViewModel(0, orders, currentPage, _pageSize, _orderRepository.Orders.Count());
+            int customerId = 0;
+            if (RouteData.Values["customerId"] != null)
+                customerId = int.Parse(RouteData.Values["customerId"].ToString());
 
-            return View("List", model);
-        }
-
-        [Authorize(Policy = SalesPermissionValues.ViewOrder)]
-        public IActionResult ListByCustomer(int customerId, int currentPage = 1)
-        {
             ViewBag.CustomerId = customerId;
 
-            var orders = _orderRepository.GetCustomerOrders(customerId)
-                .Skip((currentPage - 1) * _pageSize)
-                .Take(_pageSize);
-            ListOrderViewModel model = new ListOrderViewModel(customerId, orders, currentPage, _pageSize, _orderRepository.GetCustomerOrders(customerId).Count());
+            var orders = PaginateList(_orderRepository.Orders, currentPage);
 
-            return View("List", model);
+            OrderListViewModel model = new OrderListViewModel(customerId, orders, currentPage, _pageSize, _orderRepository.Orders.Count());
+            return View(model);
         }
 
         [Authorize(Policy = SalesPermissionValues.ViewOrder)]
-        public IActionResult List(ListOrderViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> List(BaseListViewModel model)
         {
-            return View(model);
+            if(model == null || string.IsNullOrEmpty(model.SearchData))
+            {
+                return await List();
+            }
+            else
+            {
+                int customerId = 0;
+                if (RouteData.Values["customerId"] != null)
+                    customerId = int.Parse(RouteData.Values["customerId"].ToString());
+
+                ViewBag.CustomerId = customerId;
+
+                List<Order> orders = new List<Order>();
+                int orderId = 0;
+
+                if (int.TryParse(model.SearchData, out orderId))
+                    orders.Add(_orderRepository.GetOrder(orderId));
+                else
+                    orders.Add(_orderRepository.GetOrderByNumber(model.SearchData));
+
+                OrderListViewModel orderModel = new OrderListViewModel(customerId, orders, 1, _pageSize, orders.Count());
+                return View(orderModel);
+            }
         }
 
         [Authorize(Policy = SalesPermissionValues.EditOrder)]

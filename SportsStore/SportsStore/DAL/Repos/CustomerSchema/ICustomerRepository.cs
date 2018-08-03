@@ -12,7 +12,11 @@ namespace SportsStore.DAL.Repos.CustomerSchema
 
         void DeleteCustomer(int customerId);
 
+        Customer GetCustomer(string email);
+
         Customer GetCustomer(int customerId);
+
+        CustomerAdditionalData GetCustomerAdditionalData(int customerId);
 
         Task<CustomerFullData> GetCustomerFullData(int customerId);
 
