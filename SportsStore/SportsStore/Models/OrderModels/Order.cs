@@ -20,7 +20,7 @@ namespace SportsStore.Models.OrderModels
     {
         public int OrderId { get; set; }
         public string OrderNumber { get; set; }
-        public ObservableCollection<CartItem> Items { get; set; }
+        public IEnumerable<CartItem> Items { get; set; }
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }
@@ -34,7 +34,7 @@ namespace SportsStore.Models.OrderModels
         public Order()
         {
             Items = new ObservableCollection<CartItem>();
-            Items.CollectionChanged += Items_CollectionChanged;
+            //Items.CollectionChanged += Items_CollectionChanged;
         }
 
         public Order(int customerId) :this()

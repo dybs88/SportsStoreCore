@@ -130,7 +130,7 @@ namespace SportsStore.Controllers
             {
                 Order newOrder = _orderRepository.CreateNewOrder(model.CustomerFullData.Customer.CustomerId);
                 newOrder.Address = model.SelectedAddress;
-                newOrder.Items.AddRange(_cart.Items);
+                newOrder.Items.ToList().AddRange(_cart.Items);
                 _orderRepository.SaveOrder(newOrder);
                 return RedirectToAction("Completed", new { order = newOrder });
             }

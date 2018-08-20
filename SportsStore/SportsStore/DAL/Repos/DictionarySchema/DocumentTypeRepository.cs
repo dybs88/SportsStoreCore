@@ -37,7 +37,7 @@ namespace SportsStore.DAL.Repos.DictionarySchema
             {
                 var dbEntry = _context.DocumentTypes.FirstOrDefault(dt => dt.DocumentTypeId == documentType.DocumentTypeId);
 
-                if(dbEntry != null)
+                if (dbEntry != null)
                 {
                     dbEntry.Code = documentType.Code;
                     dbEntry.Symbol = documentType.Symbol;

@@ -19,6 +19,6 @@ namespace SportsStore.Models.DictionaryModels
         [Required]
         public string Name { get; set; }
         [Required]
-        public DocumentTypes Type { get; set; }
+        public DocumentKind DocumentKind { get; set; }
     }
 }

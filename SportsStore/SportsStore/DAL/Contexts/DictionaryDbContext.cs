@@ -18,10 +18,10 @@ namespace SportsStore.DAL.Contexts
         {
             builder
                 .Entity<DocumentType>()
-                .Property(e => e.Type)
+                .Property(e => e.DocumentKind)
                 .HasConversion(
                     v => v.ToString(),
-                    v => (Domain.DocumentTypes)Enum.Parse(typeof(Domain.DocumentTypes), v));
+                    v => (Domain.DocumentKind)Enum.Parse(typeof(Domain.DocumentKind), v));
         }
     }
 }

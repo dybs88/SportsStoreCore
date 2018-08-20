@@ -16,19 +16,19 @@ namespace SportsStore.Infrastructure.Start.SeedDatas
         {
             DictionaryDbContext context = app.ApplicationServices.GetRequiredService<DictionaryDbContext>();
 
-            if(!context.DocumentTypes.Any(dt => dt.Type == DocumentTypes.SalesOrder))
+            if (!context.DocumentTypes.Any(dt => dt.DocumentKind == DocumentKind.SalesOrder))
             {
-                context.DocumentTypes.Add(new DocumentType { Code = "SportsStore.SalesOrder", Symbol = "ZS", Name = "Zamówienie sprzedaży", Type = DocumentTypes.SalesOrder });
-            }
-            
-            if(!context.DocumentTypes.Any(dt => dt.Type == DocumentTypes.Receipt))
-            {
-                context.DocumentTypes.Add(new DocumentType { Code = "SportsStore.Receipt", Symbol = "PAR", Name = "Paragon", Type = DocumentTypes.Receipt });
+                context.DocumentTypes.Add(new DocumentType { Code = "SportsStore.SalesOrder", Symbol = "ZS", Name = "Zamówienie sprzedaży", DocumentKind = DocumentKind.SalesOrder });
             }
 
-            if(!context.DocumentTypes.Any(dt => dt.Type == DocumentTypes.SalesInvoice))
+            if (!context.DocumentTypes.Any(dt => dt.DocumentKind == DocumentKind.Receipt))
             {
-                context.DocumentTypes.Add(new DocumentType { Code = "SportsStore.SalesInvoice", Symbol = "FS", Name = "Faktura sprzedaży", Type = DocumentTypes.SalesInvoice });
+                context.DocumentTypes.Add(new DocumentType { Code = "SportsStore.Receipt", Symbol = "PAR", Name = "Paragon", DocumentKind = DocumentKind.Receipt });
+            }
+
+            if (!context.DocumentTypes.Any(dt => dt.DocumentKind == DocumentKind.SalesInvoice))
+            {
+                context.DocumentTypes.Add(new DocumentType { Code = "SportsStore.SalesInvoice", Symbol = "FS", Name = "Faktura sprzedaży", DocumentKind = DocumentKind.SalesInvoice });
             }
 
             context.SaveChanges();

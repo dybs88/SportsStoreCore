@@ -2,12 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Moq;
+using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
+using SportsStore.Models.Cart;
 using SportsStore.Models.CustomerModels;
+using SportsStore.Models.DAL.Repos.SalesSchema;
 using SportsStore.Models.Identity;
+using SportsStore.Models.OrderModels;
+using SportsStore.Models.ProductModels;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -19,7 +24,17 @@ namespace SportsStore.Tests
 
         public static IAddressRepository AddressRepository => GetAddressRepository();
 
+        public static IOrderRepository OrderRepository => GetOrderRepository();
+
+        public static List<CartItem> Items => GetCartItems();
+
+        public static IProductRepository ProductRepository => GetProductRepository();
+
         public static IQueryable<SportUser> Users => GetUsers();
+
+
+
+
 
         private static ICustomerRepository GetCustomerRepository()
         {
@@ -49,6 +64,54 @@ namespace SportsStore.Tests
             });
 
             return mockAddressRepo.Object;
+        }
+
+        private static IOrderRepository GetOrderRepository()
+        {
+            List<Order> orders = new List<Order>
+            {
+                new Order { OrderId = 1, Items = Items.Where(i => i.OrderId == 1), AddressId = 1, CustomerId = 1, OrderNumber = "ZS/1" },
+                new Order { OrderId = 2, Items = Items.Where(i => i.OrderId == 2), AddressId = 2, CustomerId = 2, OrderNumber = "ZS/2" }
+            };
+
+            Mock<IOrderRepository> mockOrderRepo = new Mock<IOrderRepository>();
+            mockOrderRepo.Setup(x => x.Orders).Returns(orders);
+            mockOrderRepo.Setup(x => x.SaveOrder(It.IsAny<Order>()))
+            .Callback<Order>(o =>
+            {
+                orders.Add(o);
+            });
+
+            return mockOrderRepo.Object;
+        }
+
+        private static List<CartItem> GetCartItems()
+        {
+            return new List<CartItem>
+            {
+                new CartItem { CartItemId = 1, OrderId = 1, Product = ProductRepository.Products.First(p => p.Name == "P1"), Quantity = 1 },
+                new CartItem { CartItemId = 2, OrderId = 1, Product = ProductRepository.Products.First(p => p.Name == "P2"), Quantity = 2 },
+                new CartItem { CartItemId = 3, OrderId = 2, Product = ProductRepository.Products.First(p => p.Name == "P7"), Quantity = 3 },
+                new CartItem { CartItemId = 4, OrderId = 2, Product = ProductRepository.Products.First(p => p.Name == "P4"), Quantity = 1 }
+            };
+        }
+
+        private static IProductRepository GetProductRepository()
+        {
+            Mock<IProductRepository> mockProductRepo = new Mock<IProductRepository>();
+            mockProductRepo.Setup(x => x.Products).Returns(new List<Product>
+            {
+                new Product {Name = "P1", Price = 10M, Category = "1"},
+                new Product {Name = "P2", Price = 20M, Category = "1"},
+                new Product {Name = "P3", Price = 30M, Category = "2"},
+                new Product {Name = "P4", Price = 40M, Category = "3"},
+                new Product {Name = "P5", Price = 50M, Category = "3"},
+                new Product {Name = "P6", Price = 60M, Category = "3"},
+                new Product {Name = "P7", Price = 70M, Category = "4"},
+                new Product {Name = "P8", Price = 80M, Category = "4"}
+            }.AsQueryable());
+
+            return mockProductRepo.Object;
         }
 
         private static IQueryable<SportUser> GetUsers()

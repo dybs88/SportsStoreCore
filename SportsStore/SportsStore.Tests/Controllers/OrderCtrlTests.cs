@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Moq;
 using SportsStore.Controllers;
 using SportsStore.Models;
@@ -17,29 +18,18 @@ namespace SportsStore.Tests.Controllers
     public class OrderCtrlTests
     {
         private OrderController _target;
-        private IOrderRepository _repo;
         public OrderCtrlTests()
         {
-            List<Order> orders = new List<Order>();
-            Mock<IOrderRepository> mockOrderRepo = new Mock<IOrderRepository>();
-            mockOrderRepo.Setup(x => x.Orders).Returns(orders.AsQueryable());
-            mockOrderRepo.Setup(x => x.SaveOrder(It.IsAny<Order>()))
-                .Callback<Order>(o =>
-                {
-                    orders.Add(o);
-                });
-
-            _repo = mockOrderRepo.Object;
         }
 
         [Fact]
-        public void CheckoutEmptyOrder()
+        public void ShowOrderList()
         {
             //arange
-            //_target = new OrderController(_repo, new Cart());
+            _target = new OrderController(Repositories.OrderRepository, new Cart(), null, Repositories.CustomerRepository, Repositories.AddressRepository);
 
-            ////act
-            //ViewResult result = (ViewResult)_target.CreateOrder(new Order());
+            //act
+            ViewResult result = (ViewResult)_target.List().Result;
 
             ////assert
             //Assert.NotEmpty(result.ViewData.ModelState);

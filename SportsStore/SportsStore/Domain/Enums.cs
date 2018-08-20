@@ -11,7 +11,7 @@ namespace SportsStore.Domain
         View
     }
 
-    public enum DocumentTypes
+    public enum DocumentKind
     {
         SalesOrder,
         Receipt,

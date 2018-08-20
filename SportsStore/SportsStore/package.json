@@ -1,0 +1,10 @@
+{
+  "name": "myproject",
+  "version": "1.0.0",
+  "repository": "wwwroot",
+  "description": "SportsStore project",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "mdbootstrap": "^4.5.8"
+  }
+}

@@ -6,7 +6,19 @@
         Layout = "~/Views/Shared/_CustomerLayout.cshtml";
     }
 }
-
+<script>
+    $(document).ready(function () {
+        $('#orderListTable').DataTable
+            (
+                {
+                    "paging": false,
+                    "searching": false,
+                    "info": false
+                }
+            );
+        $('.dataTables_length').addClass('bs-select');
+    });
+</script>
 <h2>Zamówienia</h2>
 <div class="row mb-1">
     <div class="col">
@@ -22,32 +34,46 @@
         </div>
     </div>
 </div>
-<table class="table table-bordered table-striped">
-    <tr>
-        <th>Numer</th>
-        <th>Klient</th>
-        <th>Wartość</th>
-        <th>Status</th>
-        <th colspan="2">Opis</th>
-        <th>Akcja</th>
-    </tr>
-    @foreach (Order order in Model.Orders)
-    {
+<table id="orderListTable" class="table table-bordered table-striped">
+    <thead>
         <tr>
-            <td>@order.OrderNumber</td>
-            <td>@order.Customer.Email</td>
-            <td>@order.Value.ToString("c")</td>
-            <td>-</td>
-            <td colspan="2"></td>
-            <td>
-                <a class="btn btn-primary" 
-                   asp-action="Edit" 
-                   asp-controller="Order" 
-                   asp-route-customerId="@order.CustomerId" 
-                   asp-route-orderId="@order.OrderId">@(User.IsInRole(IdentityRoleNames.Employees) ? "Edytuj" : "Podgląd")</a>
-            </td>
+            <th class="th-sm">
+                Numer
+                <i class="fa fa-sort float-right" aria-hidden="true"></i>
+            </th>
+            <th>
+                Klient
+                <i class="fa fa-sort float-right" aria-hidden="true"></i>
+            </th>
+            <th>
+                Wartość
+                <i class="fa fa-sort float-right" aria-hidden="true"></i>
+            </th>
+            <th>
+                Status
+                <i class="fa fa-sort float-right" aria-hidden="true"></i>
+            </th>
+            <th>Akcja</th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (Order order in Model.Orders)
+        {
+            <tr>
+                <td>@order.OrderNumber</td>
+                <td>@order.Customer.Email</td>
+                <td>@order.Value.ToString("c")</td>
+                <td>-</td>
+                <td>
+                    <a class="btn btn-primary"
+                       asp-action="Edit"
+                       asp-controller="Order"
+                       asp-route-customerId="@order.CustomerId"
+                       asp-route-orderId="@order.OrderId">@(User.IsInRole(IdentityRoleNames.Employees) ? "Edytuj" : "Podgląd")</a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 <div page-model="@Model.PageModel" page-action="List" page-class="btn ml-1" page-url-customerId="@Model.CustomerId"
      page-class-normal="btn-secondary" page-class-selected="btn-primary" class="btn-group float-right m-1">

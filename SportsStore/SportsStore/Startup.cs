@@ -28,9 +28,12 @@ namespace SportsStore
     {
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
+        public IHostingEnvironment Environment { get; }
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -78,12 +81,22 @@ namespace SportsStore
                 RouteMapping.MapRoutes(routes);
             });
 
-            
-            Migrate.ExecuteContextsMigrate(app);
-            ProductSeedData.EnsurePopulated(app);
-            PermissionSeedData.PopulatePermissions(app);
-            IdentitySeedData.PopulateIdentity(app);
-            DictionarySeddData.PopulateDictionaries(app);
+            if(env.EnvironmentName != "TEST")
+            {
+                Migrate.ExecuteContextsMigrate(app);
+                ProductSeedData.EnsurePopulated(app);
+                PermissionSeedData.PopulatePermissions(app);
+                IdentitySeedData.PopulateIdentity(app);
+                DictionarySeddData.PopulateDictionaries(app);
+            }
+        }
+
+        public class TestStartup : Startup
+        {
+            public TestStartup(IConfiguration configuration, IHostingEnvironment env) : base(configuration, env)
+            {
+                env.EnvironmentName = "TEST";
+            }
         }
     }
 }

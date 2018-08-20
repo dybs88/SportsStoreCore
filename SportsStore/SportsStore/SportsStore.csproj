@@ -97,6 +97,15 @@
     <Content Remove="wwwroot\fontawesome\LICENSE.txt" />
     <Content Remove="wwwroot\fontawesome\README.md" />
     <Content Remove="wwwroot\fontawesome\UPGRADING.md" />
+    <Content Remove="wwwroot\mdbootstrap\CODE_OF_CONDUCT.md" />
+    <Content Remove="wwwroot\mdbootstrap\CONTRIBUTING.md" />
+    <Content Remove="wwwroot\mdbootstrap\index.html" />
+    <Content Remove="wwwroot\mdbootstrap\ISSUE_TEMPLATE.md" />
+    <Content Remove="wwwroot\mdbootstrap\License.pdf" />
+    <Content Remove="wwwroot\mdbootstrap\license.txt" />
+    <Content Remove="wwwroot\mdbootstrap\package.json" />
+    <Content Remove="wwwroot\mdbootstrap\README.md" />
+    <Content Remove="wwwroot\mdbootstrap\README.txt" />
   </ItemGroup>
 
   <ItemGroup>
