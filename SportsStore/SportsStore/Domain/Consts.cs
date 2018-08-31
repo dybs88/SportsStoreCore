@@ -61,4 +61,9 @@ namespace SportsStore.Domain
         public const string CustomerId = "http://sportsstore/claims/customerId";
         public const string AddressId = "http://sportsstore/claims/addressId";
     }
+
+    public static class SessionData
+    {
+        public const string CustomerId = "customerId";
+    }
 }

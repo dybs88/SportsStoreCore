@@ -15,11 +15,11 @@ namespace SportsStore.Tests.Controllers
 {
     public class CustomerCtrlTests
     {
-        CustomerController target;
-        private SignInManager<SportUser> signInManager;
+        CustomerController _target;
+
         public CustomerCtrlTests()
         {
-            //target = new CustomerController(Repositories.CustomerRepository, Repositories.AddressRepository, MockIdentity.FakeUserManager);
+            
         }
     }
 }

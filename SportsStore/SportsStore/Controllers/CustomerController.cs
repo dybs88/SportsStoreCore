@@ -27,7 +27,8 @@ namespace SportsStore.Controllers
         private IOrderRepository _orderRepository;
         private static UserManager<SportUser> _userManager;
 
-        public CustomerController(ICustomerRepository custRepo, IAddressRepository addressRepo, IOrderRepository orderRepo, UserManager<SportUser> userManager)
+        public CustomerController(IServiceProvider provider, ICustomerRepository custRepo, IAddressRepository addressRepo, IOrderRepository orderRepo, UserManager<SportUser> userManager)
+            :base(provider)
         {
             _customerRepository = custRepo;
             _addressRepository = addressRepo;

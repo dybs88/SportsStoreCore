@@ -20,7 +20,8 @@ namespace SportsStore.Controllers
         private RoleManager<IdentityRole> _roleManager;
         private UserManager<SportUser> _userManager;
 
-        public RoleController(RoleManager<IdentityRole> roleManager, UserManager<SportUser> userManager)
+        public RoleController(IServiceProvider provider, RoleManager<IdentityRole> roleManager, UserManager<SportUser> userManager)
+            :base(provider)
         {
             _roleManager = roleManager;
             _userManager = userManager;

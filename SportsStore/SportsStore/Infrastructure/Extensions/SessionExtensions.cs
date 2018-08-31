@@ -19,5 +19,24 @@ namespace SportsStore.Infrastructure.Extensions
             string value = session.GetString(key);
             return string.IsNullOrEmpty(value) ? default(T) : JsonConvert.DeserializeObject<T>(value);
         }
+
+        public static IEnumerable<object> GetSessionValues(this ISession session)
+        {
+            List<object> result = new List<object>();
+
+            foreach (var key in session.Keys)
+                result.Add(session.GetJson<object>(key));
+
+            return result;
+        }
+
+        public static int GetInt(this ISession session, string key)
+        {
+            int outputInt = 0;
+            if (int.TryParse(session.GetString(key), out outputInt))
+                return outputInt;
+            else
+                return default(int);
+        }
     }
 }

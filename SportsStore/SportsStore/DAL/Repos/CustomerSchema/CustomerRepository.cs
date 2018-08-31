@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SportsStore.DAL.AbstractContexts;
 using SportsStore.DAL.Contexts;
+using SportsStore.DAL.Repos.Security;
 using SportsStore.Models.CustomerModels;
 using SportsStore.Models.DAL.Repos.SalesSchema;
 using SportsStore.Models.Identity;
@@ -12,14 +14,14 @@ namespace SportsStore.DAL.Repos.CustomerSchema
 {
     public class CustomerRepository : ICustomerRepository
     {
-        private ApplicationDbContext _context;
-        private UserManager<SportUser> _userManager;
+        private IApplicationDbContext _context;
+        private ISportsStoreUserManager _userManager;
         private IAddressRepository _addressRepository;
         private IOrderRepository _orderRepository;
 
-        public IEnumerable<Customer> Customers => _context.Customers;
+        public IQueryable<Customer> Customers => _context.Customers;
 
-        public CustomerRepository(ApplicationDbContext context, UserManager<SportUser> userManager, IAddressRepository addressRepo, IOrderRepository orderRepo)
+        public CustomerRepository(IApplicationDbContext context, ISportsStoreUserManager userManager, IAddressRepository addressRepo, IOrderRepository orderRepo)
         {
             _context = context;
             _userManager = userManager;
@@ -57,12 +59,15 @@ namespace SportsStore.DAL.Repos.CustomerSchema
         public async Task<CustomerFullData> GetCustomerFullData(int customerId)
         {
             var customer = Customers.FirstOrDefault(c => c.CustomerId == customerId);
-            if(customer != null)
+            if (customer != null)
             {
-                var user = await _userManager.FindByEmailAsync(customer.Email);
-                var addresses = _addressRepository.GetCustomerAddresses(customerId);
-
-                return new CustomerFullData { Customer = customer, User = user, Addresses = addresses };
+                return new CustomerFullData
+                {
+                    Customer = customer,
+                    User = await _userManager.FindByEmailAsync(customer.Email), 
+                    Addresses = _addressRepository.GetCustomerAddresses(customerId),
+                    AdditionalData = GetCustomerAdditionalData(customerId)
+                };
             }
 
             return null;

@@ -50,7 +50,7 @@ namespace SportsStore.DAL.Repos.CustomerSchema
         public int SaveAddress(Address address)
         {
             if (address.AddressId == 0)
-                _context.Addresses.Add(address);
+                _context.Add(address);
             else
             {
                 var addressToUpdate = GetAddress(address.AddressId);

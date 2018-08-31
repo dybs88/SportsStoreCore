@@ -45,7 +45,7 @@ namespace SportsStore.Infrastructure.Start.AppConfiguration
             routes.MapRoute
                (name: null,
                 template: "",
-                defaults: new { controller = "Product", action = "List", productPage = 1 });
+                defaults: new { controller = "Base", action = "Start", productPage = 1 });
 
             routes.MapRoute
                (name: null,

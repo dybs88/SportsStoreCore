@@ -9,6 +9,9 @@ namespace SportsStore.Controllers.Base
 {
     public class IdentityController : BaseController
     {
+        public IdentityController(IServiceProvider provider)
+            :base(provider)
+        { }
         public void AddIdentityClaim(IEnumerable<Claim> claims)
         {
             User.AddIdentity(new ClaimsIdentity(claims));

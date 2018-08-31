@@ -10,11 +10,11 @@
     $(document).ready(function () {
         $('#orderListTable').DataTable
             (
-                {
-                    "paging": false,
-                    "searching": false,
-                    "info": false
-                }
+            {
+                "paging": false,
+                "searching": false,
+                "info": false
+            }
             );
         $('.dataTables_length').addClass('bs-select');
     });
@@ -24,57 +24,55 @@
     <div class="col">
         <div search="" label-text="Id lub numer:"></div>
     </div>
-    <div class="col">
-        <div class="mb-1">
-            @if (Model.CustomerId == 0)
-            {
-                <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="false">Wszystkie</a>
-                <a class="btn btn-secondary" asp-action="List" asp-route-filterByShipped="true">Nie zrealizowane</a>
-            }
-        </div>
-    </div>
 </div>
-<table id="orderListTable" class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th class="th-sm">
-                Numer
-                <i class="fa fa-sort float-right" aria-hidden="true"></i>
-            </th>
-            <th>
-                Klient
-                <i class="fa fa-sort float-right" aria-hidden="true"></i>
-            </th>
-            <th>
-                Wartość
-                <i class="fa fa-sort float-right" aria-hidden="true"></i>
-            </th>
-            <th>
-                Status
-                <i class="fa fa-sort float-right" aria-hidden="true"></i>
-            </th>
-            <th>Akcja</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (Order order in Model.Orders)
-        {
+@if (Model.Orders.Count() > 0)
+{
+    <table id="orderListTable" class="table table-bordered table-striped">
+        <thead>
             <tr>
-                <td>@order.OrderNumber</td>
-                <td>@order.Customer.Email</td>
-                <td>@order.Value.ToString("c")</td>
-                <td>-</td>
-                <td>
-                    <a class="btn btn-primary"
-                       asp-action="Edit"
-                       asp-controller="Order"
-                       asp-route-customerId="@order.CustomerId"
-                       asp-route-orderId="@order.OrderId">@(User.IsInRole(IdentityRoleNames.Employees) ? "Edytuj" : "Podgląd")</a>
-                </td>
+                <th class="th-sm">
+                    Numer
+                    <i class="fa fa-sort float-right" aria-hidden="true"></i>
+                </th>
+                <th>
+                    Klient
+                    <i class="fa fa-sort float-right" aria-hidden="true"></i>
+                </th>
+                <th>
+                    Wartość
+                    <i class="fa fa-sort float-right" aria-hidden="true"></i>
+                </th>
+                <th>
+                    Status
+                    <i class="fa fa-sort float-right" aria-hidden="true"></i>
+                </th>
+                <th>Akcja</th>
             </tr>
-        }
-    </tbody>
-</table>
-<div page-model="@Model.PageModel" page-action="List" page-class="btn ml-1" page-url-customerId="@Model.CustomerId"
-     page-class-normal="btn-secondary" page-class-selected="btn-primary" class="btn-group float-right m-1">
-</div>
+        </thead>
+        <tbody>
+            @foreach (Order order in Model.Orders)
+            {
+                <tr>
+                    <td>@order.OrderNumber</td>
+                    <td>@order.Customer.Email</td>
+                    <td>@order.Value.ToString("c")</td>
+                    <td>-</td>
+                    <td>
+                        <a class="btn btn-primary"
+                           asp-action="Edit"
+                           asp-controller="Order"
+                           asp-route-customerId="@order.CustomerId"
+                           asp-route-orderId="@order.OrderId">@(User.IsInRole(IdentityRoleNames.Employees) ? "Edytuj" : "Podgląd")</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div page-model="@Model.PageModel" page-action="List" page-class="btn ml-1"
+         page-class-normal="btn-secondary" page-class-selected="btn-primary" class="btn-group float-right m-1">
+    </div>
+}
+else
+{
+    <h6>Nie znaleziono zamówienia</h6>
+}

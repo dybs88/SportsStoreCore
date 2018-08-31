@@ -11,20 +11,20 @@
             $(e.currentTarget).removeClass("btn-outline-primary").addClass("btn-outline-success");
 
             var $addressDataChildren = $(e.currentTarget).children("h4,h5,h6");
-            $("#inAddressId").val($(e.currentTarget).attr("data-address-id"));
-            $("#inStreet").val($addressDataChildren.filter("[data-street]").attr("data-street"));
+            $("#SelectedAddress_AddressId").val($(e.currentTarget).attr("data-address-id"));
+            $("#SelectedAddress_Street").val($addressDataChildren.filter("[data-street]").attr("data-street"));
 
-            $("#inBuildingNr").val($addressDataChildren.filter("[data-building-number]").attr("data-building-number"));
+            $("#SelectedAddress_BuildingNumber").val($addressDataChildren.filter("[data-building-number]").attr("data-building-number"));
 
-            $("#inApartmentNr").val($addressDataChildren.filter("[data-aparatment-number]").attr("data-aparatment-number"));
+            $("#SelectedAddress_ApartmentNumber").val($addressDataChildren.filter("[data-aparatment-number]").attr("data-aparatment-number"));
 
-            $("#inCity").val($addressDataChildren.filter("[data-city]").attr("data-city"));
+            $("#SelectedAddress_City").val($addressDataChildren.filter("[data-city]").attr("data-city"));
 
-            $("#inCountry").val($addressDataChildren.filter("[data-country]").attr("data-country"));
+            $("#SelectedAddress_Country").val($addressDataChildren.filter("[data-country]").attr("data-country"));
 
-            $("#inRegion").val($addressDataChildren.filter("[data-region]").attr("data-region"));
+            $("#SelectedAddress_Region").val($addressDataChildren.filter("[data-region]").attr("data-region"));
 
-            $("#inZipCode").val($addressDataChildren.filter("[data-zip-code]").attr("data-zip-code"));
+            $("#SelectedAddress_ZipCode").val($addressDataChildren.filter("[data-zip-code]").attr("data-zip-code"));
 
             $("#addressData").hide();
         });
@@ -98,38 +98,38 @@
         </div>
     </div>
     <div id="addressData" class="row" style="display:none">
-        <input id="inAddressId" type="hidden" asp-for="SelectedAddress.AddressId" />
+        <input type="hidden" asp-for="SelectedAddress.AddressId" value="1000" />
         <input type="hidden" asp-for="SelectedAddress.CustomerId" value="@Model.CustomerFullData.Customer.CustomerId"/>
         <div class="col">
             <div class="form-group">
                 <label>Ulica:</label>
-                <input id="inStreet" asp-for="SelectedAddress.Street" class="form-control" />
+                <input asp-for="SelectedAddress.Street" class="form-control" />
             </div>
             <div class="form-group">
                 <label>Nr budynku:</label>
-                <input id="inBuildingNr" asp-for="SelectedAddress.BuildingNumber" class="form-control" />
+                <input asp-for="SelectedAddress.BuildingNumber" class="form-control" />
             </div>
             <div class="form-group">
                 <label>Województwo:</label>
-                <input id="inRegion" asp-for="SelectedAddress.Region" class="form-control" />
+                <input asp-for="SelectedAddress.Region" class="form-control" />
             </div>
             <div class="form-group">
                 <label>Kod pocztowy:</label>
-                <input id="inZipCode" asp-for="SelectedAddress.ZipCode" class="form-control" />
+                <input asp-for="SelectedAddress.ZipCode" class="form-control" />
             </div>
         </div>
         <div class="col">
             <div class="form-group">
                 <label>Miasto:</label>
-                <input id="inCity" asp-for="SelectedAddress.City" class="form-control" />
+                <input asp-for="SelectedAddress.City" class="form-control" />
             </div>
             <div class="form-group">
                 <label>Nr lokalu:</label>
-                <input id="inApartmentNr" asp-for="SelectedAddress.ApartmentNumber" class="form-control" />
+                <input asp-for="SelectedAddress.ApartmentNumber" class="form-control" />
             </div>
             <div class="form-group">
                 <label>Państwo:</label>
-                <input id="inCountry" asp-for="SelectedAddress.Country" class="form-control" />
+                <input asp-for="SelectedAddress.Country" class="form-control" />
             </div>
         </div>
     </div>
@@ -138,7 +138,7 @@
         <label>Zapakowane jako prezent: <input asp-for="GiftWrap" /></label>
     </div>
     <div class="text-center">
-        <input type="submit" class="btn btn-success" value="Złóż zamówienie" />
+        <button type="submit" class="btn btn-success">Złóż zamówienie</button>
     </div>
 </form>
 

@@ -16,7 +16,7 @@ namespace SportsStore.Tests.Controllers
         AccountController target; 
         public AccountCtrlTests()
         {
-            target = new AccountController(MockIdentity.FakeUserManager, MockIdentity.FakeSignInManager, new Cart());
+            //target = new AccountController(MockIdentity.FakeUserManager, MockIdentity.FakeSignInManager, new Cart());
         }
 
         [Fact]

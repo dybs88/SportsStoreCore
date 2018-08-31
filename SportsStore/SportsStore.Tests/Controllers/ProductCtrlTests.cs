@@ -8,6 +8,7 @@ using SportsStore.DAL.Repos;
 using SportsStore.Models;
 using SportsStore.Models.ProductModels;
 using SportsStore.Models.ViewModels;
+using SportsStore.Tests.Base;
 using Xunit;
 
 namespace SportsStore.Tests
@@ -31,7 +32,7 @@ namespace SportsStore.Tests
                 new Product {Name = "P8", Price = 80M, Category = "4"}
             }.AsQueryable());
 
-            target = new ProductController(mockRepository.Object);
+            target = new ProductController(MockedObjects.Provider, mockRepository.Object);
         }
 
         [Fact]

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using SportsStore.Models.Identity;
+using SportsStore.Tests.Base;
 using System.Threading.Tasks;
 
 namespace SportsStore.Tests.FakeIdentity

@@ -21,67 +21,58 @@ using SportsStore.Models.OrderModels;
 namespace SportsStore.Controllers
 {
     [Authorize]
-    public class OrderController : BaseController, ISearchable
+    public class OrderController : BaseController
     {
         private IOrderRepository _orderRepository;
         private Cart _cart;
-        private UserManager<SportUser> _userManager;
         private ICustomerRepository _customerRepository;
         private IAddressRepository _addressRepository;
 
-        public OrderController(IOrderRepository repo, 
+        public OrderController(IServiceProvider provider,
+                               IOrderRepository repo, 
                                Cart cart, 
-                               UserManager<SportUser> userManager, 
                                ICustomerRepository custRepo, 
                                IAddressRepository addressRepo)
+            :base(provider)
         {
             _orderRepository = repo;
             _cart = cart;
-            _userManager = userManager;
             _customerRepository = custRepo;
             _addressRepository = addressRepo;
         }
 
         [Authorize(Policy = SalesPermissionValues.ViewOrder)]
-        public async Task<IActionResult> List(int currentPage = 1)
+        public IActionResult List(int customerId = 0, int currentPage = 1)
         {
-            int customerId = 0;
-            if (RouteData.Values["customerId"] != null)
-                customerId = int.Parse(RouteData.Values["customerId"].ToString());
+            var orders = PaginateList(_orderRepository.GetCustomerOrders(customerId), currentPage);
 
-            ViewBag.CustomerId = customerId;
-
-            var orders = PaginateList(_orderRepository.Orders, currentPage);
-
-            OrderListViewModel model = new OrderListViewModel(customerId, orders, currentPage, _pageSize, _orderRepository.Orders.Count());
+            OrderListViewModel model = new OrderListViewModel(orders, currentPage, _pageSize, _orderRepository.Orders.Count());
             return View(model);
         }
 
         [Authorize(Policy = SalesPermissionValues.ViewOrder)]
         [HttpPost]
-        public async Task<IActionResult> List(BaseListViewModel model)
+        public IActionResult List(BaseListViewModel model)
         {
             if(model == null || string.IsNullOrEmpty(model.SearchData))
             {
-                return await List();
+                return List();
             }
             else
             {
-                int customerId = 0;
-                if (RouteData.Values["customerId"] != null)
-                    customerId = int.Parse(RouteData.Values["customerId"].ToString());
-
-                ViewBag.CustomerId = customerId;
-
                 List<Order> orders = new List<Order>();
                 int orderId = 0;
+                Order order = null;
 
                 if (int.TryParse(model.SearchData, out orderId))
-                    orders.Add(_orderRepository.GetOrder(orderId));
+                    order = _orderRepository.GetOrder(orderId);
                 else
-                    orders.Add(_orderRepository.GetOrderByNumber(model.SearchData));
+                    order = _orderRepository.GetOrder(model.SearchData);    
 
-                OrderListViewModel orderModel = new OrderListViewModel(customerId, orders, 1, _pageSize, orders.Count());
+                if (order != null)
+                    orders.Add(order);
+                
+                OrderListViewModel orderModel = new OrderListViewModel(orders, 1, _pageSize, orders.Count());
                 return View(orderModel);
             }
         }
@@ -89,7 +80,6 @@ namespace SportsStore.Controllers
         [Authorize(Policy = SalesPermissionValues.EditOrder)]
         public IActionResult Edit(int customerId, int orderId)
         {
-            ViewBag.CustomerId = customerId;
             return View(_orderRepository.GetOrder(orderId));
         }
 
@@ -118,7 +108,7 @@ namespace SportsStore.Controllers
             if (!User.Identity.IsAuthenticated)
                 return Redirect("Account/Login");
 
-            var customerId = await _userManager.GetCustomerIdByNameAsync<SportUser>(User.Identity.Name);
+            var customerId = _session.GetInt(SessionData.CustomerId);
             return View(new CreateOrderViewModel { CustomerFullData = await _customerRepository.GetCustomerFullData(customerId) });
         }
 
@@ -145,6 +135,11 @@ namespace SportsStore.Controllers
         {
             _cart.ClearCart();
             return View(order);
+        }
+
+        public void SetCart(Cart cart)
+        {
+            _cart = cart;
         }
     }
 }

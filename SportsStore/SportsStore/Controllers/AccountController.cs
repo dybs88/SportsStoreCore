@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using SportsStore.Controllers.Base;
 using SportsStore.Domain;
 using SportsStore.Infrastructure.Extensions;
 using SportsStore.Models.Account;
 using SportsStore.Models.Cart;
+using SportsStore.Models.CustomerModels;
 using SportsStore.Models.Identity;
 
 namespace SportsStore.Controllers
@@ -21,7 +24,8 @@ namespace SportsStore.Controllers
         private SignInManager<SportUser> _signInManager;
         private Cart _cart;
 
-        public AccountController(UserManager<SportUser> userManager, SignInManager<SportUser> signInManager, Cart cart)
+        public AccountController(IServiceProvider provider, UserManager<SportUser> userManager, SignInManager<SportUser> signInManager, Cart cart)
+            :base(provider)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -51,7 +55,10 @@ namespace SportsStore.Controllers
                         if (await _userManager.IsInRoleAsync(user, IdentityRoleNames.Employees))
                             return Redirect("/User/Index");
                         else
+                        {
+                            _session.SetJson(SessionData.CustomerId, user.CustomerId);
                             return RedirectToAction("Index","Customer", new { customerId = user.CustomerId});
+                        }
                     }
                 }
             }
@@ -63,6 +70,7 @@ namespace SportsStore.Controllers
         public async Task<RedirectResult> Logout(string returnUrl = "/")
         {
             await _signInManager.SignOutAsync();
+            _session.Remove(SessionData.CustomerId);
             _cart.ClearCart();
             return Redirect(returnUrl);
         }

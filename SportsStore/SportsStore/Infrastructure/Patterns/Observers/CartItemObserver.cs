@@ -28,7 +28,11 @@ namespace SportsStore.Infrastructure.Patterns.Observers
 
         private void QuantityPropertyChanged()
         {
-            _obj.Value = _obj.Product.Price * _obj.Quantity;
+            decimal price = 0;
+            if (_obj.Product != null)
+                price = _obj.Product.Price;
+
+            _obj.Value = price * _obj.Quantity;
         }
     }
 }

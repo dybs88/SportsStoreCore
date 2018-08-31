@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos;
 using SportsStore.Helpers;
 using SportsStore.Models;
@@ -12,12 +13,13 @@ using SportsStore.Models.ViewModels;
 
 namespace SportsStore.Controllers
 {
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         private IProductRepository _repository;
         private int _pageSize = 4;
 
-        public ProductController(IProductRepository repository)
+        public ProductController(IServiceProvider provider, IProductRepository repository)
+            : base(provider)
         {
             _repository = repository;
         }

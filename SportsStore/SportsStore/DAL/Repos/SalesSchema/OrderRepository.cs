@@ -1,27 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SportsStore.DAL.AbstractContexts;
 using SportsStore.DAL.Contexts;
+using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
+using SportsStore.Infrastructure.Extensions;
 using SportsStore.Models.CustomerModels;
+using SportsStore.Models.Identity;
 using SportsStore.Models.OrderModels;
 
 namespace SportsStore.Models.DAL.Repos.SalesSchema
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : BaseRepository, IOrderRepository
     {
-        private ApplicationDbContext _context;
+        private IApplicationDbContext _context;
         private IAddressRepository _addressRepository;
 
-        public OrderRepository(ApplicationDbContext context, IAddressRepository addressRepo)
+        public OrderRepository(IServiceProvider provider, IApplicationDbContext context, IAddressRepository addressRepo)
+            : base(provider)
         {
             _context = context;
             _addressRepository = addressRepo;
         }
 
-        public IEnumerable<Order> Orders => _context.Orders
+        public IQueryable<Order> Orders => _context.Orders
             .Include(o => o.Customer)
             .Include(o => o.Address)
             .Include(o => o.Items)
@@ -50,12 +57,19 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
 
         public Order GetOrder(int orderId)
         {
-            return Orders.FirstOrDefault(o => o.OrderId == orderId);
+            if(CheckIfCustomerIsOrderOwner(_session.GetJson<int>("CustomerId"),orderId))
+                return Orders.FirstOrDefault(o => o.OrderId == orderId);
+
+            return null;
         }
 
-        public Order GetOrderByNumber(string orderNumber)
+        public Order GetOrder(string orderNumber)
         {
-            return Orders.FirstOrDefault(o => o.OrderNumber == orderNumber);
+            Order result = Orders.FirstOrDefault(o => o.OrderNumber == orderNumber);
+            if (CheckIfCustomerIsOrderOwner(_session.GetJson<int>("CustomerId"), result.OrderId))
+                return result;
+
+            return null;
         }
 
         public IEnumerable<Order> GetCustomerOrders(int customerId)
@@ -69,7 +83,7 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
         public void SaveOrder(Order order)
         {
             order.AddressId = _addressRepository.SaveAddress(order.Address);
-
+            order.Value = order.Items.Sum(i => i.Value);
             if (order.OrderId == 0)
                 _context.Add(order);
 

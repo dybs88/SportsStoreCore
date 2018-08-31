@@ -12,5 +12,6 @@ namespace SportsStore.Models.OrderModels
         public CustomerFullData CustomerFullData { get; set; }
         public Address SelectedAddress { get; set; }
         public bool GiftWrap { get; set; }
+
     }
 }

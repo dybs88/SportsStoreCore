@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 namespace SportsStore.Models.OrderModels
 {
     public class OrderListViewModel : BaseListViewModel
-    {
-        public int CustomerId { get; set; }
+    { 
         public IEnumerable<Order> Orders { get; set; }
 
-        public OrderListViewModel(int customerId, IEnumerable<Order> orders, int currentPage, int itemsPerPage, int totalItems)
+        public OrderListViewModel(IEnumerable<Order> orders, int currentPage, int itemsPerPage, int totalItems)
         {
-            CustomerId = customerId;
             Orders = orders;
             PageModel = new PageHelper { ItemPerPage = itemsPerPage, CurrentPage = currentPage, TotalItems = totalItems };
         }

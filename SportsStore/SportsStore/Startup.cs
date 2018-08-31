@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SportsStore.DAL.AbstractContexts;
 using SportsStore.DAL.Contexts;
 using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
@@ -43,13 +44,17 @@ namespace SportsStore
 
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(Configuration["Data:SportsStoreIdentity:connectionString"]));
-            services.AddIdentity<SportUser, IdentityRole>(options => { options.User.RequireUniqueEmail = true; })
+            services.AddIdentity<SportUser, IdentityRole>(options => 
+            {
+                options.User.RequireUniqueEmail = true;
+            })
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
             services.AddDbContext<DictionaryDbContext>(options =>
                 options.UseSqlServer(Configuration["Data:SportsStoreDictionaries:connectionString"]));
 
-
+            services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
+            services.AddTransient<ISportsStoreUserManager, SportsStoreUserManager>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IPermissionRepository, PermissionRepository>();
