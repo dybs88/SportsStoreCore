@@ -41,7 +41,7 @@
         <h4>Dostępne role</h4>
         @await Component.InvokeAsync("IdentityRolesTable", new { user = Model.User })
     }
-    <input type="submit" class="btn btn-success" value="Zapisz" />
+    <button type="submit" class="btn btn-success">Zapisz</button>
     <a asp-action="List" asp-controller="User" class="btn btn-secondary">Anuluj</a>
 </form>
 

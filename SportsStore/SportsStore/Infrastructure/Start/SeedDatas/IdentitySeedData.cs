@@ -24,6 +24,8 @@ namespace SportsStore.Infrastructure.Start.SeedDatas
             IPermissionRepository permissionRepository = app.ApplicationServices.GetRequiredService<IPermissionRepository>();
 
             var adminRole = roleManager.Roles.FirstOrDefault(r => r.Name == IdentityRoleNames.Admins);
+            var employeeRole = roleManager.Roles.FirstOrDefault(r => r.Name == IdentityRoleNames.Employees);
+            var clientRole = roleManager.Roles.FirstOrDefault(r => r.Name == IdentityRoleNames.Clients);
             var adminUser = userManager.Users.FirstOrDefault(u => u.UserName == "admin");
 
             if(adminRole == null)
@@ -32,9 +34,21 @@ namespace SportsStore.Infrastructure.Start.SeedDatas
                 await roleManager.CreateAsync(adminRole);
             }
 
+            if (employeeRole == null)
+            {
+                employeeRole = new IdentityRole(IdentityRoleNames.Employees);
+                await roleManager.CreateAsync(employeeRole);
+            }
+
+            if (clientRole == null)
+            {
+                clientRole = new IdentityRole(IdentityRoleNames.Clients);
+                await roleManager.CreateAsync(clientRole);
+            }
+
             if (adminUser == null)
             {
-                adminUser = new SportUser("admin");
+                adminUser = new SportUser("admin") {Email = "admin@sportsstore.pl", FirstName = "Admin"};
                 await userManager.CreateAsync(adminUser, "Admin1!");
             }
 
@@ -43,19 +57,24 @@ namespace SportsStore.Infrastructure.Start.SeedDatas
                 await userManager.AddToRoleAsync(adminUser, adminRole.Name);
             }
 
-            var adminRoleClaims = await roleManager.GetClaimsAsync(adminRole);
-            var adminUserClaims = await userManager.GetClaimsAsync(adminUser);
+            if (!await userManager.IsInRoleAsync(adminUser, employeeRole.Name))
+            {
+                await userManager.AddToRoleAsync(adminUser, employeeRole.Name);
+            }
 
-            var securityPermissions = permissionRepository.Permissions.Where(p => p.Category == SecurityPermissionCategories.Security);
+            var adminRoleClaims =  await roleManager.GetClaimsAsync(adminRole);
+            var adminUserClaims =  await userManager.GetClaimsAsync(adminUser);
+
+            var securityPermissions = permissionRepository.Permissions.ToList();
             foreach(Permission permission in securityPermissions)
             {
-                if(!adminRoleClaims.Any(c => c.Value == permission.Value))
+                if (!adminRoleClaims.Any(c => c.Value == permission.Value))
                 {
                     Claim newClaim = new Claim(ClaimTypes.AuthenticationMethod, permission.Value, ClaimValueTypes.String);
                     await roleManager.AddClaimAsync(adminRole, newClaim);
                 }
 
-                if(!adminUserClaims.Any(c => c.Value == permission.Value))
+                if (!adminUserClaims.Any(c => c.Value == permission.Value))
                 {
                     Claim newClaim = new Claim(ClaimTypes.AuthenticationMethod, permission.Value, ClaimValueTypes.String);
                     await userManager.AddClaimAsync(adminUser, newClaim);

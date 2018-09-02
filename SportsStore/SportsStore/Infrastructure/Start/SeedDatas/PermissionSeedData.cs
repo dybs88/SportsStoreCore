@@ -13,24 +13,52 @@ namespace SportsStore.Infrastructure.Start.SeedDatas
 {
     public static class PermissionSeedData
     {
+        static AppIdentityDbContext context;
+
         public static void PopulatePermissions(IApplicationBuilder app)
         {
-            AppIdentityDbContext context = app.ApplicationServices.GetRequiredService<AppIdentityDbContext>();
+            context = app.ApplicationServices.GetRequiredService<AppIdentityDbContext>();
 
-            if(!context.Permissions.Any())
+            AddPermission(SecurityPermissionValues.ViewRole, SecurityPermissionCategories.Security, "Uprawnienie umożliwiające podgląd ról");
+            AddPermission(SecurityPermissionValues.AddRole, SecurityPermissionCategories.Security, "Uprawnienie umożliwiające dodawanie nowych ról");
+            AddPermission(SecurityPermissionValues.EditRole, SecurityPermissionCategories.Security, "Uprawnienie umożliwiające edycję ról");
+            AddPermission(SecurityPermissionValues.DeleteRole, SecurityPermissionCategories.Security, "Uprawnienie umożliwiające usuwanie ról");
+
+            AddPermission(SecurityPermissionValues.ViewUser, SecurityPermissionCategories.Security, "Uprawnienie umożliwiające podgląd użytkowników");
+            AddPermission(SecurityPermissionValues.AddUser, SecurityPermissionCategories.Security, "Uprawnienie umożliwiające dodawanie nowych użytkowników");
+            AddPermission(SecurityPermissionValues.EditUser, SecurityPermissionCategories.Security, "Uprawnienie umożliwiające edycję użytkowników");
+            AddPermission(SecurityPermissionValues.DeleteUser, SecurityPermissionCategories.Security, "Uprawnienie umożliwiające usuwanie użytkowników");
+
+            AddPermission(CustomerPermissionValues.ViewCustomer, SecurityPermissionCategories.Customer, "Uprawnienie umożliwiające podgląd klientów");
+            AddPermission(CustomerPermissionValues.AddCustomer, SecurityPermissionCategories.Customer, "Uprawnienie umożliwiające dodawanie nowych klientów");
+            AddPermission(CustomerPermissionValues.EditCustomer, SecurityPermissionCategories.Customer, "Uprawnienie umożliwiające edycję klientów");
+            AddPermission(CustomerPermissionValues.DeleteCustomer, SecurityPermissionCategories.Customer, "Uprawnienie umożliwiające usuwanie klientów");
+
+            AddPermission(CustomerPermissionValues.ViewAddress, SecurityPermissionCategories.Customer, "Uprawnienie umożliwiające podgląd adresów");
+            AddPermission(CustomerPermissionValues.AddAddress, SecurityPermissionCategories.Customer, "Uprawnienie umożliwiające dodawanie nowych adresów");
+            AddPermission(CustomerPermissionValues.EditAddress, SecurityPermissionCategories.Customer, "Uprawnienie umożliwiające edycję adresów");
+            AddPermission(CustomerPermissionValues.DeleteAddress, SecurityPermissionCategories.Customer, "Uprawnienie umożliwiające usuwanie adresów");
+
+            AddPermission(SalesPermissionValues.ViewOrder, SecurityPermissionCategories.Sales, "Uprawnienie umożliwiające podgląd zamówień");
+            AddPermission(SalesPermissionValues.AddOrder, SecurityPermissionCategories.Sales, "Uprawnienie umożliwiające dodawanie nowych zamówień");
+            AddPermission(SalesPermissionValues.EditOrder, SecurityPermissionCategories.Sales, "Uprawnienie umożliwiające edycję zamówień");
+            AddPermission(SalesPermissionValues.DeleteOrder, SecurityPermissionCategories.Sales, "Uprawnienie umożliwiające usuwanie zamówień");
+
+            context.SaveChanges();
+
+        }
+
+        private static void AddPermission(string permissionValue, string category, string description)
+        {
+            if (!context.Permissions.Any(p => p.Value == permissionValue))
             {
-                context.Permissions.AddRange
-                    (new Permission { Value = SecurityPermissionValues.AddUser, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające dodawanie użytkowników do bazy" },
-                     new Permission { Value = SecurityPermissionValues.EditUser, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające edycję użytkowników" },
-                     new Permission { Value = SecurityPermissionValues.DeleteUser, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające usuwanie użytkowników z bazy" },
-
-                     new Permission { Value = SecurityPermissionValues.AddRole, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające dodawanie ról do bazy" },
-                     new Permission { Value = SecurityPermissionValues.EditRole, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające edycję ról" },
-                     new Permission { Value = SecurityPermissionValues.DeleteRole, Category = "Bezpieczeństwo", Description = "Uprawnienie umożliwające usuwanie ról z bazy" }
-                    );
-                context.SaveChanges();
+                context.Permissions.Add(new Permission
+                {
+                    Value = permissionValue,
+                    Category = category,
+                    Description = description
+                });
             }
-
         }
     }
 }
