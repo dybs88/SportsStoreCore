@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SportsStore.DAL.Contexts;
+using SportsStore.Domain;
 using SportsStore.Models.Cart;
 using SportsStore.Models.CustomerModels;
 using SportsStore.Models.DAL.Repos.SalesSchema;
@@ -42,7 +43,8 @@ namespace SportsStore.Tests.RepositoriesTests
         public void CanGetCustomerOrder(int customerId, int orderId)
         {
             //arrange
-            _session.Add("CustomerId", customerId);
+            _session.Clear();
+            _session.Add(SessionData.CustomerId, customerId);
 
             //act
             Order order = _target.GetOrder(orderId);
@@ -63,7 +65,8 @@ namespace SportsStore.Tests.RepositoriesTests
         public void CannotGetAnotherCustomerOrder(int customerId, int orderId)
         {
             //arrange
-            _session.Add("CustomerId", customerId);
+            _session.Clear();
+            _session.Add(SessionData.CustomerId, customerId);
 
             //act
             Order order = _target.GetOrder(orderId);
@@ -125,12 +128,14 @@ namespace SportsStore.Tests.RepositoriesTests
         public void CanSaveOrder(int customerId, int addressId, int quantity, string productName)
         {
             //arrange
-          Order order = _target.CreateNewOrder(customerId);
+            _session.Clear();
+            _session.Add(SessionData.CustomerId, customerId);
+            Order order = _target.CreateNewOrder(customerId);
             order.AddressId = addressId;
             if (addressId != 0)
                 order.Address = Repositories.AddressRepository.Addresses.FirstOrDefault(a => a.AddressId == order.AddressId);
             else
-                order.Address = new Address { City = "Wrocław", Street = "Gwiaździsta", BuildingNumber = "66", Region = "dolnośląskie", Country = "Polska", ZipCode = "51-400", CustomerId = customerId };
+                order.Address = new Address { City = "Wrocław", Street = "Gwieździsta", BuildingNumber = "66", Region = "dolnośląskie", Country = "Polska", ZipCode = "51-400", CustomerId = customerId };
 
             order.Items = new List<CartItem>
             {
@@ -139,11 +144,12 @@ namespace SportsStore.Tests.RepositoriesTests
             decimal totalPrice = order.Items.Sum(i => i.Value);
 
             //act
-            _target.SaveOrder(order);
+            int orderId = _target.SaveOrder(order);
 
             //assert
             Assert.Equal(totalPrice, order.Value);
             Assert.NotEqual(0, order.OrderId);
+            Assert.Equal(orderId, order.OrderId);
             Assert.False(string.IsNullOrEmpty(order.OrderNumber));
         }
     }

@@ -31,6 +31,16 @@ namespace SportsStore.DAL.Repos
             return dbEntry;
         }
 
+        public Product GetProduct(int productId)
+        {
+            return Products.FirstOrDefault(p => p.ProductID == productId);
+        }
+
+        public IEnumerable<Product> GetProducts(string category)
+        {
+            return Products.Where(p => p.Category == category);
+        }
+
         public void SaveProduct(Product product)
         {
             if (product.ProductID == 0)

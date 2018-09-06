@@ -15,6 +15,7 @@ namespace SportsStore.Controllers.Base
     {
         protected ISession _session;
         private IServiceProvider _provider;
+        protected int _pageSize = 10;
         public BaseController(IServiceProvider provider)
         {
             _provider = provider;
@@ -35,8 +36,6 @@ namespace SportsStore.Controllers.Base
             }
             return RedirectToAction("List", "Product");
         }
-
-        protected int _pageSize = 10;
 
         protected IEnumerable<T> PaginateList<T>(IEnumerable<T> list, int currentPage) where T : class
         {

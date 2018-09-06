@@ -1,0 +1,31 @@
+﻿@model ProductIndexViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-3">
+        <h3>@Model.Product.Name</h3>
+        <h5>@Model.Product.Category</h5>
+        <div class="text-left" style="font-size: xx-small; color: gray">Kod produktu: @Model.Product.ProductID</div>
+        <div class="form-group">
+            <div class="form-control">@Model.Product.Description</div>
+        </div>
+    </div>
+    <div class="col-6">
+        <img src=@Model.Product.ProductImages.FirstOrDefault(i => i.IsMain).FileName/>
+    </div>
+    <div class="col-3">
+        <div class="card card-body">
+            <h4>@Model.Product.Price.ToString("c")</h4>
+            <form asp-action="AddToCart" asp-controller="Cart" method="post">
+                <input type="hidden" value="@Model.Product.ProductID" />
+                <input type="hidden" value="@ViewContext.HttpContext.Request.PathAndQuery()" />
+                <button type="submit" class="btn btn-success">Dodaj do koszyka</button>
+            </form>
+        </div>
+    </div>
+</div>
+

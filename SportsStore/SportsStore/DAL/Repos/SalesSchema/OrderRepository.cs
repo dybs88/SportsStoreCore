@@ -9,6 +9,7 @@ using SportsStore.DAL.AbstractContexts;
 using SportsStore.DAL.Contexts;
 using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
+using SportsStore.Domain;
 using SportsStore.Infrastructure.Extensions;
 using SportsStore.Models.CustomerModels;
 using SportsStore.Models.Identity;
@@ -28,7 +29,7 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
             _addressRepository = addressRepo;
         }
 
-        public IQueryable<Order> Orders => _context.Orders
+        public IEnumerable<Order> Orders => _context.Orders
             .Include(o => o.Customer)
             .Include(o => o.Address)
             .Include(o => o.Items)
@@ -57,7 +58,7 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
 
         public Order GetOrder(int orderId)
         {
-            if(CheckIfCustomerIsOrderOwner(_session.GetJson<int>("CustomerId"),orderId))
+            if(CheckIfCustomerIsOrderOwner(_session.GetJson<int>(SessionData.CustomerId),orderId))
                 return Orders.FirstOrDefault(o => o.OrderId == orderId);
 
             return null;
@@ -66,7 +67,7 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
         public Order GetOrder(string orderNumber)
         {
             Order result = Orders.FirstOrDefault(o => o.OrderNumber == orderNumber);
-            if (CheckIfCustomerIsOrderOwner(_session.GetJson<int>("CustomerId"), result.OrderId))
+            if (CheckIfCustomerIsOrderOwner(_session.GetJson<int>(SessionData.CustomerId), result.OrderId))
                 return result;
 
             return null;
@@ -80,7 +81,7 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
             return Orders.Where(o => o.CustomerId == customerId);
         }
 
-        public void SaveOrder(Order order)
+        public int SaveOrder(Order order)
         {
             order.AddressId = _addressRepository.SaveAddress(order.Address);
             order.Value = order.Items.Sum(i => i.Value);
@@ -88,6 +89,8 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
                 _context.Add(order);
 
             _context.SaveChanges();
+
+            return order.OrderId;
         }
     }
 }

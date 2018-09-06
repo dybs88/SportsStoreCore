@@ -25,15 +25,13 @@ namespace SportsStore.Controllers
         private ICustomerRepository _customerRepository;
         private IAddressRepository _addressRepository;
         private IOrderRepository _orderRepository;
-        private static UserManager<SportUser> _userManager;
 
-        public CustomerController(IServiceProvider provider, ICustomerRepository custRepo, IAddressRepository addressRepo, IOrderRepository orderRepo, UserManager<SportUser> userManager)
+        public CustomerController(IServiceProvider provider, ICustomerRepository custRepo, IAddressRepository addressRepo, IOrderRepository orderRepo)
             :base(provider)
         {
             _customerRepository = custRepo;
             _addressRepository = addressRepo;
             _orderRepository = orderRepo;
-            _userManager = userManager;
         }
 
         [Authorize(Policy = CustomerPermissionValues.ViewCustomer)]
@@ -45,8 +43,7 @@ namespace SportsStore.Controllers
 
             foreach(var customer in customers)
             {
-                CustomerAdditionalData additionalData = _customerRepository.GetCustomerAdditionalData(customer.CustomerId);
-                model.Customers.Add(customer, additionalData);
+                model.Customers.Add(await _customerRepository.GetCustomerFullData(customer));
             }
             return View(model);
         }
@@ -61,18 +58,18 @@ namespace SportsStore.Controllers
             }
             else
             {
-                CustomerListViewModel customerModel = new CustomerListViewModel(1, _pageSize, 1);
                 List<Customer> customers = new List<Customer>();
 
-                if (customerModel.SearchData.Contains("@"))
+                if (model.SearchData.Contains("@"))
                     customers.Add(_customerRepository.GetCustomer(model.SearchData));
                 else
                     customers.Add(_customerRepository.GetCustomer(int.Parse(model.SearchData)));
 
-                foreach(var customer in customers)
+                CustomerListViewModel customerModel = new CustomerListViewModel(1, _pageSize, customers.Count);
+
+                foreach (var customer in customers)
                 {
-                    CustomerAdditionalData additionalData = _customerRepository.GetCustomerAdditionalData(customer.CustomerId);
-                    customerModel.Customers.Add(customer, additionalData);
+                    customerModel.Customers.Add(await _customerRepository.GetCustomerFullData(customer));
                 }
 
                 return View(customerModel);

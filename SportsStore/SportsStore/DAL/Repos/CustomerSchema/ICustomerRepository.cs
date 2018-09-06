@@ -8,7 +8,7 @@ namespace SportsStore.DAL.Repos.CustomerSchema
 {
     public interface ICustomerRepository
     {
-        IQueryable<Customer> Customers { get; }
+        IEnumerable<Customer> Customers { get; }
 
         void DeleteCustomer(int customerId);
 
@@ -19,6 +19,8 @@ namespace SportsStore.DAL.Repos.CustomerSchema
         CustomerAdditionalData GetCustomerAdditionalData(int customerId);
 
         Task<CustomerFullData> GetCustomerFullData(int customerId);
+
+        Task<CustomerFullData> GetCustomerFullData(Customer customer);
 
         int SaveCustomer(Customer customer);
     }

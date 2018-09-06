@@ -128,6 +128,12 @@ namespace SportsStore.Tests.RepositoriesTests
             Customer savedCustomer = _target.GetCustomer(result);
 
             //assert
+            Assert.NotEqual(0, savedCustomer.CustomerId);
+            Assert.NotEqual(0, result);
+            Assert.Equal(customer.FirstName, savedCustomer.FirstName);
+            Assert.Equal(customer.LastName, savedCustomer.LastName);
+            Assert.Equal(customer.Email, savedCustomer.Email);
+            Assert.Equal(customer.PhoneNumber, savedCustomer.PhoneNumber);
         }
     }
 }

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SportsStore.Tests.Base
 {
@@ -38,14 +39,62 @@ namespace SportsStore.Tests.Base
 
         private static ICustomerRepository GetCustomerRepository()
         {
-            Mock<ICustomerRepository> mockCustRepo = new Mock<ICustomerRepository>();
-            mockCustRepo.Setup(x => x.Customers).Returns(new List<Customer>
+            IEnumerable<Customer> customers = new List<Customer>
             {
                 new Customer{CustomerId = 1, FirstName = "Łukasz", LastName = "Testowy", Email = "lukasz@test.pl", PhoneNumber = "123456789"},
                 new Customer{CustomerId = 2, FirstName = "Jan", LastName = "Testerski", Email = "jan@test.pl", PhoneNumber = "123453489"},
                 new Customer{CustomerId = 3, FirstName = "Maciek", LastName = "Test", Email = "maciek@test.pl", PhoneNumber = "533456789"},
-                new Customer{CustomerId = 4, FirstName = "Michał", LastName = "Tester", Email = "michal@test.pl", PhoneNumber = "753345689"}
-            }.AsQueryable());
+                new Customer{CustomerId = 4, FirstName = "Michał", LastName = "Tester", Email = "michal@test.pl", PhoneNumber = "753345689"},
+                new Customer{CustomerId = 5, FirstName = "Łukasz", LastName = "Zmyślony", Email = "luk02@test.pl", PhoneNumber = "376373274"},
+                new Customer{CustomerId = 6, FirstName = "Karol", LastName = "Krawczyk", Email = "kkrawczyk@ztm.pl", PhoneNumber = "359582421"},
+                new Customer{CustomerId = 7, FirstName = "Tadeusz", LastName = "Norek", Email = "tnorek@mpwik.pl", PhoneNumber = "537254732"},
+                new Customer{CustomerId = 8, FirstName = "Marian", LastName = "Nieładny", Email = "ugly_man@test.pl", PhoneNumber = "684232911"},
+                new Customer{CustomerId = 9, FirstName = "Robert", LastName = "Lewandowski", Email = "rl9@bayern.com", PhoneNumber = "639203124"},
+                new Customer{CustomerId = 10, FirstName = "Jakub", LastName = "Błaszczykowski", Email = "kuba@wolfsburg.de", PhoneNumber = "631953012"},
+                new Customer{CustomerId = 11, FirstName = "Kazimierz", LastName = "Polityczny", Email = "polityk@test.pl", PhoneNumber = "421958210"},
+                new Customer{CustomerId = 12, FirstName = "Jan", LastName = "Zagłoba", Email = "ogniem@mieczem.pl", PhoneNumber = "001001001"},
+            };
+
+            Mock<ICustomerRepository> mockCustRepo = new Mock<ICustomerRepository>();
+            mockCustRepo.Setup(x => x.Customers).Returns(customers);
+            mockCustRepo.Setup(x => x.GetCustomerFullData(It.IsAny<Customer>())).Returns<Customer>(cust => 
+            {
+                var result = new CustomerFullData
+                {
+                    Customer = cust,
+                    User = Users.FirstOrDefault(u => u.CustomerId == cust.CustomerId),
+                    AdditionalData = new CustomerAdditionalData(cust.CustomerId)
+                    {
+                        CustomerOrdersCount = OrderRepository.GetCustomerOrders(cust.CustomerId).Count()
+                    },
+                    Addresses = AddressRepository.GetCustomerAddresses(cust.CustomerId)
+                };
+
+                return Task.FromResult(result);
+            });
+            mockCustRepo.Setup(x => x.GetCustomerFullData(It.IsAny<int>())).Returns<int>(custId => 
+            {
+                var result = new CustomerFullData
+                {
+                    Customer = customers.FirstOrDefault(c => c.CustomerId == custId),
+                    User = Users.FirstOrDefault(u => u.CustomerId == custId),
+                    AdditionalData = new CustomerAdditionalData(custId)
+                    {
+                        CustomerOrdersCount = OrderRepository.GetCustomerOrders(custId).Count()
+                    },
+                    Addresses = AddressRepository.GetCustomerAddresses(custId)
+                };
+
+                return Task.FromResult(result);
+            });
+            mockCustRepo.Setup(x => x.GetCustomer(It.IsAny<string>())).Returns<string>(email => 
+            {
+                return customers.FirstOrDefault(c => c.Email == email);
+            });
+            mockCustRepo.Setup(x => x.GetCustomer(It.IsAny<int>())).Returns<int>(custId => 
+            {
+                return customers.FirstOrDefault(c => c.CustomerId == custId);
+            });
 
             return mockCustRepo.Object;
         }
@@ -60,7 +109,8 @@ namespace SportsStore.Tests.Base
                 new Address{ AddressId = 3, City = "Gdańsk", Street = "Krótka", BuildingNumber = "1", ApartmentNumber = "", ZipCode = "11-100", Country = "Polska", Region = "pomorskie", CustomerId = 2 },
                 new Address{ AddressId = 4, City = "Poznań", Street = "Długa", BuildingNumber = "25", ApartmentNumber = "10", ZipCode = "41-100", Country = "Polska", Region = "wielkopolskie", CustomerId = 3 },
                 new Address{ AddressId = 5, City = "Kraków", Street = "Wawelska", BuildingNumber = "7", ApartmentNumber = "10A", ZipCode = "31-100", Country = "Polska", Region = "małopolskie", CustomerId = 3 },
-                new Address{ AddressId = 6, City = "Warszawa", Street = "Długa", BuildingNumber = "15", ApartmentNumber = "", ZipCode = "26-101", Country = "Polska", Region = "mazowieckie", CustomerId = 4 }
+                new Address{ AddressId = 6, City = "Warszawa", Street = "Długa", BuildingNumber = "15", ApartmentNumber = "", ZipCode = "26-101", Country = "Polska", Region = "mazowieckie", CustomerId = 4 },
+                new Address{ AddressId = 7, City = "Wrocław", Street = "Testowa", BuildingNumber = "20A", ApartmentNumber = "", ZipCode = "15-010", Country = "Polska", Region = "dolnośląskie", CustomerId = 5 }
             };
             mockAddressRepo.Setup(x => x.Addresses).Returns(addresses);
             mockAddressRepo.Setup(x => x.GetCustomerAddresses(It.IsAny<int>())).Returns<int>(customerId => 

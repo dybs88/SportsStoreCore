@@ -23,5 +23,6 @@ namespace SportsStore.Models.ProductModels
         [Required(ErrorMessage = "Wskazanie kategorii jest wymagane")]
         [Display(Name = "Kategoria")]
         public string Category { get; set; }
+        public IEnumerable<ProductImage> ProductImages { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using SportsStore.Models.Identity;
 using SportsStore.Models.OrderModels;
 using SportsStore.Models.ProductModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,8 @@ namespace SportsStore.Tests.Base
 {
     public class MockedObjects
     {
+        private static ISession _session;
+
         public static IServiceProvider Provider => GetProvider();
 
         public static ISession Session => GetSession();
@@ -40,7 +43,7 @@ namespace SportsStore.Tests.Base
             Mock<IServiceProvider> mockProvider = new Mock<IServiceProvider>();
             mockProvider.Setup(x => x.GetService(It.IsAny<Type>())).Returns<Type>(t => 
             {
-                if(t is IHttpContextAccessor)
+                if(t == typeof(IHttpContextAccessor))
                     return mockContext.Object;
 
                 return null;
@@ -51,7 +54,10 @@ namespace SportsStore.Tests.Base
 
         private static ISession GetSession()
         {
-            return new TestSession();
+            if (_session == null)
+                _session = new TestSession();
+
+            return _session;
         }
 
         private static IApplicationDbContext GetApplicationDbContext()
@@ -59,116 +65,116 @@ namespace SportsStore.Tests.Base
             Mock<IApplicationDbContext> mockContext = new Mock<IApplicationDbContext>();
 
             #region DbSet<Order>
-            var queryableOrders = Repositories.OrderRepository.Orders.AsQueryable();
-            Mock<DbSet<Order>> mockOrderSet = CreateMockedDbSet(queryableOrders);
+            var sourceOrderList = Repositories.OrderRepository.Orders.ToList();
+            Mock<DbSet<Order>> mockOrderSet = CreateMockedDbSet(sourceOrderList.AsQueryable());
             mockOrderSet.Setup(x => x.Add(It.IsAny<Order>())).Callback<Order>( o => 
             {
-                queryableOrders = queryableOrders.Concat(new List<Order> { o });
+                sourceOrderList.Add(o);
             });
             mockOrderSet.Setup(x => x.Remove(It.IsAny<Order>())).Callback<Order>(o => 
             {
-                queryableOrders = queryableOrders.Where(orders => orders.OrderId != o.OrderId);
+                sourceOrderList.Remove(o);
             });
             mockOrderSet.Setup(x => x.Find(It.IsAny<object[]>())).Returns<object[]>(input => 
             {
-                return queryableOrders.FirstOrDefault(o => o.OrderId == (int)input.First());
+                return sourceOrderList.FirstOrDefault(o => o.OrderId == (int)input.First());
+            });
+            mockOrderSet.Setup(x => x.FindAsync(It.IsAny<object[]>())).Returns<object[]>(input => 
+            {
+                return Task.FromResult(sourceOrderList.FirstOrDefault(o => o.OrderId == (int)input.First()));
             });
 
             mockContext.Setup(x => x.Orders).Returns(mockOrderSet.Object);
             #endregion
 
             #region DbSet<Product>
-            var queryableProducts = Repositories.ProductRepository.Products.AsQueryable();
-            Mock<DbSet<Product>> mockProductSet = CreateMockedDbSet(queryableProducts);
+            var sourceProductList = Repositories.ProductRepository.Products.ToList();
+            Mock<DbSet<Product>> mockProductSet = CreateMockedDbSet(sourceProductList.AsQueryable());
             mockProductSet.Setup(x => x.Add(It.IsAny<Product>())).Callback<Product>(p =>
             {
-                queryableProducts = queryableProducts.Concat(new List<Product> { p });
+                sourceProductList.Add(p);
             });
             mockProductSet.Setup(x => x.Remove(It.IsAny<Product>())).Callback<Product>(p =>
             {
-                queryableProducts = queryableProducts.Where(product => product.ProductID != p.ProductID);
+                sourceProductList.Remove(p);
             });
 
             mockContext.Setup(x => x.Products).Returns(mockProductSet.Object);
             #endregion
 
             #region DbSet<Customer>
-            var queryableCustomers = Repositories.CustomerRepository.Customers.AsQueryable();
-            Mock<DbSet<Customer>> mockCustomerSet = CreateMockedDbSet(queryableCustomers);
+            var sourceCustomerList = Repositories.CustomerRepository.Customers.ToList();
+            Mock<DbSet<Customer>> mockCustomerSet = CreateMockedDbSet(sourceCustomerList.AsQueryable());
             mockCustomerSet.Setup(x => x.Add(It.IsAny<Customer>())).Callback<Customer>(c =>
             {
-                queryableCustomers = queryableCustomers.Concat(new List<Customer> { c });
+                sourceCustomerList.Add(c);
             });
             mockCustomerSet.Setup(x => x.Remove(It.IsAny<Customer>())).Callback<Customer>(c => 
             {
-                queryableCustomers = queryableCustomers.Where(customer => customer.CustomerId != c.CustomerId);
+                sourceCustomerList.Remove(c);
             });
             mockCustomerSet.Setup(x => x.Find(It.IsAny<object[]>())).Returns<object[]>(input => 
             {
-                return queryableCustomers.FirstOrDefault(c => c.CustomerId == (int)input.First());
+                return sourceCustomerList.FirstOrDefault(c => c.CustomerId == (int)input.First());
             });
 
             mockContext.Setup(x => x.Customers).Returns(mockCustomerSet.Object);
             #endregion
 
             #region DbSet<Address>
-            var queryableAddresses = Repositories.AddressRepository.Addresses.AsQueryable();
-            Mock<DbSet<Address>> mockAddressSet = CreateMockedDbSet(queryableAddresses);
+            var sourceAddressList = Repositories.AddressRepository.Addresses.ToList();
+            Mock<DbSet<Address>> mockAddressSet = CreateMockedDbSet(sourceAddressList.AsQueryable());
             mockAddressSet.Setup(x => x.Add(It.IsAny<Address>())).Callback<Address>(a =>
             {
-                queryableAddresses = queryableAddresses.Concat(new List<Address> { a });
+                sourceAddressList.Add(a);
             });
             mockAddressSet.Setup(x => x.Remove(It.IsAny<Address>())).Callback<Address>(a => 
             {
-                queryableAddresses = queryableAddresses.Where(address => address.AddressId != a.AddressId);
+                sourceAddressList.Remove(a);
             });
 
             mockContext.Setup(x => x.Addresses).Returns(mockAddressSet.Object);
             #endregion
 
-            mockContext.Setup(x => x.Add(It.IsAny<Order>())).Returns<Order>((o) => 
+            mockContext.Setup(x => x.Add(It.IsAny<Order>())).Callback<Order>((o) => 
             {
-                queryableOrders = queryableOrders.Concat(new List<Order> { o });
-                return null;
+                mockOrderSet.Object.Add(o);
             });
-            mockContext.Setup(x => x.Add(It.IsAny<Address>())).Returns<Address>((a) =>
+            mockContext.Setup(x => x.Add(It.IsAny<Address>())).Callback<Address>((a) =>
             {
-                queryableAddresses = queryableAddresses.Concat(new List<Address> { a });
-                return null;
+                mockAddressSet.Object.Add(a);
             });
-            mockContext.Setup(x => x.Add(It.IsAny<Customer>())).Returns<Customer>((c) =>
+            mockContext.Setup(x => x.Add(It.IsAny<Customer>())).Callback<Customer>((c) =>
             {
-                queryableCustomers = queryableCustomers.Concat(new List<Customer> { c });
-                return null;
+                mockCustomerSet.Object.Add(c);
             });
-            mockContext.Setup(x => x.Add(It.IsAny<Product>())).Returns<Product>((p) =>
+            mockContext.Setup(x => x.Add(It.IsAny<Product>())).Callback<Product>((p) =>
             {
-                queryableProducts = queryableProducts.Concat(new List<Product> { p });
-                return null;
+                mockProductSet.Object.Add(p);
             });
 
             mockContext.Setup(x => x.SaveChanges()).Returns(() => 
             {
-                if(queryableOrders.Any(o => o.OrderId == 0))
+                if(sourceOrderList.Any(o => o.OrderId == 0))
                 {
-                    foreach(var newOrder in queryableOrders.Where(o => o.OrderId == 0))
+                    foreach(var newOrder in sourceOrderList.Where(o => o.OrderId == 0))
                     {
-                        newOrder.OrderId = queryableOrders.OrderByDescending(o => o.OrderId).First().OrderId + 1;
+                        newOrder.OrderId = sourceOrderList.OrderByDescending(o => o.OrderId).First().OrderId + 1;
                     }
                 }
-                if(queryableAddresses.Any(a => a.AddressId == 0))
+                if(sourceAddressList.Any(a => a.AddressId == 0))
                 {
-                    foreach(var newAddress in queryableAddresses.Where(a => a.AddressId == 0))
+                    foreach(var newAddress in sourceAddressList.Where(a => a.AddressId == 0))
                     {
-                        newAddress.AddressId = queryableAddresses.OrderByDescending(a => a.AddressId).First().AddressId + 1;
+                        newAddress.AddressId = sourceAddressList.OrderByDescending(a => a.AddressId).First().AddressId + 1;
                     }
                 }
 
-                if(queryableCustomers.Any(c => c.CustomerId == 0))
+                if(sourceCustomerList.Any(c => c.CustomerId == 0))
                 {
-                    foreach(var newCustomer in queryableCustomers.Where(c => c.CustomerId == 0))
+                    foreach(var newCustomer in sourceCustomerList.Where(c => c.CustomerId == 0))
                     {
-                        newCustomer.CustomerId = queryableCustomers.OrderByDescending(c => c.CustomerId).First().CustomerId + 1;
+                        newCustomer.CustomerId = sourceCustomerList.OrderByDescending(c => c.CustomerId).First().CustomerId + 1;
                     }
                 }
 
@@ -200,7 +206,7 @@ namespace SportsStore.Tests.Base
             mockedDbSet.As<IQueryable<TEntity>>().Setup(x => x.Provider).Returns(repository.Provider);
             mockedDbSet.As<IQueryable<TEntity>>().Setup(x => x.Expression).Returns(repository.Expression);
             mockedDbSet.As<IQueryable<TEntity>>().Setup(x => x.ElementType).Returns(repository.ElementType);
-            mockedDbSet.As<IQueryable<TEntity>>().Setup(x => x.GetEnumerator()).Returns(repository.GetEnumerator());
+            mockedDbSet.As<IQueryable<TEntity>>().Setup(x => x.GetEnumerator()).Returns(() => { return repository.GetEnumerator(); });
 
             return mockedDbSet;
         }

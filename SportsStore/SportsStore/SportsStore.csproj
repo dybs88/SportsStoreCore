@@ -131,6 +131,7 @@
     <Folder Include="Infrastructure\Start\ServiceConfiguration\" />
     <Folder Include="Models\ViewModels\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

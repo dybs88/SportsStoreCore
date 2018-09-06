@@ -18,20 +18,20 @@
         <th>Data rejestracji</th>
         <th>Akcja</th>
     </tr>
-    @foreach(var pair in Model.Customers)
+    @foreach(var customerFullData in Model.Customers)
     {
         <tr>
-            <td>@pair.Key.FirstName</td>
-            <td>@pair.Key.LastName</td>
-            <td>@pair.Key.Email</td>
-            <td>@pair.Key.PhoneNumber</td>
-            <td>@pair.Value.CustomerOrdersCount</td>
+            <td>@customerFullData.Customer.FirstName</td>
+            <td>@customerFullData.Customer.LastName</td>
+            <td>@customerFullData.Customer.Email</td>
+            <td>@customerFullData.Customer.PhoneNumber</td>
+            <td>@customerFullData.AdditionalData.CustomerOrdersCount</td>
             <td></td>
             <td>
                 <a class="btn btn-primary btn-sm" 
                    asp-action="Index" 
                    asp-controller="Customer"
-                   asp-route-customerId ="@pair.Key.CustomerId"
+                   asp-route-customerId ="@customerFullData.Customer.CustomerId"
                    asp-route-returnUrl ="@Context.Request.PathAndQuery()"
                    asp-route-pageMode ="@PageMode.Edit">
                    Edytuj

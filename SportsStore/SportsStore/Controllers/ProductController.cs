@@ -15,31 +15,36 @@ namespace SportsStore.Controllers
 {
     public class ProductController : BaseController
     {
-        private IProductRepository _repository;
+        private IProductRepository _productRepository;
         private int _pageSize = 4;
 
         public ProductController(IServiceProvider provider, IProductRepository repository)
             : base(provider)
         {
-            _repository = repository;
+            _productRepository = repository;
+        }
+
+        public IActionResult Index(int productId)
+        {
+            return View(new ProductIndexViewModel { Product = _productRepository.GetProduct(productId) });
         }
 
         public ViewResult List(string category, int currentPage = 1)
         {
-            var paginateProducts = _repository.Products
+            var paginateProducts = _productRepository.Products
                 .Where(p => category == null || p.Category == category)
                 .OrderBy(p => p.ProductID)
                 .Skip((currentPage - 1) * _pageSize)
                 .Take(_pageSize);
 
-            ProductListViewModel model = new ProductListViewModel(paginateProducts,_repository.Products.Count(p => category == null || p.Category == category), _pageSize, currentPage, category);
+            ProductListViewModel model = new ProductListViewModel(paginateProducts,_productRepository.Products.Count(p => category == null || p.Category == category), _pageSize, currentPage, category);
             return View(model);
         }
 
         [Authorize]
         public ViewResult Products()
         {
-            return View(_repository.Products);
+            return View(_productRepository.Products);
         }
         [Authorize]
         public ViewResult CreateProduct()
@@ -49,7 +54,7 @@ namespace SportsStore.Controllers
         [Authorize]
         public ViewResult EditProduct(int productId)
         {
-            var product = _repository.Products.FirstOrDefault(p => p.ProductID == productId);
+            var product = _productRepository.Products.FirstOrDefault(p => p.ProductID == productId);
             return View(product);
         }
 
@@ -59,7 +64,7 @@ namespace SportsStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _repository.SaveProduct(product);
+                _productRepository.SaveProduct(product);
                 TempData["message"] = $"Zapisano {product.Name}";
                 return RedirectToAction("Products");
             }
@@ -70,7 +75,7 @@ namespace SportsStore.Controllers
         [HttpPost]
         public IActionResult DeleteProduct(int productId)
         {
-            var deletedProduct = _repository.DeleteProduct(productId);
+            var deletedProduct = _productRepository.DeleteProduct(productId);
             TempData["message"] = $"Usunięto produkt {deletedProduct.Name}";
             return RedirectToAction("Products");
         }

@@ -19,7 +19,7 @@ namespace SportsStore.DAL.Repos.CustomerSchema
         private IAddressRepository _addressRepository;
         private IOrderRepository _orderRepository;
 
-        public IQueryable<Customer> Customers => _context.Customers;
+        public IEnumerable<Customer> Customers => _context.Customers;
 
         public CustomerRepository(IApplicationDbContext context, ISportsStoreUserManager userManager, IAddressRepository addressRepo, IOrderRepository orderRepo)
         {
@@ -54,6 +54,22 @@ namespace SportsStore.DAL.Repos.CustomerSchema
             result.CustomerOrdersCount = _orderRepository.GetCustomerOrders(customerId).Count();
 
             return result;
+        }
+
+        public async Task<CustomerFullData> GetCustomerFullData(Customer customer)
+        {
+            if (customer != null)
+            {
+                return new CustomerFullData
+                {
+                    Customer = customer,
+                    User = await _userManager.FindByEmailAsync(customer.Email),
+                    Addresses = _addressRepository.GetCustomerAddresses(customer.CustomerId),
+                    AdditionalData = GetCustomerAdditionalData(customer.CustomerId)
+                };
+            }
+
+            return null;
         }
 
         public async Task<CustomerFullData> GetCustomerFullData(int customerId)
