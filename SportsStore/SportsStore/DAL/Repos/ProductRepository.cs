@@ -17,7 +17,9 @@ namespace SportsStore.DAL.Repos
             _context = context;
         }
 
-        public IQueryable<Product> Products => _context.Products;
+        public IQueryable<Product> Products => 
+            _context.Products
+                .Include(p => p.ProductImages);
 
         public Product DeleteProduct(int productId)
         {
@@ -33,7 +35,13 @@ namespace SportsStore.DAL.Repos
 
         public Product GetProduct(int productId)
         {
-            return Products.FirstOrDefault(p => p.ProductID == productId);
+            var product = Products.FirstOrDefault(p => p.ProductID == productId);
+            for(int i = 0; i < 8 - product.ProductImages.Count; i++ )
+            {
+                product.ProductImages.Add(new ProductImage());
+            }
+
+            return product;
         }
 
         public IEnumerable<Product> GetProducts(string category)

@@ -1,43 +1,52 @@
-﻿@model Product
+﻿@model ProductEditViewModel
 @{
     ViewData["Title"] = "Edit";
-    ViewBag.Title = "Edycja produktu " + Model.ProductID;
+    ViewBag.Title = "Edycja produktu " + Model.Product.ProductID;
 }
-<form asp-action="EditProduct" method="post" class="m-5">
-    <h4>ID: @Model.ProductID</h4>
-    <input type="hidden" asp-for="ProductID"/>
+
+<script>
+    $().ready(function () {
+        var editProductService = new EditProductService(@Model.Product.ProductID);
+    })
+</script>
+
+<form asp-action="EditProduct" enctype="multipart/form-data" method="post" class="m-5">
+    <h4>ID: @Model.Product.ProductID</h4>
+    <input type="hidden" asp-for="Product.ProductID"/>
     <div class="row">
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="Name">Nazwa</label>
-                <div><span asp-validation-for="Name" class="text-danger"></span></div>
-                <input type="text" asp-for="Name" class="form-control" />
+                <label asp-for="Product.Name">Nazwa</label>
+                <div><span asp-validation-for="Product.Name" class="text-danger"></span></div>
+                <input type="text" asp-for="Product.Name" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Description">Opis</label>
-                <div><span asp-validation-for="Description" class="text-danger"></span></div>
-                <input type="text" asp-for="Description" class="form-control" />
+                <label asp-for="Product.Description">Opis</label>
+                <div><span asp-validation-for="Product.Description" class="text-danger"></span></div>
+                <input type="text" asp-for="Product.Description" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Category">Kategoria</label>
-                <div><span asp-validation-for="Category" class="text-danger"></span></div>
-                <input type="text" asp-for="Category" class="form-control" />
+                <label asp-for="Product.Category">Kategoria</label>
+                <div><span asp-validation-for="Product.Category" class="text-danger"></span></div>
+                <input type="text" asp-for="Product.Category" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Price">Cena</label>
-                <div><span asp-validation-for="Price" class="text-danger"></span></div>
-                <input type="text" asp-for="Price" class="form-control" />
+                <label asp-for="Product.Price">Cena</label>
+                <div><span asp-validation-for="Product.Price" class="text-danger"></span></div>
+                <input type="number" asp-for="Product.Price" class="form-control" />
             </div>
+            <button type="submit" class="btn btn-success">Zapisz</button>
+            <a asp-action="Products" class="btn btn-secondary">Anuluj</a>
         </div>
         <div class="col-6">
-            <label for="imageUpload" class="btn btn-primary">Obraz</label>
-            <input id="imageUpload" style="display:none" type="file" name="Obraz"/>
-            <img id="imageScreen" src="" />
+            <img style="width:715px; height:382px; border:thick" id="imageScreen" src="" />
+            <table id="imageStore" style="width:715px; height:95px;"></table>
+            <label for="imageUpload" class="btn btn-primary mt-1">Obraz</label>
+            <input id="imageUpload" name="Files" style="display:none" type="file" accept=".jpg" multiple/>
+            <br />
         </div>
     </div>
     
-    <button type="submit" class="btn btn-success">Zapisz</button>
-    <a asp-action="Products" class="btn btn-secondary">Anuluj</a>
 </form>
 
 

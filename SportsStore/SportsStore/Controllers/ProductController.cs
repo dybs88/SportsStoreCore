@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -55,21 +56,31 @@ namespace SportsStore.Controllers
         public ViewResult EditProduct(int productId)
         {
             var product = _productRepository.Products.FirstOrDefault(p => p.ProductID == productId);
-            return View(product);
+            return View(new ProductEditViewModel { Product = product });
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult EditProduct(Product product)
+        public IActionResult EditProduct(ProductEditViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _productRepository.SaveProduct(product);
-                TempData["message"] = $"Zapisano {product.Name}";
+                //foreach(var file in model.Files.Distinct(f => f.FileName))
+                //{
+                //    var filePath = "images\" + file.Name;
+                //    if(file.Length > 0)
+                //    {
+                //        using (var stream = new FileStream(filePath, FileMode.Create))
+                //            file.CopyTo(stream);
+                //    }
+                //}
+
+                _productRepository.SaveProduct(model.Product);
+                TempData["message"] = $"Zapisano {model.Product.Name}";
                 return RedirectToAction("Products");
             }
             else
-                return View(product);
+                return View(model);
         }
         [Authorize]
         [HttpPost]
