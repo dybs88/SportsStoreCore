@@ -27,17 +27,7 @@ namespace SportsStore.Models.ProductModels
 
         public Product()
         {
-            ProductImages = new List<ProductImage>
-            {
-                new ProductImage(),
-                new ProductImage(),
-                new ProductImage(),
-                new ProductImage(),
-                new ProductImage(),
-                new ProductImage(),
-                new ProductImage(),
-                new ProductImage()
-            };
+            ProductImages = new List<ProductImage>();
         }
     }
 }

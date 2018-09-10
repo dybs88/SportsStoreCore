@@ -4,15 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SportsStore.DAL.Repos
 {
     public abstract class BaseRepository
     {
         protected ISession _session;
-        public BaseRepository(IServiceProvider provider)
+        protected IConfiguration _configuration;
+
+        public BaseRepository(IServiceProvider provider, IConfiguration config)
         {
             _session = provider.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
+            _configuration = config;
         }
     }
 }

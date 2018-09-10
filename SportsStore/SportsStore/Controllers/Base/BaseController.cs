@@ -8,18 +8,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SportsStore.Controllers.Base
 {
     public class BaseController : Controller
     {
-        protected ISession _session;
         private IServiceProvider _provider;
         protected int _pageSize = 10;
-        public BaseController(IServiceProvider provider)
+        protected ISession _session;
+        protected IConfiguration _configuration;
+
+        public BaseController(IServiceProvider provider, IConfiguration config)
         {
             _provider = provider;
             _session = provider.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
+            _configuration = config;
         }
 
         public async Task<IActionResult> Start()

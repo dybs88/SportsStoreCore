@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SportsStore.Controllers.Base;
 using SportsStore.Domain;
 using SportsStore.Infrastructure.Extensions;
@@ -20,8 +21,8 @@ namespace SportsStore.Controllers
         private RoleManager<IdentityRole> _roleManager;
         private UserManager<SportUser> _userManager;
 
-        public RoleController(IServiceProvider provider, RoleManager<IdentityRole> roleManager, UserManager<SportUser> userManager)
-            :base(provider)
+        public RoleController(IServiceProvider provider, IConfiguration config, RoleManager<IdentityRole> roleManager, UserManager<SportUser> userManager)
+            :base(provider, config)
         {
             _roleManager = roleManager;
             _userManager = userManager;

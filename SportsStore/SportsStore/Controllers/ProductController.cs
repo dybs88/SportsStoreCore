@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos;
 using SportsStore.Helpers;
@@ -19,8 +20,8 @@ namespace SportsStore.Controllers
         private IProductRepository _productRepository;
         private int _pageSize = 4;
 
-        public ProductController(IServiceProvider provider, IProductRepository repository)
-            : base(provider)
+        public ProductController(IServiceProvider provider, IConfiguration config, IProductRepository repository)
+            : base(provider, config)
         {
             _productRepository = repository;
         }
@@ -50,7 +51,7 @@ namespace SportsStore.Controllers
         [Authorize]
         public ViewResult CreateProduct()
         {
-            return View("EditProduct", new Product());
+            return View("EditProduct", new ProductEditViewModel());
         }
         [Authorize]
         public ViewResult EditProduct(int productId)
@@ -64,18 +65,8 @@ namespace SportsStore.Controllers
         public IActionResult EditProduct(ProductEditViewModel model)
         {
             if (ModelState.IsValid)
-            {
-                //foreach(var file in model.Files.Distinct(f => f.FileName))
-                //{
-                //    var filePath = "images\" + file.Name;
-                //    if(file.Length > 0)
-                //    {
-                //        using (var stream = new FileStream(filePath, FileMode.Create))
-                //            file.CopyTo(stream);
-                //    }
-                //}
-
-                _productRepository.SaveProduct(model.Product);
+            {             
+                _productRepository.SaveProduct(model);
                 TempData["message"] = $"Zapisano {model.Product.Name}";
                 return RedirectToAction("Products");
             }

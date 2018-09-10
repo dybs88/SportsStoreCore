@@ -23,7 +23,7 @@ namespace SportsStore.Tests.RepositoriesTests
         public OrderRepoTests()
         {
             _session = (TestSession)MockedObjects.Session;
-            _target = new OrderRepository(MockedObjects.Provider, MockedObjects.ApplicationDbContext, Repositories.AddressRepository);
+            _target = new OrderRepository(MockedObjects.Provider, MockedObjects.Configuration, MockedObjects.ApplicationDbContext, Repositories.AddressRepository);
         }
 
         [Fact]

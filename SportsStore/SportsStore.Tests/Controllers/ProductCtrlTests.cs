@@ -19,20 +19,7 @@ namespace SportsStore.Tests
 
         public void Initialize()
         {
-           Mock<IProductRepository> mockRepository = new Mock<IProductRepository>();
-            mockRepository.Setup(x => x.Products).Returns(() => new List<Product>
-            {
-                new Product {Name = "P1", Price = 10M, Category = "1"},
-                new Product {Name = "P2", Price = 20M, Category = "1"},
-                new Product {Name = "P3", Price = 30M, Category = "2"},
-                new Product {Name = "P4", Price = 40M, Category = "3"},
-                new Product {Name = "P5", Price = 50M, Category = "3"},
-                new Product {Name = "P6", Price = 60M, Category = "3"},
-                new Product {Name = "P7", Price = 70M, Category = "4"},
-                new Product {Name = "P8", Price = 80M, Category = "4"}
-            }.AsQueryable());
-
-            target = new ProductController(MockedObjects.Provider, mockRepository.Object);
+            target = new ProductController(MockedObjects.Provider, MockedObjects.Configuration, Repositories.ProductRepository);
         }
 
         [Fact]

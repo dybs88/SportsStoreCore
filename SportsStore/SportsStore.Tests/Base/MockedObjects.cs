@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SportsStore.Tests.Base
 {
@@ -24,6 +25,8 @@ namespace SportsStore.Tests.Base
         private static ISession _session;
 
         public static IServiceProvider Provider => GetProvider();
+
+        public static IConfiguration Configuration => GetConfiguration();
 
         public static ISession Session => GetSession();
 
@@ -50,6 +53,11 @@ namespace SportsStore.Tests.Base
             });
 
             return mockProvider.Object;
+        }
+
+        private static IConfiguration GetConfiguration()
+        {
+            return new Mock<IConfiguration>().Object;
         }
 
         private static ISession GetSession()

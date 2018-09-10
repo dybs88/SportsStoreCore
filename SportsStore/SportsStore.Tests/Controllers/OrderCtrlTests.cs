@@ -25,7 +25,8 @@ namespace SportsStore.Tests.Controllers
         private OrderController _target;
         public OrderCtrlTests()
         {
-            _target = new OrderController(MockedObjects.Provider, 
+            _target = new OrderController(MockedObjects.Provider,
+                                          MockedObjects.Configuration,
                                           Repositories.OrderRepository, 
                                           new Cart(), 
                                           Repositories.CustomerRepository, 

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SportsStore.DAL.AbstractContexts;
 using SportsStore.DAL.Contexts;
 using SportsStore.DAL.Repos;
@@ -22,8 +23,8 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
         private IApplicationDbContext _context;
         private IAddressRepository _addressRepository;
 
-        public OrderRepository(IServiceProvider provider, IApplicationDbContext context, IAddressRepository addressRepo)
-            : base(provider)
+        public OrderRepository(IServiceProvider provider, IConfiguration config, IApplicationDbContext context, IAddressRepository addressRepo)
+            : base(provider, config)
         {
             _context = context;
             _addressRepository = addressRepo;

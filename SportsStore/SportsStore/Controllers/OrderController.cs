@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Domain;
@@ -29,11 +30,12 @@ namespace SportsStore.Controllers
         private IAddressRepository _addressRepository;
 
         public OrderController(IServiceProvider provider,
+                               IConfiguration config,
                                IOrderRepository repo, 
                                Cart cart, 
                                ICustomerRepository custRepo, 
                                IAddressRepository addressRepo)
-            :base(provider)
+            :base(provider, config)
         {
             _orderRepository = repo;
             _cart = cart;

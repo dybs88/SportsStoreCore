@@ -32,7 +32,11 @@ namespace SportsStore.Tests.Controllers
 
         public CustomerCtrlTests()
         {
-            _target = new CustomerController(MockedObjects.Provider, Repositories.CustomerRepository, Repositories.AddressRepository, Repositories.OrderRepository);
+            _target = new CustomerController(MockedObjects.Provider, 
+                                            MockedObjects.Configuration, 
+                                            Repositories.CustomerRepository, 
+                                            Repositories.AddressRepository, 
+                                            Repositories.OrderRepository);
         }
 
         [Theory]

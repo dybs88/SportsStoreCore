@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
@@ -26,8 +27,8 @@ namespace SportsStore.Controllers
         private IAddressRepository _addressRepository;
         private IOrderRepository _orderRepository;
 
-        public CustomerController(IServiceProvider provider, ICustomerRepository custRepo, IAddressRepository addressRepo, IOrderRepository orderRepo)
-            :base(provider)
+        public CustomerController(IServiceProvider provider, IConfiguration config, ICustomerRepository custRepo, IAddressRepository addressRepo, IOrderRepository orderRepo)
+            :base(provider, config)
         {
             _customerRepository = custRepo;
             _addressRepository = addressRepo;

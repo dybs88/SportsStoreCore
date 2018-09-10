@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCaching.Internal;
+using Microsoft.Extensions.Configuration;
 using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.Domain;
@@ -28,8 +29,8 @@ namespace SportsStore.Controllers
         private RoleManager<IdentityRole> _roleManager;
         private ICustomerRepository _customerRepository;
 
-        public UserController(IServiceProvider provider, UserManager<SportUser> userManager, RoleManager<IdentityRole> roleManager, ICustomerRepository customerRepository)
-            :base(provider)
+        public UserController(IServiceProvider provider, IConfiguration config, UserManager<SportUser> userManager, RoleManager<IdentityRole> roleManager, ICustomerRepository customerRepository)
+            :base(provider, config)
         {
             _userManager = userManager;
             _roleManager = roleManager;

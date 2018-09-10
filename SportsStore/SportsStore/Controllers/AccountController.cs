@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SportsStore.Controllers.Base;
 using SportsStore.Domain;
@@ -24,8 +25,8 @@ namespace SportsStore.Controllers
         private SignInManager<SportUser> _signInManager;
         private Cart _cart;
 
-        public AccountController(IServiceProvider provider, UserManager<SportUser> userManager, SignInManager<SportUser> signInManager, Cart cart)
-            :base(provider)
+        public AccountController(IServiceProvider provider, IConfiguration config, UserManager<SportUser> userManager, SignInManager<SportUser> signInManager, Cart cart)
+            :base(provider, config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
