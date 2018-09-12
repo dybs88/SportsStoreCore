@@ -67,7 +67,7 @@ namespace SportsStore
             services.AddMvc();
             services.AddMemoryCache();
             services.AddSession();
-            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
+            services.AddAntiforgery(o => o.HeaderName = "RequestVerificationToken");
 
             SecurityPolicies.AddSecurityPolicies(services);
             CustomerPolicies.AddCustomerPolicies(services);

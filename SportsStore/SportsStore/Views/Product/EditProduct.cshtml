@@ -4,15 +4,9 @@
     ViewBag.Title = "Edycja produktu " + Model.Product.ProductID;
 }
 
-<script>
-    $().ready(function () {
-        var editProductService = new EditProductService(@Model.Product.ProductID);
-    })
-</script>
-
-<form asp-action="EditProduct" enctype="multipart/form-data" method="post" class="m-5">
+<form id="editForm" asp-action="EditProduct" enctype="multipart/form-data" method="post" class="m-5">
     <h4>ID: @Model.Product.ProductID</h4>
-    <input type="hidden" asp-for="Product.ProductID"/>
+    <input type="hidden" asp-for="Product.ProductID" />
     <div class="row">
         <div class="col-6">
             <div class="form-group">
@@ -39,14 +33,9 @@
             <a asp-action="Products" class="btn btn-secondary">Anuluj</a>
         </div>
         <div class="col-6">
-            <img style="width:715px; height:382px; border:thick" id="imageScreen" src="" />
-            <table id="imageStore" style="width:715px; height:95px;"></table>
-            <label for="imageUpload" class="btn btn-primary mt-1">Dodaj obrazek</label>
-            <input id="imageUpload" name="Files" style="display:none" type="file" accept=".jpg" multiple/>
-            <button class="btn btn-danger">Usuń obrazek</button>
+            @await Component.InvokeAsync("ProductImages", new { productImages = Model.Product.ProductImages, productId = Model.Product.ProductID, isEdit = true })
         </div>
     </div>
-    
 </form>
 
 

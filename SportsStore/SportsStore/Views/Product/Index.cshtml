@@ -1,16 +1,9 @@
-﻿@using System.IO
-@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment env
-@model ProductIndexViewModel
+﻿@model ProductIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var file = Model.Product.ProductImages.FirstOrDefault(i => i.IsMain);
-    var path = "~/images/";
-    var src = $"~/images/{file?.FileName}";
-
 }
-
 <div class="row">
     <div class="col-3">
         <h3>@Model.Product.Name</h3>
@@ -21,31 +14,7 @@
         </div>
     </div>
     <div class="col-6">
-        <img src="@Url.Content(src)"/>
-        <table>
-            <tr>
-                @for (int i = 0; i < Model.Product.ProductImages.Count; i++)
-                {
-                    if (i <= 3 && !string.IsNullOrEmpty(Model.Product.ProductImages[i].FileName))
-                    {
-                        <td>
-                            <img style="width: 179px; height: 95px" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")"/>
-                        </td>
-                    }
-                }
-            </tr>
-            <tr>
-                @for (int i = 4; i < Model.Product.ProductImages.Count; i++)
-                {
-                    if (!string.IsNullOrEmpty(Model.Product.ProductImages[i].FileName))
-                    {
-                        <td>
-                            <img style="width: 179px; height: 95px" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
-                        </td>
-                    }
-                }
-            </tr>
-        </table>
+        @await Component.InvokeAsync("ProductImages", new { productImages = Model.Product.ProductImages, productId = Model.Product.ProductID, isEdit = false })
     </div>
     <div class="col-3">
         <div class="card card-body">

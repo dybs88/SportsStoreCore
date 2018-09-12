@@ -11,6 +11,7 @@ namespace SportsStore.DAL.Repos
         IQueryable<Product> Products { get; }
 
         Product DeleteProduct(int productId);
+        void DeleteProductImages(IList<ProductImage> productImages);
         Product GetProduct(int productId);
         IEnumerable<Product> GetProducts(string category);
         void SaveProduct(ProductEditViewModel product);

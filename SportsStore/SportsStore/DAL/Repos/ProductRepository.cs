@@ -36,6 +36,29 @@ namespace SportsStore.DAL.Repos
             return dbEntry;
         }
 
+        public void DeleteProductImages(IList<ProductImage> productImages)
+        {
+            if (productImages == null)
+            return;
+
+            foreach(var image in productImages)
+            {
+                var filePath = $"{_configuration["Directories:imageDirectory"]}{image.FileName}";
+                File.Delete(filePath);
+
+                ProductImage dbEntry = _context.ProductImages.FirstOrDefault(i => i.FileName == image.FileName && i.ProductId == i.ProductId);
+                if(dbEntry != null)
+                    _context.ProductImages.Remove(dbEntry);
+            }
+
+            int productId = productImages.First().ProductId;
+            ProductImage newMainImage = _context.ProductImages.First(pi => pi.ProductId == productId && !productImages.Select(i => i.FileName).Contains(pi.FileName));
+            if(newMainImage != null)
+                newMainImage.IsMain = true;
+
+            _context.SaveChanges();
+        }
+
         public Product GetProduct(int productId)
         {
             var product = Products.FirstOrDefault(p => p.ProductID == productId);
@@ -80,33 +103,36 @@ namespace SportsStore.DAL.Repos
         {
             foreach (var file in model.Files)
             {
-                var filePath = _configuration["Directories:imageDirectory"] + $"p{model.Product.ProductID}_{file.FileName}";
+                Random r = new Random();
+                int randomValue = r.Next(1000000, 9999999);
+                var filePath = _configuration["Directories:imageDirectory"] + $"p{model.Product.ProductID}_{randomValue}_{file.FileName}";
                 if (file.Length > 0)
                 {
                     using (var stream = new FileStream(filePath, FileMode.Create))
                         file.CopyTo(stream);
                 }
-            }
 
-            foreach (var image in model.Product.ProductImages)
-            {
-                if (image.ProductImageId == 0)
+                ProductImage image = model.Product.ProductImages.FirstOrDefault(pi => pi.FileName == file.FileName);
+                if(image != null)
                 {
-                    image.FileName = $"p{model.Product.ProductID}_{image.FileName}";
-                    _context.ProductImages.Add(image);
-                }
-                else
-                {
-                    ProductImage dbEntry =
-                        _context.ProductImages.FirstOrDefault(i => i.ProductImageId == image.ProductImageId);
-                    if (dbEntry != null)
+                    if (image.ProductImageId == 0)
                     {
-                        dbEntry.FileName = image.FileName;
-                        dbEntry.ProductId = image.ProductId;
-                        dbEntry.IsMain = image.IsMain;
+                        image.FileName = $"p{model.Product.ProductID}_{randomValue}_{image.FileName}";
+                        _context.ProductImages.Add(image);
+                    }
+                    else
+                    {
+                        ProductImage dbEntry =
+                            _context.ProductImages.FirstOrDefault(i => i.ProductImageId == image.ProductImageId);
+                        if (dbEntry != null)
+                        {
+                            dbEntry.FileName = image.FileName;
+                            dbEntry.ProductId = image.ProductId;
+                            dbEntry.IsMain = image.IsMain;
+                        }
                     }
                 }
-            }
+            }            
         }
     }
 }

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos;
 using SportsStore.Helpers;
@@ -81,5 +83,25 @@ namespace SportsStore.Controllers
             TempData["message"] = $"Usunięto produkt {deletedProduct.Name}";
             return RedirectToAction("Products");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteProductImages(List<ProductImage> images)
+        {
+            if(images == null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NoContent;
+                return Json("Błąd - brak danych");
+            }
+
+            _productRepository.DeleteProductImages(images);
+            return Json("Sukces");
+        }
+    }
+
+
+    public class Test
+    {
+        public string FileName { get; set; }
     }
 }

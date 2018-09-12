@@ -1,0 +1,66 @@
+﻿@using Microsoft.Extensions.Configuration;
+
+@model ProductImagesViewModel
+@inject IConfiguration Configuration
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    var file = Model.ProductImages.FirstOrDefault(i => i.IsMain);
+    string path = Configuration["Directories:imageDirectory"].Replace("\\", "/").Remove(0, 7);
+}
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<input type="hidden" id="requestVerificationToken"
+       name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+
+<script>
+    $().ready(function (e) {
+        var productService = new ProductService(@Model.ProductId);
+    })
+</script>
+
+<img id="imageScreen" style="width:715px; height:382px; border:thick" src="@Url.Content($"{path}{file?.FileName}")" />
+<table id="imageStore" style="width:715px; height:95px;">
+    @if (Model.ProductImages.Count <= 4)
+    {
+        <tr>
+            @for (int i = 0; i < Model.ProductImages.Count; i++)
+            {
+                if (i <= 3 && !string.IsNullOrEmpty(Model.ProductImages[i].FileName))
+                {
+                    <td>
+                        <img class="btn" data-file-name="@Model.ProductImages[i].FileName" style="width: 179px; height: 95px" src="@Url.Content($"{path}{Model.ProductImages[i].FileName}")" />
+                    </td>
+                }
+            }
+        </tr>
+    }
+    @if (Model.ProductImages.Count > 4)
+    {
+        <tr>
+            @for (int i = 4; i < Model.ProductImages.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(Model.ProductImages[i].FileName))
+                {
+                    <td>
+                        <img class="btn" data-file-name="@Model.ProductImages[i].FileName" style="width: 179px; height: 95px" src="@Url.Content($"{path}{Model.ProductImages[i].FileName}")" />
+                    </td>
+                }
+            }
+        </tr>
+    }
+
+</table>
+
+@if (Model.IsEdit)
+{
+    <label id="lblImageUpload" for="imageUpload" class="btn btn-primary mt-2">Dodaj</label>
+    <input id="imageUpload" name="Files" style="display:none" type="file" accept=".jpg" multiple />
+    <div id="btnDeleteImage" class="btn btn-danger">Usuń</div>
+    <div id="btnConfirmDelete" class="btn btn-danger" style="display:none">Potwierdź</div>
+}
