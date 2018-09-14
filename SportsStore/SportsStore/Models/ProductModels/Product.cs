@@ -19,6 +19,7 @@ namespace SportsStore.Models.ProductModels
         [Required(ErrorMessage = "Cena jest wymagana")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Proszę podać dodatnią cenę")]
         [Display(Name = "Cena")]
+        [DisplayFormat(DataFormatString = "D")]
         public decimal Price { get; set; }
         [Required(ErrorMessage = "Wskazanie kategorii jest wymagane")]
         [Display(Name = "Kategoria")]

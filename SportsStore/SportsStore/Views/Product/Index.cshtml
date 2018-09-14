@@ -13,8 +13,8 @@
             <div class="form-control">@Model.Product.Description</div>
         </div>
     </div>
-    <div class="col-6">
-        @await Component.InvokeAsync("ProductImages", new { productImages = Model.Product.ProductImages, productId = Model.Product.ProductID, isEdit = false })
+    <div class="col-6 text-center">
+        @await Component.InvokeAsync("ProductImages", new { product = Model.Product, isEdit = false })
     </div>
     <div class="col-3">
         <div class="card card-body">

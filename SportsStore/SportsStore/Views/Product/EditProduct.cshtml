@@ -27,13 +27,13 @@
             <div class="form-group">
                 <label asp-for="Product.Price">Cena</label>
                 <div><span asp-validation-for="Product.Price" class="text-danger"></span></div>
-                <input type="number" asp-for="Product.Price" class="form-control" />
+                <input type="text" lang="en" asp-for="Product.Price" class="form-control" />
             </div>
             <button type="submit" class="btn btn-success">Zapisz</button>
             <a asp-action="Products" class="btn btn-secondary">Anuluj</a>
         </div>
         <div class="col-6">
-            @await Component.InvokeAsync("ProductImages", new { productImages = Model.Product.ProductImages, productId = Model.Product.ProductID, isEdit = true })
+            @await Component.InvokeAsync("ProductImages", new { product = Model.Product, isEdit = true })
         </div>
     </div>
 </form>

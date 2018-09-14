@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SportsStore.DAL.Contexts;
 using SportsStore.Models.ProductModels;
+using SportsStore.Infrastructure.Extensions;
 
 namespace SportsStore.DAL.Repos
 {
@@ -38,8 +40,8 @@ namespace SportsStore.DAL.Repos
 
         public void DeleteProductImages(IList<ProductImage> productImages)
         {
-            if (productImages == null)
-            return;
+            if (productImages == null && productImages.Count == 0)
+                return;
 
             foreach(var image in productImages)
             {
@@ -52,7 +54,7 @@ namespace SportsStore.DAL.Repos
             }
 
             int productId = productImages.First().ProductId;
-            ProductImage newMainImage = _context.ProductImages.First(pi => pi.ProductId == productId && !productImages.Select(i => i.FileName).Contains(pi.FileName));
+            ProductImage newMainImage = _context.ProductImages.FirstOrDefault(pi => pi.ProductId == productId && !productImages.Select(i => i.FileName).Contains(pi.FileName));
             if(newMainImage != null)
                 newMainImage.IsMain = true;
 
@@ -65,7 +67,8 @@ namespace SportsStore.DAL.Repos
 
             if (product != null)
             {
-                for (int i = 0; i < 8 - product.ProductImages.Count; i++)
+                int productImagesCount = product.ProductImages.Count;
+                for (int i = 0; i < 8 - productImagesCount; i++)
                 {
                     product.ProductImages.Add(new ProductImage());
                 }
@@ -101,23 +104,31 @@ namespace SportsStore.DAL.Repos
 
         private void SaveProductImages(ProductEditViewModel model)
         {
-            foreach (var file in model.Files)
+            Dictionary<string, string> savedFileNames = new Dictionary<string, string>();
+            if(model.Files != null)
             {
-                Random r = new Random();
-                int randomValue = r.Next(1000000, 9999999);
-                var filePath = _configuration["Directories:imageDirectory"] + $"p{model.Product.ProductID}_{randomValue}_{file.FileName}";
-                if (file.Length > 0)
+                foreach (var file in model.Files.GroupBy(f => f.FileName).Select(g => g.First()))
                 {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                        file.CopyTo(stream);
+                    string fileExtension = file.FileName.Substring(file.FileName.IndexOf("."), (file.FileName.Length - file.FileName.IndexOf(".")));
+                    Random r = new Random();
+                    string fileName = $"{r.Next(1000000, 9999999)}{fileExtension}";
+                    var filePath = _configuration["Directories:imageDirectory"] + $"{fileName}";
+                    if (file.Length > 0)
+                    {
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                            file.CopyTo(stream);
+                    }
+                    savedFileNames.Add(file.FileName, fileName);
                 }
+            }
 
-                ProductImage image = model.Product.ProductImages.FirstOrDefault(pi => pi.FileName == file.FileName);
-                if(image != null)
+            foreach(ProductImage image in model.Product.ProductImages)
+            {
+                if (image != null)
                 {
                     if (image.ProductImageId == 0)
                     {
-                        image.FileName = $"p{model.Product.ProductID}_{randomValue}_{image.FileName}";
+                        image.FileName = $"{savedFileNames[image.FileName]}";
                         _context.ProductImages.Add(image);
                     }
                     else
@@ -132,7 +143,7 @@ namespace SportsStore.DAL.Repos
                         }
                     }
                 }
-            }            
+            }       
         }
     }
 }

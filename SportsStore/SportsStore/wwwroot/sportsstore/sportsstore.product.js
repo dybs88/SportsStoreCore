@@ -1,4 +1,4 @@
-﻿function ProductService(id) {
+﻿function ProductImagesComponentService(id) {
 
     productId = id;
     inputCount = 0;
@@ -82,7 +82,9 @@
     displayImageOnScreen = function (e) {
         $("#imageScreen").prop("src", e.currentTarget.src);
         $("img[data-file-name").nextAll("input[name*='IsMain']").val(false);
+        $("img[data-file-name").parent().nextAll("input[name*='IsMain']").val(false);
         $(e.currentTarget).nextAll("input[name*='IsMain']").val(true);
+        $(e.currentTarget).parent().nextAll("input[name*='IsMain']").val(true);
     }
 
     selectImageToDelete = function (e) {
@@ -112,8 +114,13 @@
 
     $("#imageUpload").change(function (e) {
         if (e.currentTarget.files) {
-            if (e.currentTarget.files.length >= 8)
-                return;
+            $("valid").html("");
+            var filesCount = $("img[data-file-name").length + e.currentTarget.files.length;
+            var files = e.currentTarget.files;
+            if (filesCount > 8) {
+                $("#valid").html("Produkt może mieć przypisane maksymalnie 8 zdjęć");
+                files = e.currentTarget.files.slice(0, (files.length - $("img[data-file-name]").length));
+            }
 
             for (var i = 0; i < e.currentTarget.files.length; i++) {
                 var file = e.currentTarget.files[i];
@@ -122,11 +129,11 @@
                 if ($store.find("img[data-file-name='" + file.name + "']").length > 0)
                     continue;
 
-                var $newImg = $("<img>", { "class": "btn" });
-                $newImg.attr("data-file-name", file.name);
-                $newImg.css("width", "179px");
-                $newImg.css("height", "95px");
-                $newImg.click(function (e) { displayImageOnScreen(e); });
+                var $newImg = $("<img>", { "class": "btn" })
+                    .attr("data-file-name", file.name)
+                    .css("width", "179px")
+                    .css("height", "95px")
+                    .click(function (e) { displayImageOnScreen(e); });
 
 
                 if ($store.children("tbody").children("tr").length > 0) {
@@ -158,19 +165,25 @@
                     $newTableRow.append($newTableData);
                     $store.children("tbody").append($newTableRow);
                 }
-                var reader = new FileReader();
 
-                reader.onload = function (e) {
-                    $("#imageScreen").attr("src", e.target.result);
-                    $newImg.attr("src", e.target.result);
-                }
+                readFile(file, $newImg, function ($newImg, data) {
+                    $("#imageScreen").attr("src", data);
+                    $newImg.attr("src", data);
+                });
 
-                reader.readAsDataURL(file);
                 $("#imageUpload").clone().insertAfter($(e.currentTarget));
                 inputCount++;
             }
         }
     })
+
+    readFile = function (file, $imgStore, callback) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (e) {
+            callback($imgStore, e.currentTarget.result);
+        }
+    }
 
 
 

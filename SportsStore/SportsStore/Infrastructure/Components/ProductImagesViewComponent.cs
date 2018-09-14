@@ -10,9 +10,9 @@ namespace SportsStore.Infrastructure.Components
 {
     public class ProductImagesViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(IList<ProductImage> productImages, int productId, bool isEdit)
+        public IViewComponentResult Invoke(Product product, bool isEdit)
         {
-            return View(new ProductImagesViewModel { ProductId = productId, ProductImages = productImages, IsEdit = isEdit });
+            return View(new ProductImagesViewModel { Product = product, IsEdit = isEdit });
         }
     }
 }

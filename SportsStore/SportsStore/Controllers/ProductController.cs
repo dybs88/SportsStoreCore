@@ -58,8 +58,7 @@ namespace SportsStore.Controllers
         [Authorize]
         public ViewResult EditProduct(int productId)
         {
-            var product = _productRepository.Products.FirstOrDefault(p => p.ProductID == productId);
-            return View(new ProductEditViewModel { Product = product });
+            return View(new ProductEditViewModel { Product = _productRepository.GetProduct(productId) });
         }
 
         [Authorize]
@@ -95,13 +94,7 @@ namespace SportsStore.Controllers
             }
 
             _productRepository.DeleteProductImages(images);
-            return Json("Sukces");
+            return Json("Usuwanie zakończone");
         }
-    }
-
-
-    public class Test
-    {
-        public string FileName { get; set; }
     }
 }

@@ -4,7 +4,7 @@
 @inject IConfiguration Configuration
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
-    var file = Model.ProductImages.FirstOrDefault(i => i.IsMain);
+    var file = Model.Product.ProductImages.FirstOrDefault(i => i.IsMain);
     string path = Configuration["Directories:imageDirectory"].Replace("\\", "/").Remove(0, 7);
 }
 
@@ -20,41 +20,56 @@
 
 <script>
     $().ready(function (e) {
-        var productService = new ProductService(@Model.ProductId);
+        var service = new ProductImagesComponentService(@Model.Product.ProductID);
     })
 </script>
-
-<img id="imageScreen" style="width:715px; height:382px; border:thick" src="@Url.Content($"{path}{file?.FileName}")" />
-<table id="imageStore" style="width:715px; height:95px;">
-    @if (Model.ProductImages.Count <= 4)
+<div id="valid" class="text-danger"></div>
+<img id="imageScreen" style="width:25rem; height:25rem; border:thick" src="@Url.Content($"{path}{file?.FileName}")" />
+<table id="imageStore" style="width:30rem;">
+    @if (Model.Product.ProductImages.Count > 0)
     {
         <tr>
-            @for (int i = 0; i < Model.ProductImages.Count; i++)
+            @for (int i = 0; i < 4; i++)
             {
-                if (i <= 3 && !string.IsNullOrEmpty(Model.ProductImages[i].FileName))
+
+                if (!string.IsNullOrEmpty(Model.Product.ProductImages[i].FileName))
                 {
                     <td>
-                        <img class="btn" data-file-name="@Model.ProductImages[i].FileName" style="width: 179px; height: 95px" src="@Url.Content($"{path}{Model.ProductImages[i].FileName}")" />
+                        <img class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="width: 11rem; height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
+                        @if (Model.IsEdit)
+                        {
+                            <input type="hidden" asp-for="@Model.Product.ProductImages[i].ProductImageId" />
+                            <input type="hidden" asp-for="@Model.Product.ProductImages[i].ProductId" />
+                            <input type="hidden" asp-for="@Model.Product.ProductImages[i].FileName" />
+                            <input type="hidden" asp-for="@Model.Product.ProductImages[i].IsMain" />
+                        }
                     </td>
                 }
             }
         </tr>
     }
-    @if (Model.ProductImages.Count > 4)
+    @if (Model.Product.ProductImages.Count > 4)
     {
         <tr>
-            @for (int i = 4; i < Model.ProductImages.Count; i++)
+            @for (int i = 4; i < Model.Product.ProductImages.Count; i++)
             {
-                if (!string.IsNullOrEmpty(Model.ProductImages[i].FileName))
+                if (!string.IsNullOrEmpty(Model.Product.ProductImages[i].FileName))
                 {
                     <td>
-                        <img class="btn" data-file-name="@Model.ProductImages[i].FileName" style="width: 179px; height: 95px" src="@Url.Content($"{path}{Model.ProductImages[i].FileName}")" />
+                        <img class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="width: 11rem; height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
+                        @if (Model.IsEdit)
+                         {
+                            <input type="hidden" asp-for="@Model.Product.ProductImages[i].ProductImageId" />
+                            <input type="hidden" asp-for="@Model.Product.ProductImages[i].ProductId" />
+                            <input type="hidden" asp-for="@Model.Product.ProductImages[i].FileName" />
+                            <input type="hidden" asp-for="@Model.Product.ProductImages[i].IsMain" />
+
+                        }
                     </td>
                 }
             }
         </tr>
     }
-
 </table>
 
 @if (Model.IsEdit)

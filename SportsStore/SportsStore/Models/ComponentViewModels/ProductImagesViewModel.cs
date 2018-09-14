@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 namespace SportsStore.Models.ComponentViewModels
 {
     public class ProductImagesViewModel
-    {
-        public int ProductId { get; set; }
-        public IList<ProductImage> ProductImages { get; set; }
+    { 
+        public Product Product { get; set; }
         public bool IsEdit { get; set; }
     }
 }
