@@ -1,0 +1,54 @@
+﻿@model SalesParametersIndexViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<input type="hidden" id="requestVerificationToken"
+       name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+
+<script>
+    $().ready(function (e) {
+        var service = new SalesParametersService($("#tbVatRates"));
+    })
+</script>
+<div class="row">
+    <div class="col-6">
+        <h4>Stawki VAT</h4>
+        <table class="table table-sm table-striped" id="tbVatRates">
+            <tr>
+                <th class="text-center">Symbol</th>
+                <th class="text-center">Wartość %</th>
+                <th class="text-center">Domyślna</th>
+                <th class="text-center">Akcja</th>
+            </tr>
+            @for (int i = 0; i < Model.VatRates.Count(); i++)
+            {
+                <tr data-row-number="@(i+1)">
+                    <td class="text-center">@Model.VatRates[i].Symbol</td>
+                    <td class="text-center">@(Model.VatRates[i].Value)</td>
+                    <td class="text-center"><input type="checkbox" @(Model.VatRates[i].IsDefault ? "checked" : "") disabled></td>
+                    <td style="width:15rem">
+                        <input type="hidden" value="@Model.VatRates[i].VatRateId" />
+                        <a name="btnSaveVatRate" class="btn btn-success btn-sm" style="color: white; display:none">Zapisz</a>
+                        <a name="btnEditVatRate" class="btn btn-primary btn-sm" style="color: white;">Edytuj</a>
+                        <a name="btnDeleteVatRate" class="btn btn-danger btn-sm" style="color: white;">Usuń</a>
+                        <a name="btnCancelVatRate" class="btn btn-secondary btn-sm" style="color: white; display:none">Anuluj</a>
+                    </td>
+                </tr>
+            }
+        </table>
+        <a name="btnAddVatRate" class="btn btn-success btn-sm" style="color: white;">Dodaj</a>
+    </div>
+    <div class="col-6"></div>
+</div>
+
+

@@ -93,7 +93,7 @@ namespace SportsStore.DAL.Repos
                 {
                     dbEntry.Name = model.Product.Name;
                     dbEntry.Description = model.Product.Description;
-                    dbEntry.Price = model.Product.Price;
+                    dbEntry.NetPrice = model.Product.NetPrice;
                     dbEntry.Category = model.Product.Category;
                 }
             }

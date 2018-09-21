@@ -148,10 +148,10 @@ namespace SportsStore.Tests.Base
         {
             List<Order> orders = new List<Order>
             {
-                new Order { OrderId = 1, Items = Items.Where(i => i.OrderId == 1), AddressId = 1, CustomerId = 1, OrderNumber = "1", Value = Items.Sum(i => i.Value) },
-                new Order { OrderId = 2, Items = Items.Where(i => i.OrderId == 2), AddressId = 2, CustomerId = 2, OrderNumber = "2", Value = Items.Sum(i => i.Value) },
-                new Order { OrderId = 3, Items = Items.Where(i => i.OrderId == 3), AddressId = 1, CustomerId = 1, OrderNumber = "3", Value = Items.Sum(i => i.Value) },
-                new Order { OrderId = 4, Items = Items.Where(i => i.OrderId == 4), AddressId = 2, CustomerId = 1, OrderNumber = "4", Value = Items.Sum(i => i.Value) },
+                new Order { OrderId = 1, Items = Items.Where(i => i.OrderId == 1), AddressId = 1, CustomerId = 1, OrderNumber = "1", NetValue = Items.Sum(i => i.Value) },
+                new Order { OrderId = 2, Items = Items.Where(i => i.OrderId == 2), AddressId = 2, CustomerId = 2, OrderNumber = "2", NetValue = Items.Sum(i => i.Value) },
+                new Order { OrderId = 3, Items = Items.Where(i => i.OrderId == 3), AddressId = 1, CustomerId = 1, OrderNumber = "3", NetValue = Items.Sum(i => i.Value) },
+                new Order { OrderId = 4, Items = Items.Where(i => i.OrderId == 4), AddressId = 2, CustomerId = 1, OrderNumber = "4", NetValue = Items.Sum(i => i.Value) },
             };
 
             Mock<IOrderRepository> mockOrderRepo = new Mock<IOrderRepository>();
@@ -216,14 +216,14 @@ namespace SportsStore.Tests.Base
             Mock<IProductRepository> mockProductRepo = new Mock<IProductRepository>();
             mockProductRepo.Setup(x => x.Products).Returns(new List<Product>
             {
-                new Product {ProductID = 1, Name = "P1", Price = 10M, Category = "1"},
-                new Product {ProductID = 2, Name = "P2", Price = 20M, Category = "1"},
-                new Product {ProductID = 3, Name = "P3", Price = 30M, Category = "2"},
-                new Product {ProductID = 4, Name = "P4", Price = 40M, Category = "3"},
-                new Product {ProductID = 5, Name = "P5", Price = 50M, Category = "3"},
-                new Product {ProductID = 6, Name = "P6", Price = 60M, Category = "3"},
-                new Product {ProductID = 7, Name = "P7", Price = 70M, Category = "4"},
-                new Product {ProductID = 8, Name = "P8", Price = 80M, Category = "4"}
+                new Product {ProductID = 1, Name = "P1", NetPrice = 10M, Category = "1"},
+                new Product {ProductID = 2, Name = "P2", NetPrice = 20M, Category = "1"},
+                new Product {ProductID = 3, Name = "P3", NetPrice = 30M, Category = "2"},
+                new Product {ProductID = 4, Name = "P4", NetPrice = 40M, Category = "3"},
+                new Product {ProductID = 5, Name = "P5", NetPrice = 50M, Category = "3"},
+                new Product {ProductID = 6, Name = "P6", NetPrice = 60M, Category = "3"},
+                new Product {ProductID = 7, Name = "P7", NetPrice = 70M, Category = "4"},
+                new Product {ProductID = 8, Name = "P8", NetPrice = 80M, Category = "4"}
             }.AsQueryable());
 
             return mockProductRepo.Object;

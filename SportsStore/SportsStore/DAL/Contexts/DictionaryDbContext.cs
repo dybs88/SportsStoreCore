@@ -14,6 +14,8 @@ namespace SportsStore.DAL.Contexts
 
         public DbSet<DocumentType> DocumentTypes { get; set; }
 
+        public DbSet<VatRate> VatRates { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder
@@ -22,6 +24,11 @@ namespace SportsStore.DAL.Contexts
                 .HasConversion(
                     v => v.ToString(),
                     v => (Domain.DocumentKind)Enum.Parse(typeof(Domain.DocumentKind), v));
+
+            builder
+                .Entity<VatRate>()
+                .HasIndex(vr => vr.Symbol)
+                .IsUnique();
         }
     }
 }

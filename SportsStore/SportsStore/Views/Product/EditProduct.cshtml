@@ -8,7 +8,7 @@
     <h4>ID: @Model.Product.ProductID</h4>
     <input type="hidden" asp-for="Product.ProductID" />
     <div class="row">
-        <div class="col-6">
+        <div class="col-7">
             <div class="form-group">
                 <label asp-for="Product.Name">Nazwa</label>
                 <div><span asp-validation-for="Product.Name" class="text-danger"></span></div>
@@ -24,15 +24,61 @@
                 <div><span asp-validation-for="Product.Category" class="text-danger"></span></div>
                 <input type="text" asp-for="Product.Category" class="form-control" />
             </div>
-            <div class="form-group">
-                <label asp-for="Product.Price">Cena</label>
-                <div><span asp-validation-for="Product.Price" class="text-danger"></span></div>
-                <input type="text" lang="en" asp-for="Product.Price" class="form-control" />
+            <div class="row ml-1">
+                <div class="col-2">
+                    <section>
+                        <label>Cena</label>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="netPrice" name="priceType" checked>
+                            <label class="custom-control-label" for="netPrice">Netto</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="grossPrice" name="priceType">
+                            <label class="custom-control-label" for="grossPrice">Brutto</label>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label asp-for="Product.NetPrice">Cena netto</label>
+                        <div><span asp-validation-for="Product.NetPrice" class="text-danger"></span></div>
+                        <input type="text" asp-for="Product.NetPrice" class="form-control" value="@(Model.Product.NetPrice != 0
+                                                                                                        ? Model.Product.NetPrice
+                                                                                                        : Math.Round(
+                                                                                                            (Model.Product.GrossPrice/
+                                                                                                                (Model.Product.VatRateId == 0 
+                                                                                                                    ? 1 
+                                                                                                                        : ((100 + Model.VatRates.First(vr => vr.VatRateId == Model.Product.VatRateId).Value)/100))),2))" />
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label>Podlega VAT <input type="checkbox" checked /></label>
+                        <div class="form-inline">
+                            <label class="mr-1">Stawka VAT</label>
+                            <select class="form-control w-50" asp-for="Product.VatRateId" asp-items="@(new SelectList(Model.VatRates.OrderBy(vr => vr.Symbol), "Value", "FullName"))"></select>
+                        </div>                      
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label asp-for="Product.GrossPrice">Cena brutto</label>
+                        <div><span asp-validation-for="Product.GrossPrice" class="text-danger"></span></div>
+                        <input type="text" asp-for="Product.GrossPrice" class="form-control" disabled value="@(Model.Product.GrossPrice != 0 
+                                                                                                                ? Model.Product.GrossPrice 
+                                                                                                                : Math.Round(
+                                                                                                                    (Model.Product.NetPrice + 
+                                                                                                                    (Model.Product.NetPrice * Model.Product.VatRateId == 0 
+                                                                                                                        ? 0 
+                                                                                                                        : Model.VatRates.First(vr => vr.VatRateId == Model.Product.VatRateId).Value)),2))" />
+                    </div>
+                </div>
             </div>
+
             <button type="submit" class="btn btn-success">Zapisz</button>
             <a asp-action="Products" class="btn btn-secondary">Anuluj</a>
         </div>
-        <div class="col-6">
+        <div class="col-5">
             @await Component.InvokeAsync("ProductImages", new { product = Model.Product, isEdit = true })
         </div>
     </div>

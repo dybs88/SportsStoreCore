@@ -21,7 +21,7 @@ namespace SportsStore.Infrastructure.Patterns.Observers
 
         private void ItemsPropertyChanged()
         {
-            _obj.Value = _obj.Items.Sum(i => i.Value);
+            _obj.NetValue = _obj.Items.Sum(i => i.Value);
         }
     }
 }

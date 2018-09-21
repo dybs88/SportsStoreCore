@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SportsStore.Models.DictionaryModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace SportsStore.Models.ProductModels
     public class ProductEditViewModel
     {
         public Product Product { get; set; }
+        public IEnumerable<VatRate> VatRates { get; set; }
         public IEnumerable<IFormFile> Files { get; set; }
     }
 }

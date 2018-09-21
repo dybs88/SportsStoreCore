@@ -1,4 +1,10 @@
-﻿function ProductImagesComponentService(id) {
+﻿function ProductService(id) {
+    this.ProductImageComponentService = new ProductImagesComponentService(id);
+
+    this.ProductEditService = new ProductEditService();
+}
+
+function ProductImagesComponentService(id) {
 
     productId = id;
     inputCount = 0;
@@ -64,19 +70,19 @@
             data.push({ ProductId: productId, FileName : $($imgToDelete[i]).attr("data-file-name") });
         }
 
-        $.ajax({
-            headers: { "RequestVerificationToken": token },
-            type: "POST",
-            url: "/Product/DeleteProductImages",
-            contentType: "application/x-www-form-urlencoded; charset=utf-8",
-            dataType: "json",
-            data: { images: data },
-            success: function (message) {
+        var service = SportsStoreService();
+        service.runAjax(
+            "Product",
+            "DeleteProductImages",
+            "",
+            "POST",
+            { images: data },
+            function (message) {
                 popupService.displaySuccessMessage(message);
                 $("img[data-checked]").parent().remove();
             },
-            error: function (message) { popupService.displayErrorMessage(message); }
-        });
+            function (message) { popupService.displayErrorMessage(message); }
+        );      
     })
 
     displayImageOnScreen = function (e) {
@@ -188,4 +194,12 @@
 
 
 
+}
+
+function ProductEditService(id) {
+    var productId = id;
+
+    $("input[name='priceType']").change(function (e) {
+        if()
+    })
 }

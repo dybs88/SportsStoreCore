@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SportsStore.Infrastructure.Start.SeedDatas
 {
-    public class DictionarySeddData
+    public class DictionarySeedData
     {
         public static void PopulateDictionaries(IApplicationBuilder app)
         {
@@ -29,6 +29,11 @@ namespace SportsStore.Infrastructure.Start.SeedDatas
             if (!context.DocumentTypes.Any(dt => dt.DocumentKind == DocumentKind.SalesInvoice))
             {
                 context.DocumentTypes.Add(new DocumentType { Code = "SportsStore.SalesInvoice", Symbol = "FS", Name = "Faktura sprzedaży", DocumentKind = DocumentKind.SalesInvoice });
+            }
+
+            if(!context.VatRates.Any())
+            {
+                context.VatRates.Add(new VatRate { Symbol = "A", Value = 0.23m });
             }
 
             context.SaveChanges();

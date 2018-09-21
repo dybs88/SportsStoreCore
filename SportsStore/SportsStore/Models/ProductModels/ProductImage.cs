@@ -10,9 +10,8 @@ namespace SportsStore.Models.ProductModels
     public class ProductImage
     {
         public int ProductImageId { get; set; }
+        [ForeignKey("Product")]
         public int ProductId { get; set; }
-        [ForeignKey("ProductId")]
-        public Product Product { get; set; }
         public string FileName { get; set; }
         public bool IsMain { get; set; }
     }

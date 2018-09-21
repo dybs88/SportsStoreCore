@@ -132,6 +132,7 @@
     <Folder Include="Models\ViewModels\" />
     <Folder Include="Views\Base\" />
     <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\jquery-validation-globalize\" />
   </ItemGroup>
 
 </Project>

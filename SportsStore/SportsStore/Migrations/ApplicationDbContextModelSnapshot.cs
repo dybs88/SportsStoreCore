@@ -114,11 +114,15 @@ namespace SportsStore.Migrations
 
                     b.Property<bool>("GiftWrap");
 
+                    b.Property<decimal>("GrossValue");
+
+                    b.Property<decimal>("NetValue");
+
                     b.Property<string>("OrderNumber");
 
                     b.Property<bool>("Shipped");
 
-                    b.Property<decimal>("Value");
+                    b.Property<int>("VatRateId");
 
                     b.HasKey("OrderId");
 
@@ -139,10 +143,14 @@ namespace SportsStore.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<decimal>("GrossPrice");
+
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<decimal>("Price");
+                    b.Property<decimal>("NetPrice");
+
+                    b.Property<int>("VatRateId");
 
                     b.HasKey("ProductID");
 
@@ -202,7 +210,7 @@ namespace SportsStore.Migrations
 
             modelBuilder.Entity("SportsStore.Models.ProductModels.ProductImage", b =>
                 {
-                    b.HasOne("SportsStore.Models.ProductModels.Product", "Product")
+                    b.HasOne("SportsStore.Models.ProductModels.Product")
                         .WithMany("ProductImages")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);

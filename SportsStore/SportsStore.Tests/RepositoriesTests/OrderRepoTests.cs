@@ -55,7 +55,7 @@ namespace SportsStore.Tests.RepositoriesTests
             Assert.NotEqual(0, order.CustomerId);
             Assert.NotEmpty(order.Items);
             Assert.NotEqual(0, order.AddressId);
-            Assert.NotEqual(0, order.Value);
+            Assert.NotEqual(0, order.NetValue);
         }
 
         [Theory]
@@ -147,7 +147,7 @@ namespace SportsStore.Tests.RepositoriesTests
             int orderId = _target.SaveOrder(order);
 
             //assert
-            Assert.Equal(totalPrice, order.Value);
+            Assert.Equal(totalPrice, order.NetValue);
             Assert.NotEqual(0, order.OrderId);
             Assert.Equal(orderId, order.OrderId);
             Assert.False(string.IsNullOrEmpty(order.OrderNumber));

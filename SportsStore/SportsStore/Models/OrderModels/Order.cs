@@ -28,8 +28,11 @@ namespace SportsStore.Models.OrderModels
         [ForeignKey("AddressId")]
         public Address Address { get; set; }
         public bool GiftWrap { get; set; }
-        public bool Shipped { get; set; }       
-        public decimal Value { get; set; }
+        public bool Shipped { get; set; }    
+        public decimal NetValue { get; set; }
+        public decimal GrossValue { get; set; }
+        [ForeignKey("VatRate")]
+        public int VatRateId { get; set; }
 
         public Order()
         {
@@ -45,7 +48,7 @@ namespace SportsStore.Models.OrderModels
         private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var items = (ObservableCollection<CartItem>)sender;
-            Value = items.Sum(i => i.Value);
+            NetValue = items.Sum(i => i.Value);
         }
     }
 }

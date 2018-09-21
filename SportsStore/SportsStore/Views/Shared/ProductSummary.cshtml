@@ -9,10 +9,10 @@
 
 <a class="btn text-left card card-body m-1 p-1" style="color: black" asp-action="Index" asp-controller="Product" asp-route-productId="@Model.ProductID">
     <div class="row">
-        <div class="col-2 text-center">
+        <div class="col-2 align-content-center">
             @if (Model.ProductImages.Any(pi => pi.IsMain))
             {
-                <img src="@Url.Content($"{path}{Model.ProductImages.FirstOrDefault(pi => pi.IsMain).FileName}")" style="width:130px; height:130px" />
+                <img style="max-width:10rem; max-height:10rem" src="@Url.Content($"{path}{Model.ProductImages.FirstOrDefault(pi => pi.IsMain).FileName}")" />
 
             }
         </div>
@@ -21,7 +21,7 @@
                 <h4>
                     @Model.Name
                     <span class="badge badge-pill badge-primary mt-1" style="float: right">
-                        <small>@Model.Price.ToString("c")</small>
+                        <small>@Model.NetPrice.ToString("c")</small>
                     </span>
                 </h4>
             </div>

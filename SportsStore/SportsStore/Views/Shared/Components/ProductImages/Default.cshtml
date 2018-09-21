@@ -24,7 +24,9 @@
     })
 </script>
 <div id="valid" class="text-danger"></div>
-<img id="imageScreen" style="width:25rem; height:25rem; border:thick" src="@Url.Content($"{path}{file?.FileName}")" />
+<div class="text-center align-content-center" style="max-width:43rem; max-height:20rem;">
+    <img id="imageScreen" src="@Url.Content($"{path}{file?.FileName}")" />
+</div>
 <table id="imageStore" style="width:30rem;">
     @if (Model.Product.ProductImages.Count > 0)
     {
@@ -35,7 +37,7 @@
                 if (!string.IsNullOrEmpty(Model.Product.ProductImages[i].FileName))
                 {
                     <td>
-                        <img class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="width: 11rem; height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
+                        <img class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="max-width: 11rem; max-height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
                         @if (Model.IsEdit)
                         {
                             <input type="hidden" asp-for="@Model.Product.ProductImages[i].ProductImageId" />
@@ -56,7 +58,7 @@
                 if (!string.IsNullOrEmpty(Model.Product.ProductImages[i].FileName))
                 {
                     <td>
-                        <img class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="width: 11rem; height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
+                        <img class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="max-width: 11rem; max-height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
                         @if (Model.IsEdit)
                          {
                             <input type="hidden" asp-for="@Model.Product.ProductImages[i].ProductImageId" />

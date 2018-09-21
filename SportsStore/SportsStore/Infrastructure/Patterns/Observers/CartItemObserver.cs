@@ -23,14 +23,14 @@ namespace SportsStore.Infrastructure.Patterns.Observers
 
         private void ProductPropertyChanged()
         {
-            _obj.Value = _obj.Product.Price * _obj.Quantity;
+            _obj.Value = _obj.Product.NetPrice * _obj.Quantity;
         }
 
         private void QuantityPropertyChanged()
         {
             decimal price = 0;
             if (_obj.Product != null)
-                price = _obj.Product.Price;
+                price = _obj.Product.NetPrice;
 
             _obj.Value = price * _obj.Quantity;
         }

@@ -38,6 +38,26 @@ namespace SportsStore.Migrations.DictionaryDb
 
                     b.ToTable("DocumentTypes","Dictionary");
                 });
+
+            modelBuilder.Entity("SportsStore.Models.DictionaryModels.VatRate", b =>
+                {
+                    b.Property<int>("VatRateId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("IsDefault");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired();
+
+                    b.Property<decimal>("Value");
+
+                    b.HasKey("VatRateId");
+
+                    b.HasIndex("Symbol")
+                        .IsUnique();
+
+                    b.ToTable("VatRates","Dictionary");
+                });
 #pragma warning restore 612, 618
         }
     }

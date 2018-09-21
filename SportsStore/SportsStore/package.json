@@ -5,6 +5,7 @@
   "description": "SportsStore project",
   "license": "BSD-3-Clause",
   "devDependencies": {
+    "globalize": "^1.4.0-alpha.5",
     "mdbootstrap": "^4.5.8"
   }
 }

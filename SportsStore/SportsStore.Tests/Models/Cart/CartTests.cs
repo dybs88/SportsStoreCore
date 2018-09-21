@@ -5,6 +5,7 @@ using System.Text;
 using SportsStore.Models;
 using SportsStore.Models.Cart;
 using SportsStore.Models.ProductModels;
+using SportsStore.Tests.Base;
 using Xunit;
 
 namespace SportsStore.Tests
@@ -16,17 +17,7 @@ namespace SportsStore.Tests
 
         public CartTests()
         {
-            products = new List<Product>
-            {
-                new Product { ProductID = 1, Name = "P1", Price = 10M, Category = "1" },
-                new Product { ProductID = 2, Name = "P2", Price = 20M, Category = "1" },
-                new Product { ProductID = 3, Name = "P3", Price = 30M, Category = "2" },
-                new Product { ProductID = 4, Name = "P4", Price = 40M, Category = "3" },
-                new Product { ProductID = 5, Name = "P5", Price = 50M, Category = "3" },
-                new Product { ProductID = 6, Name = "P6", Price = 60M, Category = "3" },
-                new Product { ProductID = 7, Name = "P7", Price = 70M, Category = "4" },
-                new Product { ProductID = 8, Name = "P8", Price = 80M, Category = "4" }
-            };
+            products = Repositories.ProductRepository.Products;
 
             target = new Cart
             {

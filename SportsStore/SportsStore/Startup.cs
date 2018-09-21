@@ -6,22 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SportsStore.DAL.AbstractContexts;
-using SportsStore.DAL.Contexts;
-using SportsStore.DAL.Repos;
-using SportsStore.DAL.Repos.CustomerSchema;
-using SportsStore.DAL.Repos.DictionarySchema;
-using SportsStore.DAL.Repos.Security;
-using SportsStore.Infrastructure.Policies;
+using SportsStore.Infrastructure.Extensions;
 using SportsStore.Infrastructure.Start.AppConfiguration;
 using SportsStore.Infrastructure.Start.SeedDatas;
-using SportsStore.Models.Cart;
-using SportsStore.Models.DAL.Repos.SalesSchema;
-using SportsStore.Models.Identity;
 
 namespace SportsStore
 {
@@ -39,39 +28,19 @@ namespace SportsStore
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration["Data:SportsStoreProducts:connectionString"]));
-
-            services.AddDbContext<AppIdentityDbContext>(options =>
-                options.UseSqlServer(Configuration["Data:SportsStoreIdentity:connectionString"]));
-            services.AddIdentity<SportUser, IdentityRole>(options => 
-            {
-                options.User.RequireUniqueEmail = true;
-            })
-                .AddEntityFrameworkStores<AppIdentityDbContext>()
-                .AddDefaultTokenProviders();
-            services.AddDbContext<DictionaryDbContext>(options =>
-                options.UseSqlServer(Configuration["Data:SportsStoreDictionaries:connectionString"]));
-
-            services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
-            services.AddTransient<ISportsStoreUserManager, SportsStoreUserManager>();
-            services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddTransient<IOrderRepository, OrderRepository>();
-            services.AddTransient<IPermissionRepository, PermissionRepository>();
-            services.AddTransient<ICustomerRepository, CustomerRepository>();
-            services.AddTransient<IAddressRepository, AddressRepository>();
-            services.AddTransient<IDocumentTypeRepository, DocumentTypeRepository>();
-
-            services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
+            services
+                .AddSportsStoreSecurityModule()
+                .AddSportsStoreDatabase(Configuration)
+                .AddSportsStoreCustomerModule()
+                .AddSportsStoreDictionariesModule()
+                .AddSportsStoreSalesModule()
+                .AddSportsStoreStoreModule();
+         
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc();
             services.AddMemoryCache();
             services.AddSession();
-            services.AddAntiforgery(o => o.HeaderName = "RequestVerificationToken");
-
-            SecurityPolicies.AddSecurityPolicies(services);
-            CustomerPolicies.AddCustomerPolicies(services);
-            SalesPolicies.AddSalesPolicies(services);
+            services.AddAntiforgery(o => o.HeaderName = "RequestVerificationToken");       
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -81,18 +50,20 @@ namespace SportsStore
             app.UseStaticFiles();
             app.UseSession();
             app.UseAuthentication();
+            app.UseMiddleware<Infrastructure.Middleware.SessionMiddleware>();
             app.UseMvc(routes =>
             {
                 RouteMapping.MapRoutes(routes);
             });
 
+
             if(env.EnvironmentName != "TEST")
             {
                 Migrate.ExecuteContextsMigrate(app);
+                DictionarySeedData.PopulateDictionaries(app);
                 ProductSeedData.EnsurePopulated(app);
                 PermissionSeedData.PopulatePermissions(app);
                 IdentitySeedData.PopulateIdentity(app);
-                DictionarySeddData.PopulateDictionaries(app);
             }
         }
 

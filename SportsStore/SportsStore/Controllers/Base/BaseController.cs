@@ -26,21 +26,6 @@ namespace SportsStore.Controllers.Base
             _configuration = config;
         }
 
-        public async Task<IActionResult> Start()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                byte[] outVal = new List<byte>().ToArray();
-                if (!(_session.TryGetValue(SessionData.CustomerId, out outVal)))
-                {
-                    var userManager = _provider.GetRequiredService<UserManager<SportUser>>();
-                    var loggedUSer = await userManager.FindByNameAsync(User.Identity.Name);
-                    _session.SetInt32(SessionData.CustomerId, loggedUSer.CustomerId);
-                }
-            }
-            return RedirectToAction("List", "Product");
-        }
-
         protected IEnumerable<T> PaginateList<T>(IEnumerable<T> list, int currentPage) where T : class
         {
             return list.Skip((currentPage - 1) * _pageSize).Take(_pageSize);

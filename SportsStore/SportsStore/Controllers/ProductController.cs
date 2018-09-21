@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos;
+using SportsStore.DAL.Repos.DictionarySchema;
 using SportsStore.Helpers;
 using SportsStore.Models;
 using SportsStore.Models.ProductModels;
@@ -20,12 +21,14 @@ namespace SportsStore.Controllers
     public class ProductController : BaseController
     {
         private IProductRepository _productRepository;
+        private IDictionaryContainer _dictionaryContainer;
         private int _pageSize = 4;
 
-        public ProductController(IServiceProvider provider, IConfiguration config, IProductRepository repository)
+        public ProductController(IServiceProvider provider, IConfiguration config, IProductRepository repository, IDictionaryContainer dictContainer)
             : base(provider, config)
         {
             _productRepository = repository;
+            _dictionaryContainer = dictContainer;
         }
 
         public IActionResult Index(int productId)
@@ -53,12 +56,12 @@ namespace SportsStore.Controllers
         [Authorize]
         public ViewResult CreateProduct()
         {
-            return View("EditProduct", new ProductEditViewModel());
+            return View("EditProduct", new ProductEditViewModel { VatRates = _dictionaryContainer.VatRateRepository.VatRates });
         }
         [Authorize]
         public ViewResult EditProduct(int productId)
         {
-            return View(new ProductEditViewModel { Product = _productRepository.GetProduct(productId) });
+            return View(new ProductEditViewModel { Product = _productRepository.GetProduct(productId), VatRates = _dictionaryContainer.VatRateRepository.VatRates });
         }
 
         [Authorize]
