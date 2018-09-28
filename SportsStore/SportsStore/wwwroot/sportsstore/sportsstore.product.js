@@ -200,6 +200,5 @@ function ProductEditService(id) {
     var productId = id;
 
     $("input[name='priceType']").change(function (e) {
-        if()
     })
 }

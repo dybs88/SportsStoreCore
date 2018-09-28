@@ -1,22 +1,22 @@
-﻿function SalesParametersService($vatRateTable) {
+﻿
+function SalesParametersService($vatRateTable) {
     var vatRatesService = new VatRatesService($vatRateTable);
 }
 
 function VatRatesService($vatRateTable) {
+    tableBinder = new TableBinder();
     mainService = new SportsStoreService();
     popupService = new PopupService();
 
     var self = this;
     var $tableBody = $vatRateTable.children("tbody");
     var tempData = {};
-    var isDefaultRowNumber = -1;
 
     $btnAddVatRate = $("a[name='btnAddVatRate']").click(function (e)
     {
         var $headers = $tableBody.children("tr").first().children("th");
 
-        var $newRow = $("<tr>")
-            .attr("data-row-number", $tableBody.children("row-data-number").length);
+        var $newRow = $("<tr>");
         for (var i = 0; i < $headers.length; i++) {
             var $header = $($headers[i]);
 
@@ -27,8 +27,7 @@ function VatRatesService($vatRateTable) {
                     .html("Zapisz")
                     .click(function (e)
                     {
-                        var data = self.getVatRateData($tableBody.children().index($(e.currentTarget).parents("tr")[0]));
-                        self.saveVatRate(data, function () {
+                        self.saveVatRate($(e.currentTarget).parents("tr"), function () {
                             turnRowEditOff($(e.currentTarget).parents("tr")[0]);
                         });
                     });
@@ -37,9 +36,7 @@ function VatRatesService($vatRateTable) {
                     .html("Usuń")
                     .click(function (e)
                     {
-                        if ($(e.currentTarget).prev("input").val())
-                            self.deleteVatRate($(e.currentTarget).prev("input").val());
-                        $(e.currentTarget).parents("tr").remove();
+                        deleteRow($(e.currentTarget).parents("tr"));
                     });
                 $btnEdit = $("<a>", { class: "btn btn-sm btn-primary mr-1", name: "btnEditVatRate" })
                     .css("color", "white")
@@ -81,6 +78,11 @@ function VatRatesService($vatRateTable) {
                     .change(function (e) { changeIsDefault($(e.currentTarget)); });
                 $newCell.append($inputDefault);
             }
+            else if ($header.html() === "Id") {
+                var $inputId = $("<input>", { type: "hidden" })
+                    .val(0);
+                $newCell.css("display", "none");
+            }
             else {
                 $newCell.attr("contenteditable", true);
             }
@@ -92,7 +94,8 @@ function VatRatesService($vatRateTable) {
             $newRow.append($newCell);
         }
 
-        $vatRateTable.append($newRow);    
+        $vatRateTable.append($newRow);
+        tableBinder.fireAddNewRow($vatRateTable);
     });
 
     $btnEditVatRate = $("a[name='btnEditVatRate']").click(function (e) {
@@ -109,10 +112,7 @@ function VatRatesService($vatRateTable) {
     })
 
     $btnDeleteVatRate = $("a[name='btnDeleteVatRate']").click(function (e) {
-        if ($(e.currentTarget).parent().children("input").val()) {
-            self.deleteVatRate($(e.currentTarget).parent().children("input").val());
-            $(e.currentTarget).parents("tr").remove();
-        }
+        deleteRow($(e.currentTarget).parents("tr"));    
     })
     
     $vatRateTable.find("td > input[type='checkbox']").change(function (e) {
@@ -121,18 +121,13 @@ function VatRatesService($vatRateTable) {
 
     changeIsDefault = function ($input) {
         if ($input.prop("checked") === true) {
-            isDefaultRowNumber = $tableBody
-                .find("td > input:checkbox[checked]")
-                .first()
-                .parents("tr")
-                .attr("data-row-number");
             $tableBody
                 .find("td > input[checked]")
                 .prop("checked", false)
                 .removeAttr("checked");
             $input
                 .prop("checked", true)
-                .attr("checked");
+                .attr("checked", true);
         }
         else
             $input.prop("checked", true);
@@ -140,36 +135,48 @@ function VatRatesService($vatRateTable) {
 
     turnRowEditOn = function (row) {
         var $row = $(row);
-        turnRowEditOff($tableBody.children("tr[data-edit]")[0]);
-        $row.attr("data-edit", true);
+        var editedRowNumber = tableBinder.getEditRowNumber($row.parents("table[data-binder]").attr("data-binder"));
 
-        $row.children().find("a[name='btnSaveVatRate'],a[name='btnCancelVatRate']").show();
-        $row.children().find("a[name='btnDeleteVatRate'],a[name='btnEditVatRate']").hide();
+        if (editedRowNumber != -1) {
+            turnRowEditOff($row.parent().children("tr:not([data-bind-exclude])")[editedRowNumber]);
+        }
 
-        $row.children("td:lt(2)").attr("contenteditable", true);
-        $row.children("td:eq(2)").children("input").prop("disabled", false);
+        $row.children().find("a[name='btnSaveVatRate'],a[name='btnCancelVatRate'],a[name='btnDeleteVatRate']").show();
+        $row.children().find("a[name='btnEditVatRate']").hide();
 
-        tempData = self.getVatRateData($row.attr("data-row-number"));
+        $row.find("td[data-bind]").attr("contenteditable", true);
+        $row.find("input[data-bind][type='checkbox']").prop("disabled", false);
+
+        tableBinder.fireEditRow($row);
+
     }
 
     turnRowEditOff = function (row) {
         var $row = $(row);
-        $row.removeAttr("data-edit");
-        $row.children().find("a[name='btnEditVatRate'],a[name='btnDeleteVatRate']").show();
-        $row.children().find("a[name='btnSaveVatRate'],a[name='btnCancelVatRate']").hide();
+        var dataBinderName = $row.parents("table[data-binder]").attr("data-binder");
 
-        $row.children("td:lt(2)").removeAttr("contenteditable");
-        $row.children("td:eq(2)").children("input").prop("disabled", true);
+        if (tableBinder.getRowData(dataBinderName, tableBinder.getEditRowNumber(dataBinderName)).VatRateId == 0) {
+            deleteRow($row);
+            return;
+        }
 
-        self.setVatRateData($row.attr("data-row-number"), tempData);
-        $("tr[data-row-number='" + isDefaultRowNumber + "'")
-            .find("input:checkbox").attr("checked", "").prop("checked",true);
+        $row.children().find("a[name='btnEditVatRate']").show();
+        $row.children().find("a[name='btnSaveVatRate'],a[name='btnCancelVatRate'],a[name='btnDeleteVatRate']").hide();
 
-        tempData = {};
+        $row.find("td[data-bind]").removeAttr("contenteditable");
+        $row.find("input:checkbox[data-bind]").prop("disabled", true);
+        tableBinder.fireCancelEditRow($row);
+    }
+
+    deleteRow = function ($row) {
+        tableBinder.fireDeleteRow($row);
+        //self.deleteVatRate($(e.currentTarget).parent().children("input").val());
+        tableBinder.fireDeleteRow($row);
+        $row.remove();   
     }
 
     this.getVatRateData = function (rowNumber) {
-        var $tableCells = $($tableBody.children("tr")[rowNumber]).children();
+        var $tableCells = $($tableBody.children("tr:gt(0)")[rowNumber]).children();
 
         var symbol = $tableCells[0].innerHTML;
         var value = $tableCells[1].innerHTML;
@@ -178,21 +185,14 @@ function VatRatesService($vatRateTable) {
         return { vatRate: { Symbol: symbol, Value: value, IsDefault: isDefault } };
     }
 
-    this.setVatRateData = function (rowNumber, data) {
-        if (rowNumber) {
-            $row = $tableBody.children("tr[data-row-number='" + rowNumber + "']");
-            $row.children()[0].innerHTML = data.vatRate.Symbol;
-            $row.children()[1].innerHTML = data.vatRate.Value;
-            $($row.children()[2]).children("input").prop("checked", data.vatRate.IsDefault);
-        }
-    }
-
     /**
      * @description - Save VatRate object to database
      * @param {json} data - { vatRate: { Symbol: val, Value: val, IsDefault: val }}
      * @param {any} callback - function after save
      */
-    this.saveVatRate = function (data, callback) {
+    this.saveVatRate = function ($row, callback) {
+        var dataBinderName = $("table[data-binder]").attr("data-binder");
+        var data = tableBinder.getRowData(dataBinderName, tableBinder.getEditRowNumber(dataBinderName));
         mainService.runAjax(
             "SalesParameters",
             "SaveVatRate",
