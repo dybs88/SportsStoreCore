@@ -25,10 +25,10 @@
         <h4>Stawki VAT</h4>
         <table data-binder="VatRates" class="table table-sm table-striped" id="tbVatRates">
             <tr data-bind-exclude>
-                <th data-bind-name="VatRateId" style="display:none">Id</th>
-                <th data-bind-name="Symbol" class="text-center">Symbol</th>
-                <th data-bind-name="Value" class="text-center">Wartość %</th>
-                <th data-bind-name="IsDefault" class="text-center">Domyślna</th>
+                <th data-bind-name="VatRateId" data-bind-type="id" style="display:none">Id</th>
+                <th data-bind-name="Symbol" data-bind-type="text" class="text-center">Symbol</th>
+                <th data-bind-name="Value" data-bind-type="text" class="text-center">Wartość %</th>
+                <th data-bind-name="IsDefault" data-bind-type="bool" class="text-center">Domyślna</th>
                 <th data-bind-exclude class="text-center">Akcja</th>
             </tr>
             @for (int i = 0; i < Model.VatRates.Count(); i++)

@@ -1,4 +1,5 @@
-﻿using SportsStore.DAL.Contexts;
+﻿using Microsoft.EntityFrameworkCore;
+using SportsStore.DAL.Contexts;
 using SportsStore.Models.DAL.Repos.SalesSchema;
 using SportsStore.Models.DictionaryModels;
 using System;
@@ -62,8 +63,16 @@ namespace SportsStore.DAL.Repos.DictionarySchema
 
             }
 
-            _context.SaveChanges();
-            return new { Result = true, Message = $"Zapisano stawkę VAT {vatRate.Symbol} {vatRate.Value}%", VatRateId = vatRate.VatRateId };
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch(DbUpdateException e)
+            {
+                return new { Result = false, Message = "Nie można zapisać stawki VAT z symbolem, który został już wykorzystany" };
+            }
+
+            return new { Result = true, Message = $"Zapisano stawkę VAT {vatRate.Symbol} {vatRate.Value}%", vatRate.VatRateId };
         }
     }
 }

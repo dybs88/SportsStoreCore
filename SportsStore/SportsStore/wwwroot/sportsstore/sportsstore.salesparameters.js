@@ -74,14 +74,15 @@ function VatRatesService($vatRateTable) {
             var $newCell = $("<td>");
             if ($header.html() === "Domyślna") {
                 $inputDefault = $("<input>", { type: "checkbox" })
-                    .val(false)
+                    .val("false")
                     .change(function (e) { changeIsDefault($(e.currentTarget)); });
                 $newCell.append($inputDefault);
             }
             else if ($header.html() === "Id") {
                 var $inputId = $("<input>", { type: "hidden" })
-                    .val(0);
+                    .val("0");
                 $newCell.css("display", "none");
+                $newCell.append($inputId);
             }
             else {
                 $newCell.attr("contenteditable", true);
@@ -170,8 +171,7 @@ function VatRatesService($vatRateTable) {
 
     deleteRow = function ($row) {
         tableBinder.fireDeleteRow($row);
-        //self.deleteVatRate($(e.currentTarget).parent().children("input").val());
-        tableBinder.fireDeleteRow($row);
+        self.deleteVatRate($row.find("input[data-bind='VatRateId']").first().val(), function () { });
         $row.remove();   
     }
 
@@ -199,11 +199,18 @@ function VatRatesService($vatRateTable) {
             "",
             "POST",
             data,
-            function (message) {
-                popupService.displaySuccessMessage(message);
-                callback();
+            function (result) {
+                if (result.result) {
+                    tableBinder.fireSaveRow($row, result.vatRateId);
+                    popupService.displaySuccessMessage(result.message);
+                    callback();
+                }
+                else {
+                    popupService.displayErrorMessage(result.message);
+                }
+
             },
-            function (message) { popupService.displayErrorMessage(message); })
+            function (result) { popupService.displayErrorMessage(message); })
     }
 
     /**

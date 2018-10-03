@@ -18,51 +18,51 @@
             var dataBinderName = $("table[data-binder]").attr("data-binder");
 
             if ($("table[data-binder] > tbody > tr:gt(0):not([data-row-number])").length > 0) {
-                var $newRow = $("table[data-binder] > tbody > tr:gt(0):not([data-row-number])");
-                $newRow.attr("data-row-number", $("table[data-binder] > tbody > tr[data-row-number]").length);
+                var $newRow = $("table[data-binder] > tbody > tr:not([data-bind-exclude])")
+                    .last()
+                    .attr("data-row-number", $("table[data-binder] > tbody > tr:not([data-bind-exclude])").length - 1)
+                
 
                 var $singleCells = $newRow.children("td");
-                var $headers = $("table[data-binder] > tbody > tr > th");
+                var $headers = $("table[data-binder] > tbody > tr > th:not([data-bind-exclude])");
                 var newData = {};
 
                 for (var h = 0; h < $headers.length; h++) {
-                    if ($($headers[h]).attr("data-bind-exclude") === undefined) {
-                        var headerName = $($headers[h]).attr("data-bind-name");
-                        if ($($singleCells[h]).children("input").length > 0) {
-                            $($singleCells[h])
-                                .children("input")
-                                .attr("data-bind", headerName)
-                                .bind("DOMSubtreeModified", function (e) {
-                                    bindDataToBinder(e);
-                                })
-                                .change(function (e) {
-                                    bindDataToBinder(e);
-                                });
-                        }
-                        else {
-                            $($singleCells[h])
-                                .attr("data-bind", $($headers[h]).attr("data-bind-name"))
-                                .bind("DOMSubtreeModified", function (e) {
-                                    bindDataToBinder(e);
-                                })
-                                .change(function (e) {
-                                    bindDataToBinder(e);
-                                });
-                        }
-
-                        newData[headerName] = "";
+                    var headerName = $($headers[h]).attr("data-bind-name");
+                    if ($($singleCells[h]).children("input").length > 0) {
+                        $($singleCells[h])
+                            .children("input")
+                            .attr("data-bind", headerName)
+                            .bind("DOMSubtreeModified", function (e) {
+                                bindDataToBinder(e);
+                            })
+                            .change(function (e) {
+                                bindDataToBinder(e);
+                            });
                     }
                     else {
-                        continue;
+                        $($singleCells[h])
+                            .attr("data-bind", $($headers[h]).attr("data-bind-name"))
+                            .bind("DOMSubtreeModified", function (e) {
+                                bindDataToBinder(e);
+                            })
+                            .change(function (e) {
+                                bindDataToBinder(e);
+                            });
                     }
 
+                    var dataType = $($headers[h]).attr("data-bind-type");
+                    if (dataType === "id" || dataType === "int")
+                        newData[headerName] = "0";
+                    else if (dataType === "text")
+                        newData[headerName] = "";
+                    else if (dataType === "bool")
+                        newData[headerName] = false;
                 }
 
                 newData["IsEdit"] = true;
                 self.data[dataBinderName].push(newData);
                 oldData = JSON.parse(JSON.stringify(self.data));
-
-                console.log(self.data);
             }
         }
     }
@@ -129,19 +129,23 @@
 
     //SaveRow Event
     {
-        this.fireSaveRow = function ($row) {
+        this.fireSaveRow = function ($row, vatRateId) {
             var $table = $row.parents("table[data-binder]");
 
             $(document).off("editRow", $row);
 
             var binderDataName = $table.attr("data-binder");
+            var rowNumber = $row.attr("data-row-number");
+
+            self.data[binderDataName][rowNumber].VatRateId = vatRateId;
+            bindDataToControl($table);
+
             oldData[binderDataName] = [];
         }
     }
 
     $("table[data-binder]").ready(function (e) {
         readyDataBinders($("table[data-binder]"));
-        console.log(self.data);
     })
   
     /**
@@ -160,7 +164,7 @@
                 .find("tbody tr > th:not([data-bind-exclude])");
 
             var $rows = $table
-                .find("tbody tr:gt(0)")
+                .find("tbody tr:not([data-bind-exclude])");
 
             for (var r = 0; r < $rows.length; r++) {
                 $row = $($rows[r])
@@ -243,10 +247,16 @@
                     $singleCell
                         .html(self.data[binderDataName][i][singleData]);
                 }
-                else {
-                    $singleCell
-                        .prop("checked", self.data[binderDataName][i][singleData])
-                        .attr("checked", self.data[binderDataName][i][singleData]);
+                else if ($singleCell.prop("tagName") === "INPUT") {
+                    if ($singleCell.prop("type") === "checkbox") {
+                        $singleCell
+                            .prop("checked", self.data[binderDataName][i][singleData])
+                            .attr("checked", self.data[binderDataName][i][singleData]);
+                    }
+                    else if ($singleCell.prop("type") === "hidden") {
+                        $singleCell.val(self.data[binderDataName][i][singleData]);
+                    }
+
                 }                                     
             }
         }

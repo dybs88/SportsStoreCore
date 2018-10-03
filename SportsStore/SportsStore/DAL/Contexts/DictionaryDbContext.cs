@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using SportsStore.Models.DictionaryModels;
 using System;
 using System.Collections.Generic;
@@ -32,3 +35,5 @@ namespace SportsStore.DAL.Contexts
         }
     }
 }
+
+

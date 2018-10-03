@@ -24,7 +24,7 @@ namespace SportsStore.Controllers
         {
             SalesParametersIndexViewModel model = new SalesParametersIndexViewModel
             {
-                VatRates = _dictionaryContainer.VatRateRepository.VatRates.ToList()
+                VatRates = _dictionaryContainer.VatRateRepository.VatRates.OrderBy(vr => vr.Symbol).ToList()
             };
 
             return View(model);
@@ -37,11 +37,11 @@ namespace SportsStore.Controllers
             if(ModelState.IsValid && vatRate != null)
             {
                 var result = _dictionaryContainer.VatRateRepository.SaveVatRate(vatRate);
-                return Json(result.Message);
+                return Json(result);
             }
             else
             {
-                return Json("Nie udało się zapisać stawki VAT");
+                return Json("Niepoprawne dane wejściowe. Nie udało się zapisać stawki VAT");
             }
         }
 
