@@ -18,11 +18,6 @@
 <input type="hidden" id="requestVerificationToken"
        name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
 
-<script>
-    $().ready(function (e) {
-        var service = new ProductImagesComponentService(@Model.Product.ProductID);
-    })
-</script>
 <div id="valid" class="text-danger"></div>
 <div class="text-center align-content-center" style="max-width:43rem; max-height:20rem;">
     <img id="imageScreen" src="@Url.Content($"{path}{file?.FileName}")" />

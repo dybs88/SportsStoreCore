@@ -1,7 +1,7 @@
 ﻿function ProductService(id) {
     this.ProductImageComponentService = new ProductImagesComponentService(id);
 
-    this.ProductEditService = new ProductEditService();
+    this.ProductEditService = new ProductEditService(id);
 }
 
 function ProductImagesComponentService(id) {
@@ -200,5 +200,37 @@ function ProductEditService(id) {
     var productId = id;
 
     $("input[name='priceType']").change(function (e) {
+        if (e.currentTarget.id === "grossPrice") {
+            $("#Product_GrossPrice")
+                .prop("disabled", false);
+            $("#Product_NetPrice")
+                .prop("disabled", true);
+        }
+        else if (e.currentTarget.id === "netPrice"){
+            $("#Product_GrossPrice")
+                .prop("disabled", true);
+            $("#Product_NetPrice")
+                .prop("disabled", false);
+        }
     })
+
+    $("#Product_NetPrice").change(function (e) {
+
+    })
+
+    $("#Product_GrossPrice").change(function (e) {
+
+    })
+
+    $("#Product_VatRateId").change(function (e) {
+
+    })
+
+    var calculateNetPrice = function () {
+
+    }
+
+    var calculateGrossPrice = function () {
+
+    }
 }

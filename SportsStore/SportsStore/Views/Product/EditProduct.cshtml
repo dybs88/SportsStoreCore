@@ -4,6 +4,13 @@
     ViewBag.Title = "Edycja produktu " + Model.Product.ProductID;
 }
 
+<script>
+    $(document).ready(function (e) {
+        var productService = new ProductService(@Model.Product.ProductID);
+    })
+    
+</script>
+
 <form id="editForm" asp-action="EditProduct" enctype="multipart/form-data" method="post" class="m-5">
     <h4>ID: @Model.Product.ProductID</h4>
     <input type="hidden" asp-for="Product.ProductID" />
@@ -48,7 +55,7 @@
                                                                                                             (Model.Product.GrossPrice/
                                                                                                                 (Model.Product.VatRateId == 0 
                                                                                                                     ? 1 
-                                                                                                                        : ((100 + Model.VatRates.First(vr => vr.VatRateId == Model.Product.VatRateId).Value)/100))),2))" />
+                                                                                                                    : ((100 + Model.VatRates.First(vr => vr.VatRateId == Model.Product.VatRateId).Value)/100))),2))" />
                     </div>
                 </div>
                 <div class="col-4">
