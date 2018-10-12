@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using SportsStore.DAL.Repos.DictionarySchema;
 
 namespace SportsStore.Tests.Base
 {
@@ -33,6 +34,8 @@ namespace SportsStore.Tests.Base
         public static IApplicationDbContext ApplicationDbContext => GetApplicationDbContext();
 
         public static ISportsStoreUserManager UserManager => GetUserManager();
+
+        public static IDictionaryContainer DictionaryContainer => GetDictionaryContainer();
 
         private static IServiceProvider GetProvider()
         {
@@ -206,6 +209,13 @@ namespace SportsStore.Tests.Base
 
 
             return mockedUserManager.Object;
+        }
+
+        private static IDictionaryContainer GetDictionaryContainer()
+        {
+            Mock<IDictionaryContainer> mockContainer = new Mock<IDictionaryContainer>();
+
+            return mockContainer.Object;
         }
 
         private static Mock<DbSet<TEntity>> CreateMockedDbSet<TEntity>(IQueryable<TEntity> repository) where TEntity : class

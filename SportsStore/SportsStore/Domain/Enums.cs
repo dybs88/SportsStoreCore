@@ -17,4 +17,15 @@ namespace SportsStore.Domain
         Receipt,
         SalesInvoice
     }
+
+    public enum ParameterType
+    {
+        Sales
+    }
+
+    public enum PriceType
+    {
+        Net,
+        Gross
+    }
 }

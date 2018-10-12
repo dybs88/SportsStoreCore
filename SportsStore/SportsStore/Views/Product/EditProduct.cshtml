@@ -36,11 +36,11 @@
                     <section>
                         <label>Cena</label>
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="netPrice" name="priceType" checked>
+                            <input type="radio" class="custom-control-input" id="netPrice" name="priceType" @(Model.DefaultPriceType == PriceType.Net ? "checked" : "")>
                             <label class="custom-control-label" for="netPrice">Netto</label>
                         </div>
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="grossPrice" name="priceType">
+                            <input type="radio" class="custom-control-input" id="grossPrice" name="priceType" @(Model.DefaultPriceType == PriceType.Gross ? "checked" : "")>
                             <label class="custom-control-label" for="grossPrice">Brutto</label>
                         </div>
                     </section>
@@ -49,21 +49,25 @@
                     <div class="form-group">
                         <label asp-for="Product.NetPrice">Cena netto</label>
                         <div><span asp-validation-for="Product.NetPrice" class="text-danger"></span></div>
-                        <input type="text" asp-for="Product.NetPrice" class="form-control" value="@(Model.Product.NetPrice != 0
-                                                                                                        ? Model.Product.NetPrice
-                                                                                                        : Math.Round(
-                                                                                                            (Model.Product.GrossPrice/
-                                                                                                                (Model.Product.VatRateId == 0 
-                                                                                                                    ? 1 
-                                                                                                                    : ((100 + Model.VatRates.First(vr => vr.VatRateId == Model.Product.VatRateId).Value)/100))),2))" />
+                        <input type="text" asp-for="Product.NetPrice" class="form-control"
+                               value="@(Model.Product.NetPrice != 0
+                                        ? Model.Product.NetPrice
+                                        : Math.Round(
+                                            (Model.Product.GrossPrice/
+                                                (Model.Product.VatRateId == 0 
+                                                    ? 1 
+                                                    : ((100 + Model.VatRates.First(vr => vr.VatRateId == Model.Product.VatRateId).Value)/100))),2))" />
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="form-group">
-                        <label>Podlega VAT <input type="checkbox" checked /></label>
+                        <label>Podlega VAT <input id="vatRateSwitch" type="checkbox" @(Model.Product.VatRateId != 0 ? "checked" : "") /></label>
                         <div class="form-inline">
                             <label class="mr-1">Stawka VAT</label>
-                            <select class="form-control w-50" asp-for="Product.VatRateId" asp-items="@(new SelectList(Model.VatRates.OrderBy(vr => vr.Symbol), "Value", "FullName"))"></select>
+                            <select class="form-control w-50" asp-for="Product.VatRateId" 
+                                    asp-items="@(new SelectList(Model.VatRates.OrderBy(vr => vr.Symbol), 
+                                                    "VatRateId", "FullName"))">
+                            </select>
                         </div>                      
                     </div>
                 </div>
@@ -71,13 +75,14 @@
                     <div class="form-group">
                         <label asp-for="Product.GrossPrice">Cena brutto</label>
                         <div><span asp-validation-for="Product.GrossPrice" class="text-danger"></span></div>
-                        <input type="text" asp-for="Product.GrossPrice" class="form-control" disabled value="@(Model.Product.GrossPrice != 0 
-                                                                                                                ? Model.Product.GrossPrice 
-                                                                                                                : Math.Round(
-                                                                                                                    (Model.Product.NetPrice + 
-                                                                                                                    (Model.Product.NetPrice * Model.Product.VatRateId == 0 
-                                                                                                                        ? 0 
-                                                                                                                        : Model.VatRates.First(vr => vr.VatRateId == Model.Product.VatRateId).Value)),2))" />
+                        <input type="text" asp-for="Product.GrossPrice" class="form-control" 
+                               value="@(Model.Product.GrossPrice != 0 
+                                    ? Model.Product.GrossPrice 
+                                    : Math.Round(
+                                        (Model.Product.NetPrice + 
+                                        (Model.Product.NetPrice * Model.Product.VatRateId == 0 
+                                            ? 0 
+                                            : Model.VatRates.First(vr => vr.VatRateId == Model.Product.VatRateId).Value)),2))" />
                     </div>
                 </div>
             </div>

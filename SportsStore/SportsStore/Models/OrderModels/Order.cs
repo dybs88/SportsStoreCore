@@ -48,7 +48,7 @@ namespace SportsStore.Models.OrderModels
         private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var items = (ObservableCollection<CartItem>)sender;
-            NetValue = items.Sum(i => i.Value);
+            NetValue = items.Sum(i => i.NetValue);
         }
     }
 }

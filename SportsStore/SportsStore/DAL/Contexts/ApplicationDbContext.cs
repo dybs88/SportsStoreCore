@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SportsStore.DAL.AbstractContexts;
 using SportsStore.Models.CustomerModels;
+using SportsStore.Models.DictionaryModels;
 using SportsStore.Models.Identity;
 using SportsStore.Models.OrderModels;
 using SportsStore.Models.ProductModels;
@@ -23,5 +24,11 @@ namespace SportsStore.DAL.Contexts
         public DbSet<Order> Orders { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Customer> Customers { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

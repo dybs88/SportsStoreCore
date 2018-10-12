@@ -11,9 +11,9 @@ using SportsStore.Models.ProductModels;
 
 namespace SportsStore.Infrastructure.Start.SeedDatas
 {
-    public static class ProductSeedData
+    public class ProductSeedData
     {
-        public static void EnsurePopulated(IApplicationBuilder app)
+        public static async Task EnsurePopulated(IApplicationBuilder app)
         {
             ApplicationDbContext context = app.ApplicationServices.GetRequiredService<ApplicationDbContext>();
 

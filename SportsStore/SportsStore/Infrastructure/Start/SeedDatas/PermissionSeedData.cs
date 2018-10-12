@@ -11,11 +11,10 @@ using System.Threading.Tasks;
 
 namespace SportsStore.Infrastructure.Start.SeedDatas
 {
-    public static class PermissionSeedData
+    public class PermissionSeedData
     {
         static AppIdentityDbContext context;
-
-        public static void PopulatePermissions(IApplicationBuilder app)
+        public static async Task PopulatePermissions(IApplicationBuilder app)
         {
             context = app.ApplicationServices.GetRequiredService<AppIdentityDbContext>();
 
@@ -48,7 +47,7 @@ namespace SportsStore.Infrastructure.Start.SeedDatas
 
         }
 
-        private static void AddPermission(string permissionValue, string category, string description)
+        private static async void AddPermission(string permissionValue, string category, string description)
         {
             if (!context.Permissions.Any(p => p.Value == permissionValue))
             {

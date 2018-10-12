@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SportsStore.DAL.Contexts;
 
 namespace SportsStore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181009094810_productFKReferenceVatRate")]
+    partial class productFKReferenceVatRate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,15 +25,13 @@ namespace SportsStore.Migrations
                     b.Property<int>("CartItemId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<decimal>("GrossValue");
-
-                    b.Property<decimal>("NetValue");
-
                     b.Property<int>("OrderId");
 
                     b.Property<int?>("ProductID");
 
                     b.Property<int>("Quantity");
+
+                    b.Property<decimal>("Value");
 
                     b.HasKey("CartItemId");
 
@@ -103,22 +103,22 @@ namespace SportsStore.Migrations
                     b.ToTable("Customers","Customer");
                 });
 
-            modelBuilder.Entity("SportsStore.Models.DictionaryModels.VatRate", b =>
-                {
-                    b.Property<int>("VatRateId")
-                        .ValueGeneratedOnAdd();
+            //modelBuilder.Entity("SportsStore.Models.DictionaryModels.VatRate", b =>
+            //    {
+            //        b.Property<int>("VatRateId")
+            //            .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("IsDefault");
+            //        b.Property<bool>("IsDefault");
 
-                    b.Property<string>("Symbol")
-                        .IsRequired();
+            //        b.Property<string>("Symbol")
+            //            .IsRequired();
 
-                    b.Property<decimal>("Value");
+            //        b.Property<decimal>("Value");
 
-                    b.HasKey("VatRateId");
+            //        b.HasKey("VatRateId");
 
-                    b.ToTable("VatRates","Dictionary");
-                });
+            //        b.ToTable("VatRates","Dictionary");
+            //    });
 
             modelBuilder.Entity("SportsStore.Models.OrderModels.Order", b =>
                 {

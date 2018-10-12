@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SportsStore.Models.DictionaryModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,10 +20,12 @@ namespace SportsStore.Models.ProductModels
         [Required(ErrorMessage = "Cena netto jest wymagana")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Proszę podać dodatnią cenę netto")]
         [Display(Name = "Cena netto")]
+        [DisplayFormat(DataFormatString = "${0:#,0}", ApplyFormatInEditMode = true)]
         public decimal NetPrice { get; set; }
         [Required(ErrorMessage = "Cena brutto jest wymagana")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Proszę podać dodatnią cenę brutto")]
         [Display(Name = "Cena brutto")]
+        [DisplayFormat(DataFormatString = "${0:#,0}", ApplyFormatInEditMode = true)]
         public decimal GrossPrice { get; set; }
         [Required(ErrorMessage = "Wskazanie kategorii jest wymagane")]
         [Display(Name = "Kategoria")]
@@ -30,6 +33,7 @@ namespace SportsStore.Models.ProductModels
         public List<ProductImage> ProductImages { get; set; }
         [ForeignKey("VatRate")]
         public int VatRateId { get; set; }
+        public VatRate VatRate { get; set; }
 
         public Product()
         {

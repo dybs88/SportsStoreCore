@@ -32,7 +32,7 @@
                 if (!string.IsNullOrEmpty(Model.Product.ProductImages[i].FileName))
                 {
                     <td>
-                        <img class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="max-width: 11rem; max-height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
+                        <img asp-append-version="true" class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="max-width: 11rem; max-height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
                         @if (Model.IsEdit)
                         {
                             <input type="hidden" asp-for="@Model.Product.ProductImages[i].ProductImageId" />
@@ -53,7 +53,7 @@
                 if (!string.IsNullOrEmpty(Model.Product.ProductImages[i].FileName))
                 {
                     <td>
-                        <img class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="max-width: 11rem; max-height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
+                        <img asp-append-version="true" class="btn" data-file-name="@Model.Product.ProductImages[i].FileName" style="max-width: 11rem; max-height: 7rem" src="@Url.Content($"{path}{Model.Product.ProductImages[i].FileName}")" />
                         @if (Model.IsEdit)
                          {
                             <input type="hidden" asp-for="@Model.Product.ProductImages[i].ProductImageId" />

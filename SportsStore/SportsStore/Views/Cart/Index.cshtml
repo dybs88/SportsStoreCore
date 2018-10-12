@@ -20,8 +20,8 @@
         <tr>
             <td class="text-center">@item.Quantity</td>
             <td class="text-center">@item.Product.Name</td>
-            <td class="text-center">@item.Product.Price.ToString("C")</td>
-            <td class="text-center">@item.Value.ToString("C")</td>
+            <td class="text-center">@item.Product.GrossPrice.ToString("C")</td>
+            <td class="text-center">@item.GrossValue.ToString("C")</td>
             <td>
                 <form id="" asp-action="RemoveFromCart" asp-controller="Cart" method="post">
                     <input type="hidden" name="productId" asp-for="@item.Product.ProductID"/>

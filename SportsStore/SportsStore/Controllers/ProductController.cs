@@ -11,8 +11,12 @@ using Newtonsoft.Json.Linq;
 using SportsStore.Controllers.Base;
 using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.DictionarySchema;
+using SportsStore.DAL.Repos.Security;
+using SportsStore.Domain;
 using SportsStore.Helpers;
 using SportsStore.Models;
+using SportsStore.Models.DictionaryModels;
+using SportsStore.Models.Parameters;
 using SportsStore.Models.ProductModels;
 using SportsStore.Models.ViewModels;
 
@@ -22,13 +26,15 @@ namespace SportsStore.Controllers
     {
         private IProductRepository _productRepository;
         private IDictionaryContainer _dictionaryContainer;
+        private ISystemParameterRepository _paramRepository;
         private int _pageSize = 4;
 
-        public ProductController(IServiceProvider provider, IConfiguration config, IProductRepository repository, IDictionaryContainer dictContainer)
+        public ProductController(IServiceProvider provider, IConfiguration config, IProductRepository repository, IDictionaryContainer dictContainer, ISystemParameterRepository paramRepo)
             : base(provider, config)
         {
             _productRepository = repository;
             _dictionaryContainer = dictContainer;
+            _paramRepository = paramRepo;
         }
 
         public IActionResult Index(int productId)
@@ -59,9 +65,14 @@ namespace SportsStore.Controllers
             return View("EditProduct", new ProductEditViewModel { VatRates = _dictionaryContainer.VatRateRepository.VatRates });
         }
         [Authorize]
-        public ViewResult EditProduct(int productId)
+        public IActionResult EditProduct(int productId)
         {
-            return View(new ProductEditViewModel { Product = _productRepository.GetProduct(productId), VatRates = _dictionaryContainer.VatRateRepository.VatRates });
+            return View(new ProductEditViewModel
+            {
+                Product = _productRepository.GetProduct(productId),
+                VatRates = _dictionaryContainer.VatRateRepository.VatRates,
+                DefaultPriceType = (PriceType)Enum.Parse(typeof(PriceType),_paramRepository.GetParameter(SystemParameters.ProductPriceType).Value)
+            });
         }
 
         [Authorize]
@@ -69,7 +80,7 @@ namespace SportsStore.Controllers
         public IActionResult EditProduct(ProductEditViewModel model)
         {
             if (ModelState.IsValid)
-            {             
+            {
                 _productRepository.SaveProduct(model);
                 TempData["message"] = $"Zapisano {model.Product.Name}";
                 return RedirectToAction("Products");
@@ -98,6 +109,12 @@ namespace SportsStore.Controllers
 
             _productRepository.DeleteProductImages(images);
             return Json("Usuwanie zakończone");
+        }
+
+        [HttpGet]
+        public IActionResult GetVatRate(int vatRateId)
+        {
+            return Json(_dictionaryContainer.VatRateRepository.GetVatRate(vatRateId));
         }
     }
 }

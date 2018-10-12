@@ -25,7 +25,6 @@ namespace SportsStore.Infrastructure.Extensions
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(config["Data:SportsStoreProducts:connectionString"]));
-
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(config["Data:SportsStoreIdentity:connectionString"]));
             services.AddIdentity<SportUser, IdentityRole>(options =>
@@ -37,7 +36,7 @@ namespace SportsStore.Infrastructure.Extensions
             services.AddDbContext<DictionaryDbContext>(options =>
                 options.UseSqlServer(config["Data:SportsStoreDictionaries:connectionString"]));
 
-            services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
+            services.AddSingleton<IApplicationDbContext, ApplicationDbContext>();
 
             return services;
         }
@@ -46,6 +45,7 @@ namespace SportsStore.Infrastructure.Extensions
         {
             services.AddTransient<ISportsStoreUserManager, SportsStoreUserManager>();
             services.AddTransient<IPermissionRepository, PermissionRepository>();
+            services.AddTransient<ISystemParameterRepository, SystemParameterRepository>();
 
             SecurityPolicies.AddSecurityPolicies(services);
 

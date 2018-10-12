@@ -66,4 +66,10 @@ namespace SportsStore.Domain
     {
         public const string CustomerId = "customerId";
     }
+
+    public static class SystemParameters
+    {
+        public const string ProductPriceType = "ProductPriceType";
+        public const string Temp = "Temp";
+    }
 }

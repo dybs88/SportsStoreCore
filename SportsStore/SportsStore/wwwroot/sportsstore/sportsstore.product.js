@@ -197,40 +197,120 @@ function ProductImagesComponentService(id) {
 }
 
 function ProductEditService(id) {
-    var productId = id;
+    var mainService;
+
+    var productId;
+
+    $(document).ready(function () {
+        mainService = new SportsStoreService();
+        productId = id;
+
+        if ($("#vatRateSwitch").prop("checked") === false) {
+            $("#Product_VatRateId")
+                .attr("readonly", "readonly");
+        }
+
+        if ($("input[name='priceType']:checked").prop("id") === "netPrice") {
+            $("#Product_GrossPrice")
+                .attr("readonly", "readonly");
+        }
+        else {
+            $("#Product_NetPrice")
+                .attr("readonly", "readonly");
+        }
+    })
 
     $("input[name='priceType']").change(function (e) {
         if (e.currentTarget.id === "grossPrice") {
             $("#Product_GrossPrice")
-                .prop("disabled", false);
+                .removeAttr("readonly");
             $("#Product_NetPrice")
-                .prop("disabled", true);
+                .attr("readonly", "readonly");
         }
         else if (e.currentTarget.id === "netPrice"){
             $("#Product_GrossPrice")
-                .prop("disabled", true);
+                .attr("readonly", "readonly");
             $("#Product_NetPrice")
-                .prop("disabled", false);
+                .removeAttr("readonly");
         }
     })
 
     $("#Product_NetPrice").change(function (e) {
-
+        getVatRateValue($("#Product_VatRateId").val(), function (data)
+        {
+            $("#Product_GrossPrice").val(calculateGrossPrice(getNetValue(), (data["value"] / 100)));
+        })
+        
     })
 
     $("#Product_GrossPrice").change(function (e) {
-
+        getVatRateValue($("#Product_VatRateId").val(), function (data)
+        {
+            $("#Product_NetPrice").val(calculateNetPrice(getGrossValue(), (data["value"] / 100)));
+        })      
     })
 
     $("#Product_VatRateId").change(function (e) {
-
+        if ($("#netPrice").prop("checked")) {
+            getVatRateValue($("#Product_VatRateId").val(), function (data) {
+                $("#Product_GrossPrice").val(calculateGrossPrice(getNetValue(), (data["value"] / 100)));
+            })
+        }
+        else if ($("#grossPrice").prop("checked")) {
+            getVatRateValue($("#Product_VatRateId").val(), function (data) {
+                $("#Product_NetPrice").val(calculateNetPrice(getGrossValue(), (data["value"] / 100)));
+            })  
+        }
     })
 
-    var calculateNetPrice = function () {
+    $("#vatRateSwitch").change(function (e) {
+        $priceType = $("input[name='priceType']:checked");
 
+        if (e.currentTarget.checked) {
+            $("#Product_VatRateId")
+                .removeAttr("readonly");
+            if ($priceType.prop("id") === "netPrice") {
+                getVatRateValue($("#Product_VatRateId").val(), function (data) {
+                    $("#Product_GrossPrice").val(calculateGrossPrice(getNetValue(), (data["value"] / 100)));
+                })
+            }
+            else {
+                getVatRateValue($("#Product_VatRateId").val(), function (data) {
+                    $("#Product_NetPrice").val(calculateNetPrice(getGrossValue(), (data["value"] / 100)));
+                })  
+            }
+        }
+        else {
+            $("#Product_VatRateId")
+                .attr("readonly","readonly");
+            if ($priceType.prop("id") === "netPrice") {
+                $("#Product_GrossPrice").val(calculateGrossPrice(getNetValue(), 0));
+            }
+            else {
+                $("#Product_NetPrice").val(calculateNetPrice(getGrossValue(), 0));
+            }
+        }
+    })
+
+    var getNetValue = function () {
+        return parseFloat($("#Product_NetPrice").val().replace(",", "."));
     }
 
-    var calculateGrossPrice = function () {
+    var getGrossValue = function () {
+        return parseFloat($("#Product_GrossPrice").val().replace(",", "."));
+    }
 
+    var getVatRateValue = function (vatRateId, callback) {
+        mainService.runAjax("Product", "GetVatRate", "", "GET", { vatRateId: vatRateId },
+            function (data) { callback(data); },
+            function () { });
+    }
+
+    var calculateNetPrice = function (grossPrice, vatRateValue) {
+        return (grossPrice / (1 + vatRateValue)).toFixed(2).replace(".",",");
+    }
+
+    var calculateGrossPrice = function (netPrice, vatRateValue) {
+        return (netPrice * (1 + vatRateValue)).toFixed(2).replace(".", ",");
     }
 }

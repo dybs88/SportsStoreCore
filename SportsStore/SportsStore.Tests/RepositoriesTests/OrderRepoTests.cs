@@ -141,7 +141,7 @@ namespace SportsStore.Tests.RepositoriesTests
             {
                 new CartItem { OrderId = order.OrderId, Quantity = quantity, Product = Repositories.ProductRepository.Products.FirstOrDefault(p => p.Name == productName)}
             };
-            decimal totalPrice = order.Items.Sum(i => i.Value);
+            decimal totalPrice = order.Items.Sum(i => i.NetValue);
 
             //act
             int orderId = _target.SaveOrder(order);

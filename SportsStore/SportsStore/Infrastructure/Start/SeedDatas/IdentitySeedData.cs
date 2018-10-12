@@ -17,7 +17,7 @@ namespace SportsStore.Infrastructure.Start.SeedDatas
 {
     public class IdentitySeedData
     {
-        public static async void PopulateIdentity(IApplicationBuilder app)
+        public static async Task PopulateIdentity(IApplicationBuilder app)
         {
             UserManager<SportUser> userManager = app.ApplicationServices.GetRequiredService<UserManager<SportUser>>();
             RoleManager<IdentityRole> roleManager = app.ApplicationServices.GetRequiredService<RoleManager<IdentityRole>>();

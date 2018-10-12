@@ -9,7 +9,8 @@
                 <th>ID</th>
                 <th>Nazwa</th>
                 <th colspan="3">Opis</th>
-                <th>Cena</th>
+                <th>Cena netto</th>
+                <th>Cena brutto</th>
                 <th>Kategoria</th>
                 <th>Akcje</th>
             </tr>
@@ -20,6 +21,7 @@
                     <td>@product.Name</td>
                     <td colspan="3">@product.Description</td>
                     <td>@product.NetPrice</td>
+                    <td>@product.GrossPrice</td>
                     <td>@product.Category</td>
                     <td>
                         <form asp-action="DeleteProduct" method="post">

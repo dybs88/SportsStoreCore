@@ -12,7 +12,7 @@ namespace SportsStore.Infrastructure.Start.SeedDatas
 {
     public class DictionarySeedData
     {
-        public static void PopulateDictionaries(IApplicationBuilder app)
+        public static async Task PopulateDictionaries(IApplicationBuilder app)
         {
             DictionaryDbContext context = app.ApplicationServices.GetRequiredService<DictionaryDbContext>();
 

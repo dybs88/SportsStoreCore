@@ -41,7 +41,7 @@ namespace SportsStore.Models.Cart
             }
         }
 
-        public virtual decimal CartValue() => Items.Sum(i => i.Value);
+        public virtual decimal CartValue() => Items.Sum(i => i.NetValue);
 
         public virtual void ClearCart() => Items.Clear();
     }

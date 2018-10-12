@@ -85,7 +85,7 @@ namespace SportsStore.Models.DAL.Repos.SalesSchema
         public int SaveOrder(Order order)
         {
             order.AddressId = _addressRepository.SaveAddress(order.Address);
-            order.NetValue = order.Items.Sum(i => i.Value);
+            order.NetValue = order.Items.Sum(i => i.NetValue);
             if (order.OrderId == 0)
                 _context.Add(order);
 

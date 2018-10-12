@@ -23,16 +23,17 @@ namespace SportsStore.Infrastructure.Patterns.Observers
 
         private void ProductPropertyChanged()
         {
-            _obj.Value = _obj.Product.NetPrice * _obj.Quantity;
+            _obj.NetValue = _obj.Product.NetPrice * _obj.Quantity;
+            _obj.GrossValue = _obj.GrossValue * _obj.Quantity;
         }
 
         private void QuantityPropertyChanged()
         {
-            decimal price = 0;
             if (_obj.Product != null)
-                price = _obj.Product.NetPrice;
-
-            _obj.Value = price * _obj.Quantity;
+            {
+                _obj.NetValue = _obj.Product?.NetPrice ?? 0 * _obj.Quantity;
+                _obj.GrossValue = _obj.Product?.GrossPrice ?? 0 * _obj.Quantity;
+            }
         }
     }
 }

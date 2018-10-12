@@ -59,11 +59,7 @@ namespace SportsStore
 
             if(env.EnvironmentName != "TEST")
             {
-                Migrate.ExecuteContextsMigrate(app);
-                DictionarySeedData.PopulateDictionaries(app);
-                ProductSeedData.EnsurePopulated(app);
-                PermissionSeedData.PopulatePermissions(app);
-                IdentitySeedData.PopulateIdentity(app);
+                app.UseSportsStore();
             }
         }
 

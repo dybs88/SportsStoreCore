@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace SportsStore.Infrastructure.Start.SeedDatas
 {
-    public static class Migrate
+    public class Migrate
     {
-        public static void ExecuteContextsMigrate(IApplicationBuilder app)
+        public static async Task ExecuteContextsMigrate(IApplicationBuilder app)
         {
             ApplicationDbContext appContext = app.ApplicationServices.GetRequiredService<ApplicationDbContext>();
             appContext.Database.Migrate();

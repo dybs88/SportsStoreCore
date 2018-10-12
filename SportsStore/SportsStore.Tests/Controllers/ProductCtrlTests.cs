@@ -17,17 +17,14 @@ namespace SportsStore.Tests
     {
         private ProductController target;
 
-        public void Initialize()
+        public ProductCtrlTests()
         {
-            target = new ProductController(MockedObjects.Provider, MockedObjects.Configuration, Repositories.ProductRepository);
+            target = new ProductController(MockedObjects.Provider, MockedObjects.Configuration, Repositories.ProductRepository, MockedObjects.DictionaryContainer);
         }
 
         [Fact]
         public void PaginateProducts()
         {
-            //arange
-            Initialize();
-
             //act
             var result = (ProductListViewModel)target.List(null, 2).ViewData.Model;
 
@@ -39,9 +36,6 @@ namespace SportsStore.Tests
         [Fact]
         public void PageHelperTest()
         {
-            //arange
-            Initialize();
-
             //act
             var result = (ProductListViewModel) target.List(null, 2).ViewData.Model;
 
@@ -55,9 +49,6 @@ namespace SportsStore.Tests
         [Fact]
         public void FilterProductsByCategory()
         {
-            //arange
-            Initialize();
-
             //act
             var result = (ProductListViewModel) target.List("3", 1).ViewData.Model;
 
@@ -70,7 +61,6 @@ namespace SportsStore.Tests
         public void CountFilteredProductsByCategory()
         {
             //arange
-            Initialize();
 
             //act
             var result = (ProductListViewModel) target.List("2", 1).ViewData.Model;

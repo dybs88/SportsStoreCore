@@ -18,6 +18,7 @@
 <script>
     $().ready(function (e) {
         var service = new SalesParametersService($("#tbVatRates"));
+        var ajaxSaveTag = new AjaxSaveTag();
     })
 </script>
 <div class="row">
@@ -51,7 +52,21 @@
         </table>
         <a name="btnAddVatRate" class="btn btn-success btn-sm" style="color: white;">Dodaj</a>
     </div>
-    <div class="col-6"></div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-6">
+                <section>
+                    <h6>Domyślny typ ceny produktu</h6>
+                    <select class="form-control" asp-for="SelectedPriceType" ss-ajax-save="SavePriceType"
+                            asp-items="@(new SelectList(new []{
+                                new SelectListItem { Text = "Netto", Value = PriceType.Net.ToString() },
+                                new SelectListItem { Text = "Brutto", Value = PriceType.Gross.ToString() }
+                                     },"Value", "Text", Model.SelectedPriceType))"></select>
+                </section>
+            </div>
+            <div class="col-6"></div>
+        </div>
+    </div>
 </div>
 
 

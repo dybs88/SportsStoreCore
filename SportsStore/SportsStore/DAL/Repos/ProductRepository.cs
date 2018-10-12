@@ -22,9 +22,10 @@ namespace SportsStore.DAL.Repos
             _context = context;
         }
 
-        public IQueryable<Product> Products => 
+        public IQueryable<Product> Products =>
             _context.Products
-                .Include(p => p.ProductImages);
+                .Include(p => p.ProductImages)
+                .Include(p => p.VatRate);
 
         public Product DeleteProduct(int productId)
         {
@@ -95,6 +96,8 @@ namespace SportsStore.DAL.Repos
                     dbEntry.Description = model.Product.Description;
                     dbEntry.NetPrice = model.Product.NetPrice;
                     dbEntry.Category = model.Product.Category;
+                    dbEntry.GrossPrice = model.Product.GrossPrice;
+                    dbEntry.VatRateId = model.Product.VatRateId;
                 }
             }
 
