@@ -130,6 +130,7 @@
   <ItemGroup>
     <Folder Include="Infrastructure\Start\ServiceConfiguration\" />
     <Folder Include="Models\ViewModels\" />
+    <Folder Include="ApiControllers\" />
     <Folder Include="Views\Base\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\jquery-validation-globalize\" />

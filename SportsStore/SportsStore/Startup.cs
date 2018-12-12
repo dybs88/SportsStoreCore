@@ -28,9 +28,15 @@ namespace SportsStore
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<IISOptions>(options => 
+            {
+                options.AutomaticAuthentication = false;
+                options.ForwardClientCertificate = false;
+            });
+
             services
                 .AddSportsStoreSecurityModule()
-                .AddSportsStoreDatabase(Configuration)
+                .AddSportsStoreDatabase(Configuration, Environment.EnvironmentName)
                 .AddSportsStoreCustomerModule()
                 .AddSportsStoreDictionariesModule()
                 .AddSportsStoreSalesModule()
@@ -55,7 +61,6 @@ namespace SportsStore
             {
                 RouteMapping.MapRoutes(routes);
             });
-
 
             if(env.EnvironmentName != "TEST")
             {

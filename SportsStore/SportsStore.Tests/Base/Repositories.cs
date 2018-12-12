@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Moq;
 using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
+using SportsStore.DAL.Repos.Security;
 using SportsStore.Models.Cart;
 using SportsStore.Models.CustomerModels;
 using SportsStore.Models.DAL.Repos.SalesSchema;
@@ -32,6 +33,8 @@ namespace SportsStore.Tests.Base
         public static IProductRepository ProductRepository => GetProductRepository();
 
         public static IQueryable<SportUser> Users => GetUsers();
+
+        public static ISystemParameterRepository SystemParameterRepository;
 
         private static ICustomerRepository GetCustomerRepository()
         {
@@ -244,6 +247,13 @@ namespace SportsStore.Tests.Base
             }
 
             return users.AsQueryable();
+        }
+
+        private static ISystemParameterRepository GetSystemParameterRepository()
+        {
+            Mock<ISystemParameterRepository> mockedSystemParamRepo = new Mock<ISystemParameterRepository>();
+
+            return mockedSystemParamRepo.Object;
         }
     }
 }

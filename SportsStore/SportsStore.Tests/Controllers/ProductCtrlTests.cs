@@ -19,7 +19,7 @@ namespace SportsStore.Tests
 
         public ProductCtrlTests()
         {
-            target = new ProductController(MockedObjects.Provider, MockedObjects.Configuration, Repositories.ProductRepository, MockedObjects.DictionaryContainer);
+            target = new ProductController(MockedObjects.Provider, MockedObjects.Configuration, Repositories.ProductRepository, MockedObjects.DictionaryContainer, Repositories.SystemParameterRepository);
         }
 
         [Fact]

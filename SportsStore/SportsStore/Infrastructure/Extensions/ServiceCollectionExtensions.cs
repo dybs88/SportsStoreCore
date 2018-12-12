@@ -21,20 +21,48 @@ namespace SportsStore.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSportsStoreDatabase(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddSportsStoreDatabase(this IServiceCollection services, IConfiguration config, string environmentName)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(config["Data:SportsStoreProducts:connectionString"]));
-            services.AddDbContext<AppIdentityDbContext>(options =>
-                options.UseSqlServer(config["Data:SportsStoreIdentity:connectionString"]));
-            services.AddIdentity<SportUser, IdentityRole>(options =>
+            switch(environmentName)
             {
-                options.User.RequireUniqueEmail = true;
-            })
-                .AddEntityFrameworkStores<AppIdentityDbContext>()
-                .AddDefaultTokenProviders();
-            services.AddDbContext<DictionaryDbContext>(options =>
-                options.UseSqlServer(config["Data:SportsStoreDictionaries:connectionString"]));
+                case "PROD":
+                {
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(config["Release:ConnectionStrings:SportsStoreProducts:connectionString"]));
+                    services.AddDbContext<AppIdentityDbContext>(options =>
+                        options.UseSqlServer(config["Release:ConnectionStrings:SportsStoreIdentity:connectionString"]));
+                    services.AddIdentity<SportUser, IdentityRole>(options =>
+                    {
+                        options.User.RequireUniqueEmail = true;
+                    })
+                        .AddEntityFrameworkStores<AppIdentityDbContext>()
+                        .AddDefaultTokenProviders();
+                    services.AddDbContext<DictionaryDbContext>(options =>
+                        options.UseSqlServer(config["Release:ConnectionStrings:SportsStoreDictionaries:connectionString"]));
+                    break;
+                }
+                    
+                case "DEV":
+                {
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(config["Debug:ConnectionStrings:SportsStoreProducts:connectionString"]));
+                    services.AddDbContext<AppIdentityDbContext>(options =>
+                        options.UseSqlServer(config["Debug:ConnectionStrings:SportsStoreIdentity:connectionString"]));
+                    services.AddIdentity<SportUser, IdentityRole>(options =>
+                    {
+                        options.User.RequireUniqueEmail = true;
+                    })
+                        .AddEntityFrameworkStores<AppIdentityDbContext>()
+                        .AddDefaultTokenProviders();
+                    services.AddDbContext<DictionaryDbContext>(options =>
+                        options.UseSqlServer(config["Debug:ConnectionStrings:SportsStoreDictionaries:connectionString"]));
+                    break;
+                }
+                   
+                default:
+                    break;
+            }
+
 
             services.AddSingleton<IApplicationDbContext, ApplicationDbContext>();
 
