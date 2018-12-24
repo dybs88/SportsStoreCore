@@ -14,6 +14,6 @@ namespace SportsStore.DAL.Repos
         void DeleteProductImages(IList<ProductImage> productImages);
         Product GetProduct(int productId);
         IEnumerable<Product> GetProducts(string category);
-        void SaveProduct(ProductEditViewModel product);
+        Product SaveProduct(ProductEditViewModel product);
     }
 }

@@ -83,7 +83,7 @@ namespace SportsStore.DAL.Repos
             return Products.Where(p => p.Category == category);
         }
 
-        public void SaveProduct(ProductEditViewModel model)
+        public Product SaveProduct(ProductEditViewModel model)
         {
             if (model.Product.ProductID == 0)
                 _context.Products.Add(model.Product);
@@ -103,6 +103,8 @@ namespace SportsStore.DAL.Repos
 
             SaveProductImages(model);
             _context.SaveChanges();
+
+            return model.Product;
         }
 
         private void SaveProductImages(ProductEditViewModel model)

@@ -26,6 +26,8 @@ namespace SportsStore.Domain
         public const string AddRole = "Dodawanie roli";
         public const string EditRole = "Edytowanie roli";
         public const string DeleteRole = "Usuwanie roli";
+
+        public const string CorsPolicy = "CrossOriginPolicy";
     }
 
     public static class CustomerPermissionValues

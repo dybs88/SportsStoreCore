@@ -8,6 +8,7 @@ using SportsStore.DAL.Repos;
 using SportsStore.DAL.Repos.CustomerSchema;
 using SportsStore.DAL.Repos.DictionarySchema;
 using SportsStore.DAL.Repos.Security;
+using SportsStore.Helpers;
 using SportsStore.Infrastructure.Policies;
 using SportsStore.Models.Cart;
 using SportsStore.Models.DAL.Repos.SalesSchema;
@@ -15,6 +16,7 @@ using SportsStore.Models.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SportsStore.Infrastructure.Extensions
@@ -112,6 +114,15 @@ namespace SportsStore.Infrastructure.Extensions
         public static IServiceCollection AddSportsStoreStoreModule(this IServiceCollection services)
         {
             services.AddTransient<IProductRepository, ProductRepository>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddJwtHandler(this IServiceCollection services, IConfiguration config)
+        {
+            var appSettingsSection = config.GetSection("appSettings");
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
             return services;
         }

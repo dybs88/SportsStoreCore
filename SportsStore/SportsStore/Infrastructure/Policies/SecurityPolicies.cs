@@ -53,6 +53,15 @@ namespace SportsStore.Infrastructure.Policies
                     policy.RequireClaim(ClaimTypes.AuthenticationMethod, SecurityPermissionValues.DeleteRole);
                 });
             });
+
+            services.AddCors(o => 
+            {
+                o.AddPolicy(SecurityPermissionValues.CorsPolicy, policy => 
+                {
+                    policy.AllowAnyOrigin();
+                    policy.WithHeaders("ss-cors-header");
+                });
+            });
         }
     }
 }

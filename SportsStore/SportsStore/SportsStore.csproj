@@ -122,7 +122,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
   </ItemGroup>
@@ -130,7 +130,6 @@
   <ItemGroup>
     <Folder Include="Infrastructure\Start\ServiceConfiguration\" />
     <Folder Include="Models\ViewModels\" />
-    <Folder Include="ApiControllers\" />
     <Folder Include="Views\Base\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\jquery-validation-globalize\" />

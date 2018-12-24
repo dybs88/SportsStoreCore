@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
+using SportsStore.Domain;
 using SportsStore.Infrastructure.Extensions;
 using SportsStore.Infrastructure.Start.AppConfiguration;
 using SportsStore.Infrastructure.Start.SeedDatas;
@@ -28,6 +30,7 @@ namespace SportsStore
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.Configure<IISOptions>(options => 
             {
                 options.AutomaticAuthentication = false;
@@ -51,6 +54,7 @@ namespace SportsStore
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors(options => options.WithOrigins(Configuration["appSettings:webClientAddress"]));
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
@@ -61,6 +65,7 @@ namespace SportsStore
             {
                 RouteMapping.MapRoutes(routes);
             });
+
 
             if(env.EnvironmentName != "TEST")
             {
