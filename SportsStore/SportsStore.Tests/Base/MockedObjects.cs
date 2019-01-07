@@ -18,6 +18,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SportsStore.DAL.Repos.DictionarySchema;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace SportsStore.Tests.Base
 {
@@ -26,6 +30,8 @@ namespace SportsStore.Tests.Base
         private static ISession _session;
 
         public static IServiceProvider Provider => GetProvider();
+
+        public static IServiceCollection Services => GetServices();
 
         public static IConfiguration Configuration => GetConfiguration();
 
@@ -58,9 +64,37 @@ namespace SportsStore.Tests.Base
             return mockProvider.Object;
         }
 
+        private static IServiceCollection GetServices()
+        {
+            return new Mock<IServiceCollection>().Object;
+        }
+
         private static IConfiguration GetConfiguration()
         {
-            return new Mock<IConfiguration>().Object;
+            Mock<IConfiguration> mockedConfig = new Mock<IConfiguration>();
+
+            mockedConfig.Setup(x => x.GetSection(It.IsAny<string>())).Returns<string>(s => 
+            {
+                if(s == "appSettings")
+                {
+                    JsonConfigurationSource configurationSource = new JsonConfigurationSource
+                    {
+                        Path = "appsettings.json",
+                        FileProvider = new PhysicalFileProvider("d:\\Git\\SportsStoreCore\\SportsStore\\SportsStore.Tests"),
+                        Optional = false,
+                        ReloadOnChange = true
+                    };
+
+                    ConfigurationRoot configRoot = new ConfigurationRoot(new List<IConfigurationProvider> { new JsonConfigurationProvider(configurationSource) });
+                    ConfigurationSection section = new ConfigurationSection(configRoot, "appSettings");
+
+                    return section;
+                }
+
+                return null;
+            });
+         
+            return mockedConfig.Object;
         }
 
         private static ISession GetSession()

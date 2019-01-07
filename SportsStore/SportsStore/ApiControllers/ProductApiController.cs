@@ -14,13 +14,13 @@ namespace SportsStore.ApiControllers
 {
     [Produces("application/json")]
     [Route("api/products")]
-    public class ProductController : Controller
+    public class ProductApiController : Controller
     {
         private IProductRepository _productRepository;
         private IDictionaryContainer _dictionaryContainer;
         private ISystemParameterRepository _paramRepository;
 
-        public ProductController(IProductRepository repository, IDictionaryContainer dictContainer, ISystemParameterRepository paramRepo)
+        public ProductApiController(IProductRepository repository, IDictionaryContainer dictContainer, ISystemParameterRepository paramRepo)
         {
             _productRepository = repository;
             _dictionaryContainer = dictContainer;

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using SportsStore.DAL.AbstractContexts;
 using SportsStore.DAL.Contexts;
 using SportsStore.DAL.Repos;
@@ -118,11 +120,56 @@ namespace SportsStore.Infrastructure.Extensions
             return services;
         }
 
-        public static IServiceCollection AddJwtHandler(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddAppSettings(this IServiceCollection services, IConfiguration config)
         {
             var appSettingsSection = config.GetSection("appSettings");
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.Configure<AppSettings>(appSettingsSection);
+
+            return services;
+        }
+
+        public static AppSettings GetAppSettings(this IServiceCollection services, IConfiguration config)
+        {
+            var appSettingsSection = config.GetSection("appSettings");
+            return appSettingsSection.Get<AppSettings>();
+        }
+
+        public static IServiceCollection AddJwtHandler(this IServiceCollection services, IConfiguration config)
+        {
+            var settings = services.GetAppSettings(config);
+            var key = Encoding.ASCII.GetBytes(settings.Secret);
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x => 
+            {
+                x.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var userManager = context.HttpContext.RequestServices.GetRequiredService<ISportsStoreUserManager>();
+                        var user = userManager.FindByIdAsync(context.Principal.Identity.Name);
+
+                        if(user == null)
+                        {
+                            context.Fail("Brak autoryzacji");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
             return services;
         }

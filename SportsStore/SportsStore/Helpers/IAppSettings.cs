@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SportsStore.Helpers
 {
-    public class AppSettings : IAppSettings
+    public interface IAppSettings
     {
-        public string WebClientAddress { get; set; }
-        public string Secret { get; set; }
+        string WebClientAddress { get; set; }
+        string Secret { get; set; }
     }
 }

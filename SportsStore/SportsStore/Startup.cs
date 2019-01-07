@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using SportsStore.Domain;
+using SportsStore.Helpers;
 using SportsStore.Infrastructure.Extensions;
 using SportsStore.Infrastructure.Start.AppConfiguration;
 using SportsStore.Infrastructure.Start.SeedDatas;
@@ -30,7 +31,23 @@ namespace SportsStore
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services
+                .AddAppSettings(Configuration)
+                .AddJwtHandler(Configuration);
+
+            AppSettings settings = services.GetAppSettings(Configuration);
+
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.WithOrigins(settings.WebClientAddress)
+                           .AllowAnyMethod()
+                           .WithExposedHeaders("content-disposition")
+                           .AllowAnyHeader()
+                           .AllowCredentials()
+                           .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
+                });
+            });
             services.Configure<IISOptions>(options => 
             {
                 options.AutomaticAuthentication = false;
@@ -54,7 +71,7 @@ namespace SportsStore
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseCors(options => options.WithOrigins(Configuration["appSettings:webClientAddress"]));
+            app.UseCors("CorsPolicy");
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();

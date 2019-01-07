@@ -10,6 +10,7 @@ namespace SportsStore.DAL.Repos.Security
     public interface ISportsStoreUserManager
     {
         IQueryable<SportUser> Users { get; }
+        Task<SportUser> FindByIdAsync(string userId);
         Task<SportUser> FindByNameAsync(string name);
         Task<SportUser> FindByEmailAsync(string email);
         Task<IdentityResult> UpdateAsync(SportUser user); 
